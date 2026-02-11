@@ -1,0 +1,16 @@
+export default {
+  "pages.login.side.description": "AI robots are robots that use artificial intelligence to perform tasks. ",
+  "pages.login.header": "登录",
+  "pages.login.description": "输入你的账号密码去登录管理端!",
+  "pages.login.mode.feishu": "飞书登录",
+  "pages.login.mode.phone": "手机验证码登录",
+  "pages.login.or": "或",
+  "pages.login.form.account": "用户名",
+  "pages.login.form.account.placeholder": "zhangsan",
+  "pages.login.form.password": "密码",
+  "pages.login.form.account.password": "输入你的密码",
+  "pages.login.form.keep_login": "保持登录",
+  "pages.login.form.forget_pwd": "忘记密码?",
+  "pages.login.form.sign_in": "登录",
+  "pages.login.not_allow_null": "账号密码不能为空!",
+};

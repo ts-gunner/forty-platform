@@ -1,0 +1,46 @@
+### VS Code ###
+.vscode/
+
+### IntelliJ project files ###
+.idea
+.gradle
+*.iml
+out
+gen
+target
+*.iws
+*.ipr
+
+.settings
+.classpath
+.project
+*.class
+
+.claude
+CLAUDE.md
+
+### Package Files ###
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+# 忽略根目录下所有target文件夹
+*/target/
+
+### 例外文件 ###
+!/resources/**/*
+
+### Log file ###
+*.log
+
+### 环境变量 ###
+.env
+.env.*
+
+### python project files ###
+.venv
+__pycache__
+

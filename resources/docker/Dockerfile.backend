@@ -1,0 +1,27 @@
+FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/maven:3.9.9-eclipse-temurin-21-noble AS builder
+
+WORKDIR /build
+
+# 缓存依赖，后期再优化
+# RUN mvn dependency:go-offline -pl gateway -am -DskipTests
+
+COPY steins-admin .
+
+# -pl 指定打包steins-core模块， -am 构建依赖， 跳过测试
+RUN git init && mvn clean package -pl steins-core  -am -DskipTests
+
+FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/bellsoft/liberica-runtime-container:jre-21-glibc
+
+WORKDIR /app
+
+COPY --from=builder /build/steins-core/target/steins-core.jar app.jar
+COPY resources/jar/skywalking-agent ./skywalking-agent
+
+EXPOSE 18001
+
+ENV JAVA_OPTS="-Xms512m -Xmx1024m"
+ENV SPRING_ACTIVE="prod"
+
+CMD ["/bin/sh", "-c", "java -javaagent:/app/skywalking-agent/skywalking-agent.jar $JAVA_OPTS -jar app.jar --spring.profiles.active=$SPRING_ACTIVE"]
+
+

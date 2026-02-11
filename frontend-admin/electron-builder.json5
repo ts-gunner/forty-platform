@@ -1,0 +1,59 @@
+// @see - https://www.electron.build/configuration/configuration
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "steins",
+  "asar": true,
+  "productName": "steins-tech",
+  "directories": {
+    "output": "release/${version}",
+  },
+  "files": [
+    "build",
+    "!node_modules",
+    "electron",
+    "public"
+  ],
+   // 新增 extraResources 配置
+  "extraResources": [
+    {
+      "from": "node_modules/dotenv",
+      "to": "node_modules/dotenv",
+      "filter": ["**/*"]
+    },
+    ".env", // 如果需要包含 .env 文件
+    ".env.prod_electron",
+  ],
+  "mac": {
+    "target": [
+      "dmg"
+    ],
+    "artifactName": "${productName}-Mac-${version}-Installer.${ext}"
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      },
+    ],
+    "artifactName": "${productName}-Windows-${version}-Setup.${ext}",
+    "icon": "public/favicon.ico",
+  },
+  "nsis": {
+    "oneClick": false, // 是否一键安装
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": false,
+    "installerIcon": "public/favicon.ico",
+    "uninstallerIcon": "public/favicon.ico",
+    "installerHeaderIcon": "public/favicon.ico",
+  },
+  "linux": {
+    "target": [
+      "AppImage"
+    ],
+    "artifactName": "${productName}-Linux-${version}.${ext}"
+  }
+}

@@ -1,0 +1,72 @@
+name: steins-platform-${SPRING_ACTIVE:-prod}
+services:
+  steins-frontend-app:
+    container_name: steins-frontend-app-${SPRING_ACTIVE:-prod}
+    image: steins-frontend-app:0.0.4
+    build:
+      context: ../../
+      dockerfile: resources/docker/Dockerfile.frontend_app
+    networks:
+      - default-network
+  steins-frontend-admin:
+    container_name: steins-frontend-admin-${SPRING_ACTIVE:-prod}
+    image: steins-frontend-admin:0.0.4
+    build:
+      context: ../../
+      dockerfile: resources/docker/Dockerfile.frontend_admin
+    networks:
+      - default-network
+  steins-app:
+    container_name: steins-app-${SPRING_ACTIVE:-prod}
+    image: steins-app:0.0.4
+    build:
+      context: ../../
+      dockerfile: resources/docker/Dockerfile.backend
+    environment:
+      - NACOS_SERVER_ADDR=${NACOS_SERVER_ADDR:-host.docker.internal}
+      - NACOS_USERNAME=${NACOS_USERNAME:-nacos}
+      - NACOS_PASSWORD=${NACOS_PASSWORD:-nacos}
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=${SW_AGENT_COLLECTOR_BACKEND_SERVICES:-host.docker.internal:11800}
+      - SW_AGENT_NAME=${SW_AGENT_NAME:-prod_steins_admin}
+      - JAVA_OPTS=${JAVA_OPTS}
+      - SPRING_ACTIVE=${SPRING_ACTIVE:-prod}
+    restart: unless-stopped
+    ports:
+      - ${STEINS_APP_PORT:-18001}:18001
+    networks:
+      - default-network
+  steins-gateway:
+    container_name: steins-gateway-${SPRING_ACTIVE:-prod}
+    image: steins-gateway:0.0.4
+    build:
+      context: ../../
+      dockerfile: resources/docker/Dockerfile.gateway
+    environment:
+      - NACOS_SERVER_ADDR=${NACOS_SERVER_ADDR:-host.docker.internal}
+      - NACOS_USERNAME=${NACOS_USERNAME:-nacos}
+      - NACOS_PASSWORD=${NACOS_PASSWORD:-nacos}
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=${SW_AGENT_COLLECTOR_BACKEND_SERVICES:-host.docker.internal:11800}
+      - SW_AGENT_NAME=${SW_AGENT_NAME:-prod_steins_gateway}
+      - JAVA_OPTS=${JAVA_OPTS}
+      - SPRING_ACTIVE=${SPRING_ACTIVE:-prod}
+      - BASE_HOST=${BASE_HOST:-steins-app}
+    restart: unless-stopped
+    ports:
+      - ${STEINS_GATEWAY_PORT:-18000}:18000
+    networks:
+      - default-network
+  platform-nginx:
+    container_name: platform-nginx-${SPRING_ACTIVE:-prod}
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/library/nginx:1.18.0-alpine
+    command: ["nginx", "-c", "/etc/nginx/nginx.conf", "-g", "daemon off;"]
+    ports:
+      - ${PLATFORM_NGINX_PORT:-18080}:18080
+    volumes:
+      - ${NGINX_VOLUME_LOG:-./logs/nginx}:/var/log/nginx
+      - ${NGINX_VOLUME_NGINX_CONF:-./nginx.conf}:/etc/nginx/nginx.conf
+    networks:
+      - default-network
+networks:
+  default-network:
+    name: steins-network-${SPRING_ACTIVE:-prod}
+    driver: bridge
