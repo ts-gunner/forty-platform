@@ -21,9 +21,6 @@ export default defineConfig({
     },
   },
   routes: [
-    { path: "/", component: "./Dashboard/Home" },
-    { path: "/profile", component: "./UserProfiles" },
-    { path: "/calendar", component: "./Calendar" },
     { path: "/user-management", component: "./UserManagement" },
   
     { path: "/question/example", component: "./QuestionExample" },

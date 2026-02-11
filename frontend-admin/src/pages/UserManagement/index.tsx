@@ -3,7 +3,6 @@ import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Modal } from "antd";
 import { useRef, useState } from "react";
-import Badge from "../../components/ui/badge/Badge";
 import UserForm from "../../components/user-management/UserForm";
 import { PencilIcon, TrashBinIcon } from "../../icons";
 import { addSystemUser, deleteSystemUser, pageUsers, updateSystemUser } from "../../services/steins-admin/sysUserController";
@@ -27,25 +26,7 @@ const UserManagement = () => {
       key: "nickname",
       ellipsis: true,
     },
-    {
-      title: "角色",
-      dataIndex: "isAdmin",
-      key: "isAdmin",
-      valueType: "select",
-      valueEnum: {
-        all: { text: "全部", status: "Default" },
-        true: { text: "管理员" },
-        false: { text: "普通用户" },
-      },
-      render: (_, record) => (
-        <Badge size="sm" color={record.isAdmin ? "primary" : "info"}>
-          {record.isAdmin ? "管理员" : "用户"}
-        </Badge>
-      ),
-      search: {
-        transform: (val) => (val === "all" ? {} : { isAdmin: val === "true" }),
-      },
-    },
+
     {
       title: "状态",
       dataIndex: "status",

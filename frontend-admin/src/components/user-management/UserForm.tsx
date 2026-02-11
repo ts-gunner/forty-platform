@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Button from "../../components/ui/button/Button";
-import { Modal } from "../../components/ui/modal";
+import { Modal } from "antd";
 
 interface UserFormProps {
   isOpen: boolean;
@@ -97,8 +97,8 @@ const UserForm = ({ isOpen, onClose, onSubmit, initialData, title }: UserFormPro
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={onClose}
+      open={isOpen}
+      onCancel={onClose}
       className="w-full max-w-md p-6"
     >
       <div>
