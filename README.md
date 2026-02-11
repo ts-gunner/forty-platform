@@ -1,4 +1,4 @@
-# 管理平台-Refactor
+# 多端跨平台
 
 
 ## 总览
@@ -20,23 +20,9 @@ admin 初定模块划分：
 
 ## 快速开始
 
-### steins-frontend-app 产品端前端项目
 
-项目依赖安装
-```shell
-yarn
-yarn install
-yarn add antd
-```
 
-调试与构建
-```shell
-yarn
-npm run dev
-npm run build
-```
-
-### steins-frontend-admin 管理端前端项目
+### frontend-admin 运营端前端项目
 
 
 项目依赖安装
@@ -52,50 +38,9 @@ npm run dev
 npm run build
 ```
 
-### steins-admin 管理端-后端
+### backend 管理端-后端
 
-在core模块中运行AdminApplication，查看文档: `/steins/doc.html`
-
-
-需要配置环境变量或VM参数，二选一
-```shell
-# 环境变量设置：
-NACOS_SERVER_ADDR=192.168.3.112:8848;
-NACOS_USERNAME=nacos;
-NACOS_PASSWORD=nacos;
-# 或者 设置VM参数：
--Dspring.cloud.nacos.server-addr=192.168.3.112:8848 -Dspring.cloud.nacos.username=nacos -Dspring.cloud.nacos.password=nacos
-```
-
-额外接入SkyWalking，则需要设置VM参数与环境变量（此处SW_AGENT_NAME需对应admin）：
-```shell
-#VM options 添加：
--javaagent:【你的项目路径】\steins-platform\resources\jar\skywalking-agent\skywalking-agent.jar
-#Environment variables 添加：
-SW_AGENT_COLLECTOR_BACKEND_SERVICES=192.168.3.112:11800;SW_AGENT_NAME=dev_steins_admin
-```
-
-### steins-gateway 网关-后端
-
-需要配置环境变量或VM参数，二选一
-```shell
-# 环境变量设置：
-NACOS_SERVER_ADDR=192.168.3.112:8848;
-NACOS_USERNAME=nacos;
-NACOS_PASSWORD=nacos;
-BASE_HOST=127.0.0.2
-# 或者 设置VM参数：
--Dspring.cloud.nacos.server-addr=192.168.3.112:8848 -Dspring.cloud.nacos.username=nacos -Dspring.cloud.nacos.password=nacos
-```
-
-额外接入SkyWalking，则需要设置VM参数与环境变量（此处SW_AGENT_NAME需对应gateway）：
-```shell
-#VM options 添加：
--javaagent:【你的项目路径】\steins-platform\resources\jar\skywalking-agent\skywalking-agent.jar
-#Environment variables 添加：
-SW_AGENT_COLLECTOR_BACKEND_SERVICES=192.168.3.112:11800;SW_AGENT_NAME=dev_steins_gateway
-```
-
+无
 
 ## 部署
 

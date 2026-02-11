@@ -1,14 +1,11 @@
-# STEINS-ADMIN-GO
+# 后台服务
 
-使用go重写steins-platform的后端
-
-纯个人爱好，用来比较java和go的优缺点
-
+以go框架搭建的后端服务
 
 # 目录结构
 
 ```text
-steins-admin-go
+backend
 ├─steins-aigc  // ai聊天模块
 ├─steins-cms   // 内容管理模块
 ├─steins-common  // 通用模块
