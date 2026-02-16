@@ -1,0 +1,28 @@
+mysql:
+    path: 127.0.0.1
+    port: "3306"
+    db-name: forty_dev
+    username: root
+    password: "root"
+    max-idle-conns: 10
+    max-open-conns: 100
+
+redis:
+    port: "6379"
+    host: 127.0.0.1
+    password: "root"
+    db: 8
+
+servlet:
+    port: "18888"
+    db-type: mysql
+    oss-type: local
+    context-path: /ft
+zap:
+    level: info
+    prefix: '[forty-platform]'
+    format: console
+    director: logs
+    encode-level: ""
+    show-line: false
+    log-in-console: true

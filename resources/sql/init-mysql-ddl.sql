@@ -11,15 +11,13 @@ CREATE TABLE IF NOT EXISTS `sys_user`
     `openid`      VARCHAR(100)        NULL COMMENT '微信小程序唯一标识id',
     `unionid`     VARCHAR(100)        NULL COMMENT '微信开放平台id',
     `nickname`    VARCHAR(255)        NOT NULL COMMENT '用户昵称',
-    `avatar`      VARCHAR(255)        NULL COMMENT '头像url地址',
+    `avatar_id`      VARCHAR(255)        NULL COMMENT '头像url地址',
     `email`       VARCHAR(255)        NULL COMMENT '邮箱',
     `phone`       VARCHAR(255)        NULL COMMENT '手机号码',
     `status`      TINYINT(1) UNSIGNED NOT NULL DEFAULT 1 COMMENT '账号状态, 0: 停用, 1:正常',
-    `is_admin`    TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否是管理员账号',
-    `creator`     VARCHAR(255)        NOT NULL COMMENT '创建者',
-    `updater`     VARCHAR(255) COMMENT '更新者',
     `creator_id`  BIGINT              NOT NULL COMMENT '创建者id',
     `updater_id`  BIGINT COMMENT '更新者id',
+    `deleter_id`  BIGINT COMMENT '删除者id',
     `is_delete`   TINYINT                      DEFAULT 0 NOT NULL COMMENT '是否删除',
     `create_time` TIMESTAMP                    DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
     `update_time` TIMESTAMP                    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -29,6 +27,11 @@ CREATE TABLE IF NOT EXISTS `sys_user`
   DEFAULT charset = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT '用户信息表';
 
+
+
+
+
+
 DROP TABLE IF EXISTS sys_role;
 
 CREATE TABLE IF NOT EXISTS sys_role
@@ -36,8 +39,6 @@ CREATE TABLE IF NOT EXISTS sys_role
     `role_id`     BIGINT       NOT NULL COMMENT '角色ID',
     `role_name`   VARCHAR(100) NOT NULL COMMENT '角色名称',
     `role_key`    VARCHAR(50)  NOT NULL COMMENT '角色标识',
-    `creator`     VARCHAR(255) NOT NULL COMMENT '创建者',
-    `updater`     VARCHAR(255) COMMENT '更新者',
     `creator_id`  BIGINT       NOT NULL COMMENT '创建者id',
     `updater_id`  BIGINT COMMENT '更新者id',
     `is_delete`   TINYINT           DEFAULT 0 COMMENT '逻辑删除',

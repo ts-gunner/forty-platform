@@ -32,6 +32,7 @@ backend
 | gorm-adapter | github.com/casbin/gorm-adapter/v3 |  权限校验的适配器   |
 |  go-swagger  |   github.com/swaggo/gin-swagger   |    api文档    |
 |    lancet    |  	github.com/duke-git/lancet/v2   |   go工具箱	    |
+|    redis     |  	github.com/go-redis/redis/v8  |   redis	    |
 
 
 # Q&A
