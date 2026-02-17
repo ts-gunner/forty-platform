@@ -1,0 +1,69 @@
+definitions:
+  request.PwdLoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  response.AdminUserVo:
+    properties:
+      account:
+        description: 账号
+        type: string
+      avatar:
+        description: 头像地址
+        type: string
+      email:
+        description: 邮箱
+        type: string
+      nickname:
+        description: 用户昵称
+        type: string
+      phone:
+        description: 手机号码
+        type: string
+      token:
+        description: 登录凭证
+        type: string
+    type: object
+  response.ApiResult-response_AdminUserVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/response.AdminUserVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
+info:
+  contact: {}
+  description: 使用go语言搭建的管理后端
+  title: 四零专属管理后台
+  version: "1.0"
+paths:
+  /system/auth/adminPwdLogin:
+    post:
+      consumes:
+      - application/json
+      operationId: adminPwdLogin
+      parameters:
+      - description: 密码登录参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.PwdLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-response_AdminUserVo'
+      summary: 运营端账号密码登录
+      tags:
+      - authController
+swagger: "2.0"

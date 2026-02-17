@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/ts-gunner/forty-platform/common/constant"
+	"github.com/ts-gunner/forty-platform/common/global"
 	"net/http"
 	"os"
 	"os/signal"
@@ -15,11 +16,11 @@ import (
 func RunServer() {
 	router := initRouter()
 	fmt.Printf(
-		constant.PROJECT_BANNER, Config.Servlet.Port,
-		Config.Servlet.Port, Config.Servlet.ContextPath,
-		Config.Servlet.Port, Config.Servlet.ContextPath,
+		constant.PROJECT_BANNER, global.Config.Servlet.Port,
+		global.Config.Servlet.Port, global.Config.Servlet.ContextPath,
+		global.Config.Servlet.Port, global.Config.Servlet.ContextPath,
 	)
-	initServer(Config.Servlet.Port, router)
+	initServer(global.Config.Servlet.Port, router)
 }
 
 func initServer(port string, router *gin.Engine) {

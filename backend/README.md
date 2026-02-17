@@ -33,6 +33,7 @@ backend
 |  go-swagger  |   github.com/swaggo/gin-swagger   |    api文档    |
 |    lancet    |  	github.com/duke-git/lancet/v2   |   go工具箱	    |
 |    redis     |  	github.com/go-redis/redis/v8  |   redis	    |
+|     gmsm     |  	github.com/tjfoc/gmsm  |    国密算法	    |
 
 
 # Q&A
