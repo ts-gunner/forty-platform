@@ -18,7 +18,6 @@ func RunServer() {
 	fmt.Printf(
 		constant.PROJECT_BANNER, global.Config.Servlet.Port,
 		global.Config.Servlet.Port, global.Config.Servlet.ContextPath,
-		global.Config.Servlet.Port, global.Config.Servlet.ContextPath,
 	)
 	initServer(global.Config.Servlet.Port, router)
 }

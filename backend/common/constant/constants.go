@@ -17,8 +17,7 @@ const (
 
 欢迎使用forty-platform
 项目地址: http://127.0.0.1:%s
-项目接口文档地址: http://127.0.0.1:%s%s/swagger/index.html
-项目接口文档地址: http://127.0.0.1:%s%s/swagger/doc.json
+项目接口文档地址: http://127.0.0.1:%s%s/doc.html
 `
 	CONFIG_FILEPATH = "config.yaml"
 )
