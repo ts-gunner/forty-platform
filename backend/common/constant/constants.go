@@ -20,4 +20,10 @@ const (
 项目接口文档地址: http://127.0.0.1:%s%s/doc.html
 `
 	CONFIG_FILEPATH = "config.yaml"
+	SALT            = "forty-platform"
+)
+
+// Redis相关的键
+const (
+	REDIS_ADMIN_USER_TOKEN = "admin:user:token:"
 )

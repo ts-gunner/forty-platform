@@ -5,6 +5,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/ts-gunner/forty-platform/common/global"
+	"github.com/ts-gunner/forty-platform/common/handler"
 	_ "github.com/ts-gunner/forty-platform/docs"
 	"github.com/ts-gunner/forty-platform/modules/system/controller"
 	"net/http"
@@ -14,8 +15,17 @@ func initRouter() *gin.Engine {
 	r := gin.Default()
 
 	r.Use(gin.Recovery())
-	contextGroup := r.Group(global.Config.Servlet.ContextPath)
-	initSwagger(contextGroup)
+	swaggerGroup := r.Group(global.Config.Servlet.ContextPath)
+	contextGroup := r.Group(
+		global.Config.Servlet.ContextPath,
+		handler.RequestLog(),
+		handler.IdentityVerification(&handler.AuthorizationConfig{
+			ExcludePaths: []string{
+				"/auth/adminPwdLogin",
+			},
+		}),
+	)
+	initSwagger(swaggerGroup)
 	controller.SystemRouter.InitSystemRouter(contextGroup)
 	return r
 }

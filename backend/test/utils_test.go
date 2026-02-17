@@ -7,6 +7,6 @@ import (
 )
 
 func TestEncryptBySM3(t *testing.T) {
-	s := utils.EncryptBySM3("123456789")
+	s := utils.EncryptBySM3("123456")
 	fmt.Println(s)
 }
