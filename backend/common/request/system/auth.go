@@ -1,4 +1,4 @@
-package request
+package system
 
 type PwdLoginRequest struct {
 	Username string `json:"username"`

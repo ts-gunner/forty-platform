@@ -5,4 +5,8 @@ var SystemService = new(ServiceGroup)
 type ServiceGroup struct {
 	AuthService
 	UserService
+	RoleService
+	PermissionService
+	UserRoleRelService
+	RolePermissionRelService
 }

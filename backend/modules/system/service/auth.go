@@ -3,36 +3,35 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jinzhu/copier"
 	"github.com/ts-gunner/forty-platform/common/constant"
 	"github.com/ts-gunner/forty-platform/common/entity"
 	"github.com/ts-gunner/forty-platform/common/global"
-	"github.com/ts-gunner/forty-platform/common/response"
-	"time"
+	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
 )
 
 type AuthService struct {
 }
 
-func (s *AuthService) CreateToken(user *entity.SysUser, key string) string {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":   user.UserId,
-		"name": user.NickName,
-	})
+func (s *AuthService) CreateToken(claim *systemResponse.AdminUserClaim, key string) string {
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	signString, _ := token.SignedString([]byte(key))
 	return signString
 }
 
-func (s *AuthService) AdminLogin(user *entity.SysUser) (*response.AdminUserVo, error) {
-	userVo := response.AdminUserVo{}
-	if err := copier.Copy(&userVo, user); err != nil {
-		return nil, err
+func (s *AuthService) AdminLogin(user *entity.SysUser) (string, error) {
+	claim := &systemResponse.AdminUserClaim{}
+	if err := copier.Copy(&claim, user); err != nil {
+		return "", err
 	}
-	userVo.Token = s.CreateToken(user, constant.SALT)
-	// 存入redis中
+
+	token := s.CreateToken(claim, constant.SALT)
 	ctx := context.TODO()
-	userVoJson, _ := json.Marshal(userVo)
-	global.Redis.Set(ctx, constant.REDIS_ADMIN_USER_TOKEN+userVo.Token, string(userVoJson), 24*time.Hour)
-	return &userVo, nil
+	userVoJson, _ := json.Marshal(claim)
+	global.Redis.Set(ctx, constant.REDIS_ADMIN_USER_TOKEN+token, string(userVoJson), 24*time.Hour)
+	return token, nil
 }

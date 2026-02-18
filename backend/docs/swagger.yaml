@@ -1,42 +1,436 @@
 definitions:
-  request.PwdLoginRequest:
+  response.ApiResult-any:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data: {}
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-array_system_RolePermissionRelVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/system.RolePermissionRelVo'
+        type: array
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-array_system_RoleWithPermissionVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/system.RoleWithPermissionVo'
+        type: array
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-array_system_UserRoleRelVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/system.UserRoleRelVo'
+        type: array
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-array_system_UserWithRoleVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/system.UserWithRoleVo'
+        type: array
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-response_PageResult-system_PermissionVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/response.PageResult-system_PermissionVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-response_PageResult-system_RoleVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/response.PageResult-system_RoleVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-response_PageResult-system_UserVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/response.PageResult-system_UserVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-string:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        type: string
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-system_PermissionVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/system.PermissionVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-system_RoleVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/system.RoleVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-system_UserVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/system.UserVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.PageResult-system_PermissionVo:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/system.PermissionVo'
+        type: array
+      pageNum:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+    type: object
+  response.PageResult-system_RoleVo:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/system.RoleVo'
+        type: array
+      pageNum:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+    type: object
+  response.PageResult-system_UserVo:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/system.UserVo'
+        type: array
+      pageNum:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+    type: object
+  system.PermissionCreateRequest:
+    properties:
+      permissionName:
+        type: string
+      perms:
+        type: string
+      type:
+        type: integer
+    required:
+    - permissionName
+    type: object
+  system.PermissionDeleteRequest:
+    properties:
+      permissionId:
+        type: integer
+    required:
+    - permissionId
+    type: object
+  system.PermissionUpdateRequest:
+    properties:
+      permissionId:
+        type: integer
+      permissionName:
+        type: string
+      perms:
+        type: string
+      type:
+        type: integer
+    required:
+    - permissionId
+    type: object
+  system.PermissionVo:
+    properties:
+      createTime:
+        type: string
+      permissionId:
+        type: integer
+      permissionName:
+        type: string
+      perms:
+        type: string
+      type:
+        type: integer
+      updateTime:
+        type: string
+    type: object
+  system.PwdLoginRequest:
     properties:
       password:
         type: string
       username:
         type: string
     type: object
-  response.AdminUserVo:
+  system.RoleCreateRequest:
     properties:
-      account:
-        description: 账号
+      roleKey:
         type: string
-      avatar:
-        description: 头像地址
+      roleName:
         type: string
-      email:
-        description: 邮箱
+    required:
+    - roleKey
+    - roleName
+    type: object
+  system.RoleDeleteRequest:
+    properties:
+      roleId:
+        type: integer
+    required:
+    - roleId
+    type: object
+  system.RolePermissionRelAssignRequest:
+    properties:
+      permissionIds:
+        items:
+          type: integer
+        type: array
+      roleId:
+        type: integer
+    required:
+    - permissionIds
+    - roleId
+    type: object
+  system.RolePermissionRelRemoveRequest:
+    properties:
+      permissionId:
+        type: integer
+      roleId:
+        type: integer
+    required:
+    - permissionId
+    - roleId
+    type: object
+  system.RolePermissionRelVo:
+    properties:
+      permissionId:
+        type: integer
+      permissionName:
         type: string
-      nickname:
-        description: 用户昵称
+      perms:
         type: string
-      phone:
-        description: 手机号码
+      type:
+        type: integer
+    type: object
+  system.RoleUpdateRequest:
+    properties:
+      roleId:
+        type: integer
+      roleKey:
         type: string
-      token:
-        description: 登录凭证
+      roleName:
+        type: string
+    required:
+    - roleId
+    type: object
+  system.RoleVo:
+    properties:
+      createTime:
+        type: string
+      roleId:
+        type: integer
+      roleKey:
+        type: string
+      roleName:
+        type: string
+      updateTime:
         type: string
     type: object
-  response.ApiResult-response_AdminUserVo:
+  system.RoleWithPermissionVo:
     properties:
-      code:
-        example: 200
+      roleId:
         type: integer
-      data:
-        $ref: '#/definitions/response.AdminUserVo'
-      msg:
-        example: 成功
+      roleKey:
         type: string
+      roleName:
+        type: string
+    type: object
+  system.UserCreateRequest:
+    properties:
+      account:
+        type: string
+      avatarId:
+        type: string
+      email:
+        type: string
+      nickName:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      status:
+        type: integer
+    required:
+    - account
+    - nickName
+    - password
+    type: object
+  system.UserDeleteRequest:
+    properties:
+      userId:
+        type: integer
+    required:
+    - userId
+    type: object
+  system.UserRoleRelAssignRequest:
+    properties:
+      roleIds:
+        items:
+          type: integer
+        type: array
+      userId:
+        type: integer
+    required:
+    - roleIds
+    - userId
+    type: object
+  system.UserRoleRelRemoveRequest:
+    properties:
+      roleId:
+        type: integer
+      userId:
+        type: integer
+    required:
+    - roleId
+    - userId
+    type: object
+  system.UserRoleRelVo:
+    properties:
+      roleId:
+        type: integer
+      roleKey:
+        type: string
+      roleName:
+        type: string
+    type: object
+  system.UserUpdatePwdRequest:
+    properties:
+      newPassword:
+        type: string
+      password:
+        type: string
+      userId:
+        type: integer
+    required:
+    - newPassword
+    - password
+    - userId
+    type: object
+  system.UserUpdateRequest:
+    properties:
+      avatarId:
+        type: string
+      email:
+        type: string
+      nickName:
+        type: string
+      phone:
+        type: string
+      status:
+        type: integer
+      userId:
+        type: integer
+    required:
+    - userId
+    type: object
+  system.UserVo:
+    properties:
+      account:
+        type: string
+      avatarId:
+        type: string
+      createTime:
+        type: string
+      email:
+        type: string
+      nickName:
+        type: string
+      phone:
+        type: string
+      status:
+        type: integer
+      updateTime:
+        type: string
+      userId:
+        type: integer
+    type: object
+  system.UserWithRoleVo:
+    properties:
+      account:
+        type: string
+      nickName:
+        type: string
+      userId:
+        type: integer
     type: object
 info:
   contact: {}
@@ -55,15 +449,558 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/request.PwdLoginRequest'
+          $ref: '#/definitions/system.PwdLoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.ApiResult-response_AdminUserVo'
+            $ref: '#/definitions/response.ApiResult-string'
       summary: 运营端账号密码登录
       tags:
       - authController
+  /system/permission/create:
+    post:
+      consumes:
+      - application/json
+      operationId: createPermission
+      parameters:
+      - description: 创建权限参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.PermissionCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 创建权限
+      tags:
+      - permissionController
+  /system/permission/delete:
+    delete:
+      consumes:
+      - application/json
+      operationId: deletePermission
+      parameters:
+      - description: 删除权限参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.PermissionDeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 删除权限
+      tags:
+      - permissionController
+  /system/permission/detail:
+    get:
+      operationId: getPermissionDetail
+      parameters:
+      - description: 权限ID
+        in: query
+        name: permissionId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-system_PermissionVo'
+      summary: 获取权限详情
+      tags:
+      - permissionController
+  /system/permission/list:
+    get:
+      operationId: getPermissionList
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 权限名称
+        in: query
+        name: permissionName
+        type: string
+      - description: 类型
+        in: query
+        name: type
+        type: integer
+      - description: 权限标识
+        in: query
+        name: perms
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-response_PageResult-system_PermissionVo'
+      summary: 获取权限列表
+      tags:
+      - permissionController
+  /system/permission/update:
+    put:
+      consumes:
+      - application/json
+      operationId: updatePermission
+      parameters:
+      - description: 更新权限参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.PermissionUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 更新权限
+      tags:
+      - permissionController
+  /system/role/create:
+    post:
+      consumes:
+      - application/json
+      operationId: createRole
+      parameters:
+      - description: 创建角色参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.RoleCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 创建角色
+      tags:
+      - roleController
+  /system/role/delete:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteRole
+      parameters:
+      - description: 删除角色参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.RoleDeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 删除角色
+      tags:
+      - roleController
+  /system/role/detail:
+    get:
+      operationId: getRoleDetail
+      parameters:
+      - description: 角色ID
+        in: query
+        name: roleId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-system_RoleVo'
+      summary: 获取角色详情
+      tags:
+      - roleController
+  /system/role/list:
+    get:
+      operationId: getRoleList
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 角色名称
+        in: query
+        name: roleName
+        type: string
+      - description: 角色标识
+        in: query
+        name: roleKey
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-response_PageResult-system_RoleVo'
+      summary: 获取角色列表
+      tags:
+      - roleController
+  /system/role/update:
+    put:
+      consumes:
+      - application/json
+      operationId: updateRole
+      parameters:
+      - description: 更新角色参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.RoleUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 更新角色
+      tags:
+      - roleController
+  /system/rolePermissionRel/assign:
+    post:
+      consumes:
+      - application/json
+      operationId: assignPermissionsToRole
+      parameters:
+      - description: 分配权限参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.RolePermissionRelAssignRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 为角色分配权限
+      tags:
+      - rolePermissionRelController
+  /system/rolePermissionRel/listByPermission:
+    get:
+      operationId: getRolesByPermissionId
+      parameters:
+      - description: 权限ID
+        in: query
+        name: permissionId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-array_system_RoleWithPermissionVo'
+      summary: 根据权限ID获取角色列表
+      tags:
+      - rolePermissionRelController
+  /system/rolePermissionRel/listByRole:
+    get:
+      operationId: getPermissionsByRoleId
+      parameters:
+      - description: 角色ID
+        in: query
+        name: roleId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-array_system_RolePermissionRelVo'
+      summary: 根据角色ID获取权限列表
+      tags:
+      - rolePermissionRelController
+  /system/rolePermissionRel/remove:
+    delete:
+      consumes:
+      - application/json
+      operationId: removePermissionFromRole
+      parameters:
+      - description: 移除权限参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.RolePermissionRelRemoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 移除角色的权限
+      tags:
+      - rolePermissionRelController
+  /system/user/create:
+    post:
+      consumes:
+      - application/json
+      operationId: createUser
+      parameters:
+      - description: 创建用户参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.UserCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 创建用户
+      tags:
+      - userController
+  /system/user/delete:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteUser
+      parameters:
+      - description: 删除用户参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.UserDeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 删除用户
+      tags:
+      - userController
+  /system/user/detail:
+    get:
+      operationId: getUserDetail
+      parameters:
+      - description: 用户ID
+        in: query
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-system_UserVo'
+      summary: 获取用户详情
+      tags:
+      - userController
+  /system/user/list:
+    get:
+      operationId: getUserList
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 账号
+        in: query
+        name: account
+        type: string
+      - description: 昵称
+        in: query
+        name: nickName
+        type: string
+      - description: 手机号
+        in: query
+        name: phone
+        type: string
+      - description: 状态
+        in: query
+        name: status
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-response_PageResult-system_UserVo'
+      summary: 获取用户列表
+      tags:
+      - userController
+  /system/user/update:
+    put:
+      consumes:
+      - application/json
+      operationId: updateUser
+      parameters:
+      - description: 更新用户参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.UserUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 更新用户
+      tags:
+      - userController
+  /system/user/updatePwd:
+    put:
+      consumes:
+      - application/json
+      operationId: updatePassword
+      parameters:
+      - description: 修改密码参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.UserUpdatePwdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 修改密码
+      tags:
+      - userController
+  /system/userRoleRel/assign:
+    post:
+      consumes:
+      - application/json
+      operationId: assignRolesToUser
+      parameters:
+      - description: 分配角色参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.UserRoleRelAssignRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 为用户分配角色
+      tags:
+      - userRoleRelController
+  /system/userRoleRel/listByRole:
+    get:
+      operationId: getUsersByRoleId
+      parameters:
+      - description: 角色ID
+        in: query
+        name: roleId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-array_system_UserWithRoleVo'
+      summary: 根据角色ID获取用户列表
+      tags:
+      - userRoleRelController
+  /system/userRoleRel/listByUser:
+    get:
+      operationId: getRolesByUserId
+      parameters:
+      - description: 用户ID
+        in: query
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-array_system_UserRoleRelVo'
+      summary: 根据用户ID获取角色列表
+      tags:
+      - userRoleRelController
+  /system/userRoleRel/remove:
+    delete:
+      consumes:
+      - application/json
+      operationId: removeRoleFromUser
+      parameters:
+      - description: 移除角色参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.UserRoleRelRemoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 移除用户的角色
+      tags:
+      - userRoleRelController
 swagger: "2.0"

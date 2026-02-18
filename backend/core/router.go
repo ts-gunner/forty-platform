@@ -16,6 +16,7 @@ func initRouter() *gin.Engine {
 
 	r.Use(gin.Recovery())
 	swaggerGroup := r.Group(global.Config.Servlet.ContextPath)
+
 	contextGroup := r.Group(
 		global.Config.Servlet.ContextPath,
 		handler.RequestLog(),

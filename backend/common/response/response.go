@@ -30,3 +30,10 @@ func Data[T any](data T, c *gin.Context) {
 func Fail(code int, msg string, c *gin.Context) {
 	Result[any](code, msg, nil, c)
 }
+
+type PageResult[T any] struct {
+	List     []T   `json:"list"`
+	Total    int64 `json:"total"`
+	PageNum  int   `json:"pageNum"`
+	PageSize int   `json:"pageSize"`
+}

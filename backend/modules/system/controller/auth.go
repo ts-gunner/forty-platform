@@ -2,13 +2,14 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ts-gunner/forty-platform/common/global"
-	"github.com/ts-gunner/forty-platform/common/request"
+	request "github.com/ts-gunner/forty-platform/common/request/system"
 	"github.com/ts-gunner/forty-platform/common/response"
 	"github.com/ts-gunner/forty-platform/common/utils"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 type AuthRouter struct{}
@@ -25,7 +26,7 @@ func (AuthRouter) InitAuthRouter(moduleName string, router *gin.RouterGroup) {
 // @Accept json
 // @Produce json
 // @Param request body request.PwdLoginRequest true "密码登录参数"
-// @Success 200 {object} response.ApiResult[response.AdminUserVo]
+// @Success 200 {object} response.ApiResult[string]
 func adminPwdLogin(c *gin.Context) {
 	var req request.PwdLoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -47,11 +48,11 @@ func adminPwdLogin(c *gin.Context) {
 		return
 	}
 
-	if vo, err := authService.AdminLogin(user); err != nil {
+	if token, err := authService.AdminLogin(user); err != nil {
 		response.Fail(http.StatusInternalServerError, fmt.Sprintf("登录服务异常: %v", err), c)
 		return
 	} else {
-		response.Data[response.AdminUserVo](*vo, c)
+		response.Data[string](token, c)
 		return
 	}
 }
