@@ -2,6 +2,8 @@ package controller
 
 import (
 	"fmt"
+	"github.com/jinzhu/copier"
+	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +19,7 @@ type AuthRouter struct{}
 func (AuthRouter) InitAuthRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup := router.Group(fmt.Sprintf("/%s/auth", moduleName))
 	routerGroup.POST("/adminPwdLogin", adminPwdLogin)
+	routerGroup.GET("/getCurrentUser", getCurrentUser)
 }
 
 // @Tags authController
@@ -55,4 +58,19 @@ func adminPwdLogin(c *gin.Context) {
 		response.Data[string](token, c)
 		return
 	}
+}
+
+// @Tags authController
+// @ID getCurrentUser
+// @Router /system/auth/getCurrentUser [get]
+// @Summary 运营端获取当前用户
+// @Produce json
+// @Success 200 {object} response.ApiResult[systemResponse.AdminLoginUserVo]
+func getCurrentUser(c *gin.Context) {
+	claims := utils.GetLoginUserInfo(c.Request.Context())
+	vo := systemResponse.AdminLoginUserVo{}
+	if err := copier.Copy(&vo, &claims); err != nil {
+		response.Fail(http.StatusBadRequest, "当前用户数据异常", c)
+	}
+	response.Data[systemResponse.AdminLoginUserVo](vo, c)
 }

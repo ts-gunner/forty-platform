@@ -105,6 +105,17 @@ definitions:
         example: 成功
         type: string
     type: object
+  response.ApiResult-system_AdminLoginUserVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/system.AdminLoginUserVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
   response.ApiResult-system_PermissionVo:
     properties:
       code:
@@ -176,6 +187,22 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  system.AdminLoginUserVo:
+    properties:
+      account:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      nickName:
+        type: string
+      phone:
+        type: string
+      userId:
+        example: "0"
+        type: string
     type: object
   system.PermissionCreateRequest:
     properties:
@@ -475,6 +502,19 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-string'
       summary: 运营端账号密码登录
+      tags:
+      - authController
+  /system/auth/getCurrentUser:
+    get:
+      operationId: getCurrentUser
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-system_AdminLoginUserVo'
+      summary: 运营端获取当前用户
       tags:
       - authController
   /system/permission/create:

@@ -8,7 +8,7 @@ const initState: ReduxModel.AuthType = {
 export const authModel = createModel<RootModel>()({
   state: initState,
   reducers: {
-    setUserInfo: (state, payload: API.UserLoginVo) => ({
+    setUserInfo: (state, payload: API.AdminLoginUserVo) => ({
       ...state,
       userInfo: payload,
     }),

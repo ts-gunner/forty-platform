@@ -1,4 +1,3 @@
-import { getUserInfo } from "@/services/steins-admin/authController";
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router";
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
@@ -10,6 +9,7 @@ import SIDER_MENUS from "@/constants/menus";
 import { Dispatch } from "@/store";
 import {useDispatch} from "react-redux"
 import { SIGN_IN } from "@/constants/config";
+import { getCurrentUser } from "@/services/steins-admin/authController";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -41,8 +41,8 @@ const AppLayout: React.FC = () => {
     }
   }, []);
   const getUserLoginInfo = async () => {
-    const resp = await getUserInfo();
-    handleResponse<API.UserLoginVo>({
+    const resp = await getCurrentUser();
+    handleResponse<API.AdminLoginUserVo>({
       resp,
       onSuccess: (res) => {
         dispatch.authModel.setUserInfo(res)

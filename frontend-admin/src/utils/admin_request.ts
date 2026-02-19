@@ -16,7 +16,7 @@ const showSingleError = (message: string) => {
   }
 };
 const request = extend({
-  prefix: "/steins",
+  prefix: "/ft",
   timeout: 300000,
   errorHandler: (error) => {
     const {response} = error
@@ -60,7 +60,7 @@ request.interceptors.response.use(async (response) => {
   if (contentType && contentType.includes("application/json")) {
     const data = await response.json();
     if (data.code === 401) {
-      Notify.fail(data.msg || "");
+      showSingleError(data.msg || "")
       localStorage.removeItem("token");
       umiHistory.push(SIGN_IN);
       return data;

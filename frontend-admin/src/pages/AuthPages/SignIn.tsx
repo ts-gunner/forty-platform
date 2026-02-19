@@ -1,7 +1,7 @@
 import SignInForm from "@/components/auth/SignInForm";
 import PageMeta from "@/components/common/PageMeta";
 import config from "@/constants/config";
-import { doLogin } from "@/services/steins-admin/authController";
+import { adminPwdLogin } from "@/services/steins-admin/authController";
 import { encryptMd5, handleResponse, Notify } from "@/utils/common";
 import { useState } from "react";
 import { useIntl } from "react-intl";
@@ -18,9 +18,9 @@ export default function SignIn() {
       setBtnLoading(false);
       return;
     }
-    const resp = await doLogin({
+    const resp = await adminPwdLogin({
       username: account,
-      password: encryptMd5(pwd),
+      password: pwd,
     });
     handleResponse({
       resp: resp,
@@ -28,7 +28,7 @@ export default function SignIn() {
         Notify.ok(resp.msg || "");
 
         history.push("/");
-        localStorage.setItem("token", resp.data?.token || "");
+        localStorage.setItem("token", resp.data || "");
       },
       onError: () => {
         Notify.fail(resp.msg || "");

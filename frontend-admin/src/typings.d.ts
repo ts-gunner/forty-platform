@@ -13,7 +13,7 @@ declare namespace ReduxModel {
   }
 
   interface AuthType {
-    userInfo: API.UserLoginVo;
+    userInfo: API.AdminLoginUserVo;
   }
 }
 

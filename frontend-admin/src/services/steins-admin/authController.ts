@@ -2,12 +2,12 @@
 /* eslint-disable */
 import request from "@/utils/admin_request";
 
-/** 用户登录 POST /auth/doLogin */
-export async function doLogin(
-  body: API.UserLoginRequest,
+/** 运营端账号密码登录 POST /system/auth/adminPwdLogin */
+export async function adminPwdLogin(
+  body: API.PwdLoginRequest,
   options?: { [key: string]: any }
 ) {
-  return request<API.ApiResultUserLoginVo>("/auth/doLogin", {
+  return request<API.ApiResultString>("/system/auth/adminPwdLogin", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,33 +17,13 @@ export async function doLogin(
   });
 }
 
-/** 强制注销，需要管理员权限 POST /auth/forceLogout */
-export async function forceLogout(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.forceLogoutParams,
-  options?: { [key: string]: any }
-) {
-  return request<API.ApiResultVoid>("/auth/forceLogout", {
-    method: "POST",
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  });
-}
-
-/** 获取用户登录状态信息 GET /auth/getUserInfo */
-export async function getUserInfo(options?: { [key: string]: any }) {
-  return request<API.ApiResultUserLoginVo>("/auth/getUserInfo", {
-    method: "GET",
-    ...(options || {}),
-  });
-}
-
-/** 用户登出 POST /auth/logout */
-export async function logout(options?: { [key: string]: any }) {
-  return request<API.ApiResultVoid>("/auth/logout", {
-    method: "POST",
-    ...(options || {}),
-  });
+/** 运营端获取当前用户 GET /system/auth/getCurrentUser */
+export async function getCurrentUser(options?: { [key: string]: any }) {
+  return request<API.ApiResultSystemAdminLoginUserVo>(
+    "/system/auth/getCurrentUser",
+    {
+      method: "GET",
+      ...(options || {}),
+    }
+  );
 }

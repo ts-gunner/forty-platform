@@ -10,6 +10,7 @@ import (
 	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
 	"github.com/ts-gunner/forty-platform/common/utils"
 	"gorm.io/gorm"
+	"time"
 )
 
 type UserService struct{}
@@ -171,12 +172,14 @@ func (UserService) DeleteUser(ctx context.Context, userId int64) error {
 		return errors.New("用户不存在")
 	}
 	userId = utils.GetLoginUserId(ctx)
+	localTime := time.Now().Local()
 	return global.DB.Model(user).Updates(entity.SysUser{
 		BaseRecordField: entity.BaseRecordField{
 			DeleterId: &userId,
 		},
 		BaseSchemaField: entity.BaseSchemaField{
-			IsDelete: 1,
+			IsDelete:   1,
+			DeleteTime: &localTime,
 		},
 	}).Error
 }

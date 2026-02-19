@@ -62,24 +62,6 @@ export default function SignInForm({
             <p className="text-sm text-gray-500 dark:text-gray-400">{intl.formatMessage({ id: "pages.login.description" })}</p>
           </div>
           <div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
-              <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
-                <img src={ICONS_MAP.app.feishu} className="h-5 w-5" />
-                {intl.formatMessage({ id: "pages.login.mode.feishu" })}
-              </button>
-              <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
-                <Smartphone className="h-5 w-5" />
-                {intl.formatMessage({ id: "pages.login.mode.phone" })}
-              </button>
-            </div>
-            <div className="relative py-3 sm:py-5">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="p-2 text-gray-400 bg-white dark:bg-gray-900 sm:px-5 sm:py-2">{intl.formatMessage({ id: "pages.login.or" })}</span>
-              </div>
-            </div>
             <form
               onSubmit={(e) => {
                 e.preventDefault();

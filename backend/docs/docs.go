@@ -49,6 +49,26 @@ const docTemplate = `{
                 }
             }
         },
+        "/system/auth/getCurrentUser": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authController"
+                ],
+                "summary": "运营端获取当前用户",
+                "operationId": "getCurrentUser",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-system_AdminLoginUserVo"
+                        }
+                    }
+                }
+            }
+        },
         "/system/permission/create": {
             "post": {
                 "consumes": [
@@ -1040,6 +1060,22 @@ const docTemplate = `{
                 }
             }
         },
+        "response.ApiResult-system_AdminLoginUserVo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/system.AdminLoginUserVo"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
         "response.ApiResult-system_PermissionVo": {
             "type": "object",
             "properties": {
@@ -1145,6 +1181,30 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "system.AdminLoginUserVo": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "nickName": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },

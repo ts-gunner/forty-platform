@@ -2,7 +2,6 @@ import React from "react";
 import GridShape from "../../components/common/GridShape";
 import { Link } from "umi";
 import ThemeTogglerTwo from "../../components/common/ThemeTogglerTwo";
-import { useIntl } from "react-intl";
 import { ICONS_MAP } from "@/constants/config";
 
 export default function AuthLayout({
@@ -10,7 +9,6 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const intl = useIntl()
   return (
     <div className="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
       <div className="relative flex flex-col justify-center w-full h-screen lg:flex-row dark:bg-gray-900 sm:p-0">
@@ -19,16 +17,17 @@ export default function AuthLayout({
           <div className="relative flex items-center justify-center z-1">
             <GridShape />
             <div className="flex flex-col items-center max-w-xs">
-              <Link to="/" className="block mb-4">
+              <Link to="/" className="block mb-4 flex items-center gap-2">
                 <img
-                  width={231}
+                  width={48}
                   height={48}
                   src={ICONS_MAP.navbarLogoDark}
                   alt="Logo"
                 />
+                <span className="text-white font-bold text-3xl">大健康管理平台</span>
               </Link>
               <p className="text-center text-gray-400 dark:text-white/60">
-              {intl.formatMessage({id: "pages.login.side.description"})}
+              Do yourself.
               </p>
             </div>
           </div>

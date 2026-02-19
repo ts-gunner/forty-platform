@@ -16,20 +16,17 @@ export default defineConfig({
   }, // electron打包必备配置
   favicons: [`${process.env.UMI_APP_PREFIX_ROUTER}favicon.ico`],
   proxy: {
-     '/steins': {
-      target: process.env.UMI_APP_PROXY_BACKEND_URL,
+     '/ft': {
+      target: process.env.UMI_APP_PROXY_BACKEND_URL || "http://127.0.0.1:18000",
     },
   },
   routes: [
-    { path: "/user-management", component: "./UserManagement" },
-  
-    { path: "/question/example", component: "./QuestionExample" },
-
+    { path: "/user_manage", component: "./UserManagement" },
     { path: "/blank", component: "./Blank" },
     { path: "/signin", component: "./AuthPages/SignIn", layout: false },
     {
       path: "/",
-      redirect: "/",
+      redirect: "/user_manage",
     },
 
     {
