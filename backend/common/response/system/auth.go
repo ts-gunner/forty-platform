@@ -8,7 +8,7 @@ import "github.com/golang-jwt/jwt/v5"
 存入到redis中
 */
 type AdminUserClaim struct {
-	UserId   int64  `json:"user_id"`
+	UserId   int64  `json:"user_id,string"`
 	Account  string `json:"account"`
 	NickName string `json:"nickname"`
 	Avatar   string `json:"avatar"`

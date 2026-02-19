@@ -27,7 +27,7 @@ func (UserRoleRelRouter) InitUserRoleRelRouter(moduleName string, router *gin.Ro
 // @Router /system/userRoleRel/listByUser [get]
 // @Summary 根据用户ID获取角色列表
 // @Produce json
-// @Param userId query int true "用户ID" in:query
+// @Param userId query string true "用户ID" in:query
 // @Success 200 {object} response.ApiResult[[]systemResponse.UserRoleRelVo]
 func getRolesByUserId(c *gin.Context) {
 	var req request.UserRoleRelListByUserRequest
@@ -52,7 +52,7 @@ func getRolesByUserId(c *gin.Context) {
 // @Router /system/userRoleRel/listByRole [get]
 // @Summary 根据角色ID获取用户列表
 // @Produce json
-// @Param roleId query int true "角色ID" in:query
+// @Param roleId query string true "角色ID" in:query
 // @Success 200 {object} response.ApiResult[[]systemResponse.UserWithRoleVo]
 func getUsersByRoleId(c *gin.Context) {
 	var req request.UserRoleRelListByRoleRequest

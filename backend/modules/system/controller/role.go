@@ -56,7 +56,7 @@ func getRoleList(c *gin.Context) {
 // @Router /system/role/detail [get]
 // @Summary 获取角色详情
 // @Produce json
-// @Param roleId query int true "角色ID" in:query
+// @Param roleId query string true "角色ID" in:query
 // @Success 200 {object} response.ApiResult[systemResponse.RoleVo]
 func getRoleDetail(c *gin.Context) {
 	var req request.RoleDetailRequest

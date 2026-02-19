@@ -3,7 +3,7 @@ package system
 import "time"
 
 type UserVo struct {
-	UserId     int64     `json:"userId"`
+	UserId     int64     `json:"userId,string"`
 	Account    string    `json:"account"`
 	NickName   string    `json:"nickName"`
 	Phone      string    `json:"phone"`

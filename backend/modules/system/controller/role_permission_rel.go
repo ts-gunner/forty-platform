@@ -27,7 +27,7 @@ func (RolePermissionRelRouter) InitRolePermissionRelRouter(moduleName string, ro
 // @Router /system/rolePermissionRel/listByRole [get]
 // @Summary 根据角色ID获取权限列表
 // @Produce json
-// @Param roleId query int true "角色ID" in:query
+// @Param roleId query string true "角色ID" in:query
 // @Success 200 {object} response.ApiResult[[]systemResponse.RolePermissionRelVo]
 func getPermissionsByRoleId(c *gin.Context) {
 	var req request.RolePermissionRelListByRoleRequest
@@ -52,7 +52,7 @@ func getPermissionsByRoleId(c *gin.Context) {
 // @Router /system/rolePermissionRel/listByPermission [get]
 // @Summary 根据权限ID获取角色列表
 // @Produce json
-// @Param permissionId query int true "权限ID" in:query
+// @Param permissionId query string true "权限ID" in:query
 // @Success 200 {object} response.ApiResult[[]systemResponse.RoleWithPermissionVo]
 func getRolesByPermissionId(c *gin.Context) {
 	var req request.RolePermissionRelListByPermissionRequest

@@ -57,7 +57,7 @@ func getPermissionList(c *gin.Context) {
 // @Router /system/permission/detail [get]
 // @Summary 获取权限详情
 // @Produce json
-// @Param permissionId query int true "权限ID" in:query
+// @Param permissionId query string true "权限ID" in:query
 // @Success 200 {object} response.ApiResult[systemResponse.PermissionVo]
 func getPermissionDetail(c *gin.Context) {
 	var req request.PermissionDetailRequest

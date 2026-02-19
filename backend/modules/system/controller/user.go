@@ -59,7 +59,7 @@ func getUserList(c *gin.Context) {
 // @Router /system/user/detail [get]
 // @Summary 获取用户详情
 // @Produce json
-// @Param userId query int true "用户ID" in:query
+// @Param userId query string true "用户ID" in:query
 // @Success 200 {object} response.ApiResult[systemResponse.UserVo]
 func getUserDetail(c *gin.Context) {
 	var req request.UserDetailRequest

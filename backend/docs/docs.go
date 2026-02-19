@@ -129,7 +129,7 @@ const docTemplate = `{
                 "operationId": "getPermissionDetail",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "权限ID",
                         "name": "permissionId",
                         "in": "query",
@@ -312,7 +312,7 @@ const docTemplate = `{
                 "operationId": "getRoleDetail",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "角色ID",
                         "name": "roleId",
                         "in": "query",
@@ -455,7 +455,7 @@ const docTemplate = `{
                 "operationId": "getRolesByPermissionId",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "权限ID",
                         "name": "permissionId",
                         "in": "query",
@@ -484,7 +484,7 @@ const docTemplate = `{
                 "operationId": "getPermissionsByRoleId",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "角色ID",
                         "name": "roleId",
                         "in": "query",
@@ -615,7 +615,7 @@ const docTemplate = `{
                 "operationId": "getUserDetail",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "用户ID",
                         "name": "userId",
                         "in": "query",
@@ -804,7 +804,7 @@ const docTemplate = `{
                 "operationId": "getUsersByRoleId",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "角色ID",
                         "name": "roleId",
                         "in": "query",
@@ -833,7 +833,7 @@ const docTemplate = `{
                 "operationId": "getRolesByUserId",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "用户ID",
                         "name": "userId",
                         "in": "query",
@@ -1172,7 +1172,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "permissionId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -1183,7 +1184,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "permissionId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "permissionName": {
                     "type": "string"
@@ -1203,7 +1205,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "permissionId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "permissionName": {
                     "type": "string"
@@ -1252,7 +1255,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "roleId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -1270,7 +1274,8 @@ const docTemplate = `{
                     }
                 },
                 "roleId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -1282,10 +1287,12 @@ const docTemplate = `{
             ],
             "properties": {
                 "permissionId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "roleId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -1293,7 +1300,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "permissionId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "permissionName": {
                     "type": "string"
@@ -1313,7 +1321,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "roleId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "roleKey": {
                     "type": "string"
@@ -1330,7 +1339,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "roleId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "roleKey": {
                     "type": "string"
@@ -1347,7 +1357,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "roleId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "roleKey": {
                     "type": "string"
@@ -1395,7 +1406,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "userId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -1410,7 +1422,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "userId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -1428,7 +1441,8 @@ const docTemplate = `{
                     }
                 },
                 "userId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -1440,10 +1454,12 @@ const docTemplate = `{
             ],
             "properties": {
                 "roleId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "userId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -1451,7 +1467,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "roleId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "roleKey": {
                     "type": "string"
@@ -1483,7 +1500,8 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "userId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -1515,7 +1533,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "userId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -1529,7 +1548,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "userId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         }

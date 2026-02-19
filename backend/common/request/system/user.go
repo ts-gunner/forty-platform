@@ -20,7 +20,7 @@ type UserCreateRequest struct {
 }
 
 type UserUpdateRequest struct {
-	UserId   int64  `json:"userId" binding:"required"`
+	UserId   int64  `json:"userId,string" binding:"required"`
 	NickName string `json:"nickName"`
 	Phone    string `json:"phone"`
 	Email    string `json:"email"`
@@ -29,14 +29,14 @@ type UserUpdateRequest struct {
 }
 
 type UserResetPwdRequest struct {
-	UserId      int64  `json:"userId" binding:"required"`
+	UserId      int64  `json:"userId,string" binding:"required"`
 	NewPassword string `json:"newPassword" binding:"required"`
 }
 
 type UserDeleteRequest struct {
-	UserId int64 `json:"userId" binding:"required"`
+	UserId int64 `json:"userId,string" binding:"required"`
 }
 
 type UserDetailRequest struct {
-	UserId int64 `form:"userId" json:"userId" binding:"required"`
+	UserId int64 `form:"userId,string" json:"userId" binding:"required"`
 }

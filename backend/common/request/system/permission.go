@@ -15,16 +15,16 @@ type PermissionCreateRequest struct {
 }
 
 type PermissionUpdateRequest struct {
-	PermissionId   int64  `json:"permissionId" binding:"required"`
+	PermissionId   int64  `json:"permissionId,string" binding:"required"`
 	PermissionName string `json:"permissionName"`
 	Type           *int   `json:"type"`
 	Perms          string `json:"perms"`
 }
 
 type PermissionDeleteRequest struct {
-	PermissionId int64 `json:"permissionId" binding:"required"`
+	PermissionId int64 `json:"permissionId,string" binding:"required"`
 }
 
 type PermissionDetailRequest struct {
-	PermissionId int64 `form:"permissionId" json:"permissionId" binding:"required"`
+	PermissionId int64 `form:"permissionId,string" json:"permissionId" binding:"required"`
 }
