@@ -91,7 +91,7 @@ func createRole(c *gin.Context) {
 		return
 	}
 
-	if err := roleService.CreateRole(req); err != nil {
+	if err := roleService.CreateRole(c.Request.Context(), req); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
@@ -115,7 +115,7 @@ func updateRole(c *gin.Context) {
 		return
 	}
 
-	if err := roleService.UpdateRole(req); err != nil {
+	if err := roleService.UpdateRole(c.Request.Context(), req); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
@@ -139,7 +139,7 @@ func deleteRole(c *gin.Context) {
 		return
 	}
 
-	if err := roleService.DeleteRole(req.RoleId); err != nil {
+	if err := roleService.DeleteRole(c.Request.Context(), req.RoleId); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}

@@ -1,8 +1,8 @@
 package service
 
 import (
+	"context"
 	"errors"
-
 	"github.com/ts-gunner/forty-platform/common/entity"
 	"github.com/ts-gunner/forty-platform/common/global"
 	request "github.com/ts-gunner/forty-platform/common/request/system"
@@ -78,8 +78,8 @@ func (UserService) GetUserList(req request.UserListRequest) (*response.PageResul
 			UserId:     user.UserId,
 			Account:    user.Account,
 			NickName:   user.NickName,
-			Phone:      user.Phone,
-			Email:      user.Email,
+			Phone:      *user.Phone,
+			Email:      *user.Email,
 			AvatarId:   user.AvatarId,
 			Status:     user.Status,
 			CreateTime: user.CreateTime,
@@ -95,20 +95,24 @@ func (UserService) GetUserList(req request.UserListRequest) (*response.PageResul
 	}, nil
 }
 
-func (UserService) CreateUser(req request.UserCreateRequest) error {
+func (UserService) CreateUser(ctx context.Context, req request.UserCreateRequest) error {
 	existUser, _ := UserService{}.GetSysUserByAccount(req.Account)
 	if existUser != nil {
 		return errors.New("账号已存在")
 	}
-
+	userId, _ := global.IdCreator.NextID()
 	user := entity.SysUser{
+		UserId:   userId,
 		Account:  req.Account,
 		Password: utils.EncryptBySM3(req.Password),
 		NickName: req.NickName,
-		Phone:    req.Phone,
-		Email:    req.Email,
+		Phone:    &req.Phone,
+		Email:    &req.Email,
 		AvatarId: req.AvatarId,
 		Status:   req.Status,
+		BaseRecordField: entity.BaseRecordField{
+			CreatorId: utils.GetLoginUserId(ctx),
+		},
 	}
 	if user.Status == 0 {
 		user.Status = 1
@@ -117,7 +121,7 @@ func (UserService) CreateUser(req request.UserCreateRequest) error {
 	return global.DB.Create(&user).Error
 }
 
-func (UserService) UpdateUser(req request.UserUpdateRequest) error {
+func (UserService) UpdateUser(ctx context.Context, req request.UserUpdateRequest) error {
 	user, err := UserService{}.GetSysUserById(req.UserId)
 	if err != nil {
 		return errors.New("用户不存在")
@@ -139,7 +143,7 @@ func (UserService) UpdateUser(req request.UserUpdateRequest) error {
 	if req.Status != nil {
 		updates["status"] = *req.Status
 	}
-
+	updates["updater_id"] = utils.GetLoginUserId(ctx)
 	if len(updates) == 0 {
 		return nil
 	}
@@ -147,27 +151,33 @@ func (UserService) UpdateUser(req request.UserUpdateRequest) error {
 	return global.DB.Model(user).Updates(updates).Error
 }
 
-func (UserService) UpdatePassword(req request.UserUpdatePwdRequest) error {
+func (UserService) ResetPassword(ctx context.Context, req request.UserResetPwdRequest) error {
 	user, err := UserService{}.GetSysUserById(req.UserId)
 	if err != nil {
 		return errors.New("用户不存在")
 	}
-
-	if user.Password != utils.EncryptBySM3(req.Password) {
-		return errors.New("原密码错误")
-	}
-
-	return global.DB.Model(user).Update("pwd", utils.EncryptBySM3(req.NewPassword)).Error
+	userId := utils.GetLoginUserId(ctx)
+	return global.DB.Model(user).Updates(entity.SysUser{
+		Password: utils.EncryptBySM3(req.NewPassword),
+		BaseRecordField: entity.BaseRecordField{
+			UpdaterId: &userId,
+		},
+	}).Error
 }
 
-func (UserService) DeleteUser(userId int64) error {
+func (UserService) DeleteUser(ctx context.Context, userId int64) error {
 	user, err := UserService{}.GetSysUserById(userId)
 	if err != nil {
 		return errors.New("用户不存在")
 	}
-
-	return global.DB.Model(user).Updates(map[string]any{
-		"is_delete": 1,
+	userId = utils.GetLoginUserId(ctx)
+	return global.DB.Model(user).Updates(entity.SysUser{
+		BaseRecordField: entity.BaseRecordField{
+			DeleterId: &userId,
+		},
+		BaseSchemaField: entity.BaseSchemaField{
+			IsDelete: 1,
+		},
 	}).Error
 }
 
@@ -184,8 +194,8 @@ func (UserService) GetUserDetail(userId int64) (*systemResponse.UserVo, error) {
 		UserId:     user.UserId,
 		Account:    user.Account,
 		NickName:   user.NickName,
-		Phone:      user.Phone,
-		Email:      user.Email,
+		Phone:      *user.Phone,
+		Email:      *user.Email,
 		AvatarId:   user.AvatarId,
 		Status:     user.Status,
 		CreateTime: user.CreateTime,

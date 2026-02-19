@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 
 	"github.com/ts-gunner/forty-platform/common/entity"
@@ -8,6 +9,7 @@ import (
 	request "github.com/ts-gunner/forty-platform/common/request/system"
 	"github.com/ts-gunner/forty-platform/common/response"
 	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
+	"github.com/ts-gunner/forty-platform/common/utils"
 	"gorm.io/gorm"
 )
 
@@ -87,7 +89,7 @@ func (PermissionService) GetPermissionList(req request.PermissionListRequest) (*
 	}, nil
 }
 
-func (PermissionService) CreatePermission(req request.PermissionCreateRequest) error {
+func (PermissionService) CreatePermission(ctx context.Context, req request.PermissionCreateRequest) error {
 	if req.Perms != "" {
 		existPerm, _ := PermissionService{}.GetPermissionByPerms(req.Perms)
 		if existPerm != nil {
@@ -99,12 +101,15 @@ func (PermissionService) CreatePermission(req request.PermissionCreateRequest) e
 		PermissionName: req.PermissionName,
 		Type:           req.Type,
 		Perms:          req.Perms,
+		BaseRecordField: entity.BaseRecordField{
+			CreatorId: utils.GetLoginUserId(ctx),
+		},
 	}
 
 	return global.DB.Create(&permission).Error
 }
 
-func (PermissionService) UpdatePermission(req request.PermissionUpdateRequest) error {
+func (PermissionService) UpdatePermission(ctx context.Context, req request.PermissionUpdateRequest) error {
 	permission, err := PermissionService{}.GetPermissionById(req.PermissionId)
 	if err != nil {
 		return errors.New("权限不存在")
@@ -129,17 +134,22 @@ func (PermissionService) UpdatePermission(req request.PermissionUpdateRequest) e
 		return nil
 	}
 
+	updaterId := utils.GetLoginUserId(ctx)
+	updates["updater_id"] = updaterId
+
 	return global.DB.Model(permission).Updates(updates).Error
 }
 
-func (PermissionService) DeletePermission(permissionId int64) error {
+func (PermissionService) DeletePermission(ctx context.Context, permissionId int64) error {
 	permission, err := PermissionService{}.GetPermissionById(permissionId)
 	if err != nil {
 		return errors.New("权限不存在")
 	}
 
+	deleterId := utils.GetLoginUserId(ctx)
 	return global.DB.Model(permission).Updates(map[string]any{
-		"is_delete": 1,
+		"is_delete":  1,
+		"deleter_id": deleterId,
 	}).Error
 }
 

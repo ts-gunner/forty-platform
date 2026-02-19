@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/ts-gunner/forty-platform/common/constant"
@@ -36,7 +36,7 @@ func IdentityVerification(config *AuthorizationConfig) gin.HandlerFunc {
 			return
 		}
 		claims := &systemResponse.AdminUserClaim{}
-		user, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 			return []byte(constant.SALT), nil
 		})
 		if err != nil {
@@ -45,7 +45,8 @@ func IdentityVerification(config *AuthorizationConfig) gin.HandlerFunc {
 			response.Fail(http.StatusUnauthorized, "鉴权失败", c)
 			return
 		}
-		fmt.Println(user)
+		newCtx := context.WithValue(c.Request.Context(), constant.USER_KEY, claims)
+		c.Request = c.Request.WithContext(newCtx)
 		c.Next()
 	}
 }

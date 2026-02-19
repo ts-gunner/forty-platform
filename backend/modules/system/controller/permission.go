@@ -92,7 +92,7 @@ func createPermission(c *gin.Context) {
 		return
 	}
 
-	if err := permissionService.CreatePermission(req); err != nil {
+	if err := permissionService.CreatePermission(c.Request.Context(), req); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
@@ -116,7 +116,7 @@ func updatePermission(c *gin.Context) {
 		return
 	}
 
-	if err := permissionService.UpdatePermission(req); err != nil {
+	if err := permissionService.UpdatePermission(c.Request.Context(), req); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
@@ -140,7 +140,7 @@ func deletePermission(c *gin.Context) {
 		return
 	}
 
-	if err := permissionService.DeletePermission(req.PermissionId); err != nil {
+	if err := permissionService.DeletePermission(c.Request.Context(), req.PermissionId); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}

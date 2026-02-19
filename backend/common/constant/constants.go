@@ -23,6 +23,10 @@ const (
 	SALT            = "forty-platform"
 )
 
+const (
+	USER_KEY = "claims"
+)
+
 // Redis相关的键
 const (
 	REDIS_ADMIN_USER_TOKEN = "admin:user:token:"

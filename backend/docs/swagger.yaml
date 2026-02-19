@@ -341,6 +341,16 @@ definitions:
     required:
     - userId
     type: object
+  system.UserResetPwdRequest:
+    properties:
+      newPassword:
+        type: string
+      userId:
+        type: integer
+    required:
+    - newPassword
+    - userId
+    type: object
   system.UserRoleRelAssignRequest:
     properties:
       roleIds:
@@ -371,19 +381,6 @@ definitions:
         type: string
       roleName:
         type: string
-    type: object
-  system.UserUpdatePwdRequest:
-    properties:
-      newPassword:
-        type: string
-      password:
-        type: string
-      userId:
-        type: integer
-    required:
-    - newPassword
-    - password
-    - userId
     type: object
   system.UserUpdateRequest:
     properties:
@@ -877,6 +874,28 @@ paths:
       summary: 获取用户列表
       tags:
       - userController
+  /system/user/resetPwd:
+    put:
+      consumes:
+      - application/json
+      operationId: updatePassword
+      parameters:
+      - description: 修改密码参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.UserResetPwdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 重置密码
+      tags:
+      - userController
   /system/user/update:
     put:
       consumes:
@@ -897,28 +916,6 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 更新用户
-      tags:
-      - userController
-  /system/user/updatePwd:
-    put:
-      consumes:
-      - application/json
-      operationId: updatePassword
-      parameters:
-      - description: 修改密码参数
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/system.UserUpdatePwdRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ApiResult-any'
-      summary: 修改密码
       tags:
       - userController
   /system/userRoleRel/assign:

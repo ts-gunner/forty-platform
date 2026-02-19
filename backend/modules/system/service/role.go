@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 
 	"github.com/ts-gunner/forty-platform/common/entity"
@@ -8,6 +9,7 @@ import (
 	request "github.com/ts-gunner/forty-platform/common/request/system"
 	"github.com/ts-gunner/forty-platform/common/response"
 	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
+	"github.com/ts-gunner/forty-platform/common/utils"
 	"gorm.io/gorm"
 )
 
@@ -83,21 +85,25 @@ func (RoleService) GetRoleList(req request.RoleListRequest) (*response.PageResul
 	}, nil
 }
 
-func (RoleService) CreateRole(req request.RoleCreateRequest) error {
+func (RoleService) CreateRole(ctx context.Context, req request.RoleCreateRequest) error {
 	existRole, _ := RoleService{}.GetRoleByKey(req.RoleKey)
 	if existRole != nil {
 		return errors.New("角色标识已存在")
 	}
-
+	roleId, _ := global.IdCreator.NextID()
 	role := entity.SysRole{
+		RoleId:   roleId,
 		RoleName: req.RoleName,
 		RoleKey:  req.RoleKey,
+		BaseRecordField: entity.BaseRecordField{
+			CreatorId: utils.GetLoginUserId(ctx),
+		},
 	}
 
 	return global.DB.Create(&role).Error
 }
 
-func (RoleService) UpdateRole(req request.RoleUpdateRequest) error {
+func (RoleService) UpdateRole(ctx context.Context, req request.RoleUpdateRequest) error {
 	role, err := RoleService{}.GetRoleById(req.RoleId)
 	if err != nil {
 		return errors.New("角色不存在")
@@ -119,17 +125,22 @@ func (RoleService) UpdateRole(req request.RoleUpdateRequest) error {
 		return nil
 	}
 
+	updaterId := utils.GetLoginUserId(ctx)
+	updates["updater_id"] = updaterId
+
 	return global.DB.Model(role).Updates(updates).Error
 }
 
-func (RoleService) DeleteRole(roleId int64) error {
+func (RoleService) DeleteRole(ctx context.Context, roleId int64) error {
 	role, err := RoleService{}.GetRoleById(roleId)
 	if err != nil {
 		return errors.New("角色不存在")
 	}
 
+	deleterId := utils.GetLoginUserId(ctx)
 	return global.DB.Model(role).Updates(map[string]any{
-		"is_delete": 1,
+		"is_delete":  1,
+		"deleter_id": deleterId,
 	}).Error
 }
 

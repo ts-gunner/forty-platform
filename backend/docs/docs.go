@@ -690,6 +690,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/system/user/resetPwd": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "userController"
+                ],
+                "summary": "重置密码",
+                "operationId": "updatePassword",
+                "parameters": [
+                    {
+                        "description": "修改密码参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.UserResetPwdRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/system/user/update": {
             "put": {
                 "consumes": [
@@ -711,40 +745,6 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/system.UserUpdateRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ApiResult-any"
-                        }
-                    }
-                }
-            }
-        },
-        "/system/user/updatePwd": {
-            "put": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "userController"
-                ],
-                "summary": "修改密码",
-                "operationId": "updatePassword",
-                "parameters": [
-                    {
-                        "description": "修改密码参数",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/system.UserUpdatePwdRequest"
                         }
                     }
                 ],
@@ -1399,6 +1399,21 @@ const docTemplate = `{
                 }
             }
         },
+        "system.UserResetPwdRequest": {
+            "type": "object",
+            "required": [
+                "newPassword",
+                "userId"
+            ],
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
         "system.UserRoleRelAssignRequest": {
             "type": "object",
             "required": [
@@ -1443,25 +1458,6 @@ const docTemplate = `{
                 },
                 "roleName": {
                     "type": "string"
-                }
-            }
-        },
-        "system.UserUpdatePwdRequest": {
-            "type": "object",
-            "required": [
-                "newPassword",
-                "password",
-                "userId"
-            ],
-            "properties": {
-                "newPassword": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "userId": {
-                    "type": "integer"
                 }
             }
         },

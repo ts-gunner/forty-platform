@@ -28,9 +28,8 @@ type UserUpdateRequest struct {
 	Status   *int   `json:"status"`
 }
 
-type UserUpdatePwdRequest struct {
+type UserResetPwdRequest struct {
 	UserId      int64  `json:"userId" binding:"required"`
-	Password    string `json:"password" binding:"required"`
 	NewPassword string `json:"newPassword" binding:"required"`
 }
 

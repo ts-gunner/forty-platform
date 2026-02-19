@@ -87,6 +87,7 @@ func getUserDetail(c *gin.Context) {
 // @Param request body request.UserCreateRequest true "创建用户参数"
 // @Success 200 {object} response.ApiResult[any]
 func createUser(c *gin.Context) {
+	ctx := c.Request.Context()
 	var req request.UserCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		global.Logger.Error("参数校验异常", zap.Any("request", req))
@@ -94,7 +95,7 @@ func createUser(c *gin.Context) {
 		return
 	}
 
-	if err := userService.CreateUser(req); err != nil {
+	if err := userService.CreateUser(ctx, req); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
@@ -118,7 +119,7 @@ func updateUser(c *gin.Context) {
 		return
 	}
 
-	if err := userService.UpdateUser(req); err != nil {
+	if err := userService.UpdateUser(c.Request.Context(), req); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
@@ -128,21 +129,21 @@ func updateUser(c *gin.Context) {
 
 // @Tags userController
 // @ID updatePassword
-// @Router /system/user/updatePwd [put]
-// @Summary 修改密码
+// @Router /system/user/resetPwd [put]
+// @Summary 重置密码
 // @Accept json
 // @Produce json
-// @Param request body request.UserUpdatePwdRequest true "修改密码参数"
+// @Param request body request.UserResetPwdRequest true "修改密码参数"
 // @Success 200 {object} response.ApiResult[any]
 func updatePassword(c *gin.Context) {
-	var req request.UserUpdatePwdRequest
+	var req request.UserResetPwdRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		global.Logger.Error("参数校验异常", zap.Any("request", req))
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return
 	}
 
-	if err := userService.UpdatePassword(req); err != nil {
+	if err := userService.ResetPassword(c.Request.Context(), req); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
@@ -166,7 +167,7 @@ func deleteUser(c *gin.Context) {
 		return
 	}
 
-	if err := userService.DeleteUser(req.UserId); err != nil {
+	if err := userService.DeleteUser(c.Request.Context(), req.UserId); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
