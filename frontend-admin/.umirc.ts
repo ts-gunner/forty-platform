@@ -22,6 +22,10 @@ export default defineConfig({
   },
   routes: [
     { path: "/user_manage", component: "./UserManagement" },
+    { path: "/role_manage", component: "./RoleManagement" },
+    { path: "/permission_manage", component: "./PermissionManagement" },
+    { path: "/user_authorization", component: "./UserAuthorization" },
+    { path: "/role_authorization", component: "./RoleAuthorization" },
     { path: "/blank", component: "./Blank" },
     { path: "/signin", component: "./AuthPages/SignIn", layout: false },
     {
