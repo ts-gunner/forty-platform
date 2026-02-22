@@ -3,6 +3,7 @@ import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Button } from "antd";
+import dayjs from "dayjs";
 import { useRef, useState } from "react";
 import CreatePermissionModal from "./CreatePermissionModal";
 import UpdatePermissionModal from "./UpdatePermissionModal";
@@ -56,6 +57,9 @@ export default function PermissionTablePage() {
       align: "center",
       hideInSearch: true,
       width: 180,
+      render: (_, record) => {
+        return dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss");
+      },
     },
     {
       title: "更新时间",
@@ -64,6 +68,9 @@ export default function PermissionTablePage() {
       align: "center",
       hideInSearch: true,
       width: 180,
+      render: (_, record) => {
+        return dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss");
+      },
     },
     {
       title: "操作",
@@ -84,7 +91,7 @@ export default function PermissionTablePage() {
           <a
             onClick={async () => {
               const resp = await deletePermission({
-                permissionId: record.permissionId as number,
+                permissionId: record.permissionId as string,
               });
               handleResponse({
                 resp,
@@ -183,7 +190,7 @@ export default function PermissionTablePage() {
         onSubmit={async (data: API.PermissionUpdateRequest) => {
           const resp = await updatePermission({
             ...data,
-            permissionId: currentRecord?.permissionId as number
+            permissionId: currentRecord?.permissionId as string,
           });
           handleResponse({
             resp,

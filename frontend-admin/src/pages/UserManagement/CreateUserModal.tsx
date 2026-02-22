@@ -1,13 +1,14 @@
 import { StatusOptions } from "@/constants/enums";
 import { Form, Input, Modal, Select } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 type ModalProps = {
   modalOpen: boolean;
   handleModalOpen: any;
-  onSubmit: (data: API.UserCreateRequest) => void;
+  onSubmit: (data: API.UserCreateRequest) => Promise<void>;
 };
 export default function CreateUserModal({ modalOpen, handleModalOpen, onSubmit }: ModalProps) {
   const [formRef] = Form.useForm();
+  const [btnLoading, setBtnLoading] = useState<boolean>(false)
    useEffect(() => {
       if (!modalOpen) {
         formRef.resetFields();
@@ -19,10 +20,13 @@ export default function CreateUserModal({ modalOpen, handleModalOpen, onSubmit }
       open={modalOpen}
       closable={false}
       className=""
+      confirmLoading={btnLoading}
       onCancel={() => handleModalOpen(false)}
       onOk={async () => {
+        setBtnLoading(true)
         const data = await formRef.validateFields();
-        onSubmit(data);
+        await onSubmit(data);
+        setBtnLoading(false)
       }}
     >
       <div className="p-3">

@@ -1,14 +1,15 @@
 import { StatusOptions } from "@/constants/enums";
 import { Form, Input, Modal, Select } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 type ModalProps = {
   modalOpen: boolean;
   handleModalOpen: any;
   value: API.UserVo | undefined;
-  onSubmit: (data: API.UserUpdateRequest) => void;
+  onSubmit: (data: API.UserUpdateRequest) => Promise<void>;
 };
 export default function UpdateUserModal({ modalOpen, handleModalOpen, value, onSubmit }: ModalProps) {
   const [formRef] = Form.useForm();
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
   useEffect(() => {
     if (modalOpen && value) {
       formRef.setFieldsValue(value);
@@ -21,17 +22,18 @@ export default function UpdateUserModal({ modalOpen, handleModalOpen, value, onS
       title="更新用户信息"
       open={modalOpen}
       closable={false}
+      confirmLoading={btnLoading}
       className=""
       onCancel={() => handleModalOpen(false)}
       onOk={async () => {
+        setBtnLoading(true);
         const data = await formRef.validateFields();
-        onSubmit({
-          ...data,
-        });
+        await onSubmit(data);
+        setBtnLoading(false);
       }}
     >
       <div className="p-3">
-        <Form form={formRef} labelAlign="right" labelCol={{span: 4}} >
+        <Form form={formRef} labelAlign="right" labelCol={{ span: 4 }}>
           <Form.Item label="昵称" name="nickName">
             <Input />
           </Form.Item>

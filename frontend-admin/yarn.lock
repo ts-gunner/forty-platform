@@ -5037,7 +5037,7 @@ date-time@^3.1.0:
   dependencies:
     time-zone "^1.0.0"
 
-dayjs@^1.10.3, dayjs@^1.11.10, dayjs@^1.11.11, dayjs@^1.11.7:
+dayjs@^1.10.3, dayjs@^1.11.10, dayjs@^1.11.11, dayjs@^1.11.19, dayjs@^1.11.7:
   version "1.11.19"
   resolved "https://registry.npmmirror.com/dayjs/-/dayjs-1.11.19.tgz#15dc98e854bb43917f12021806af897c58ae2938"
   integrity sha512-t5EcLVS6QPBNqM2z8fakk/NKel+Xzshgt8FFKAn+qwlD1pzZWxh0nVCrvFK7ZDb6XucZeF9z8C7CBWTRIVApAw==

@@ -1,18 +1,19 @@
-import { getUserList } from "@/services/steins-admin/userController";
-import { getRolesByUserId, assignRolesToUser } from "@/services/steins-admin/userRoleRelController";
 import { getRoleList } from "@/services/steins-admin/roleController";
+import { getUserList } from "@/services/steins-admin/userController";
+import { assignRolesToUser, getRolesByUserId } from "@/services/steins-admin/userRoleRelController";
 import { handleResponse, Notify } from "@/utils/common";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
-import { Button, Modal, Transfer } from "antd";
-import { useRef, useState, useEffect } from "react";
+import { Modal, Transfer } from "antd";
+import { useEffect, useRef, useState } from "react";
 
 export default function UserAuthorizationPage() {
   const actionRef = useRef<ActionType>();
   const [pageSize, setPageSize] = useState(20);
   const [authModalOpen, handleAuthModalOpen] = useState<boolean>(false);
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<API.UserVo>();
   const [allRoles, setAllRoles] = useState<API.RoleVo[]>([]);
-  const [selectedRoleIds, setSelectedRoleIds] = useState<number[]>([]);
+  const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
   const loadAllRoles = async () => {
@@ -28,12 +29,12 @@ export default function UserAuthorizationPage() {
     });
   };
 
-  const loadUserRoles = async (userId: number) => {
+  const loadUserRoles = async (userId: string) => {
     const resp = await getRolesByUserId({ userId });
     handleResponse({
       resp,
       onSuccess: (data) => {
-        const roleIds = (data || []).map((item: API.UserRoleRelVo) => item.roleId);
+        const roleIds = (data || []).map((item: API.UserRoleRelVo) => item.roleId) as string[];
         setSelectedRoleIds(roleIds);
         setTargetKeys(roleIds.map(String));
       },
@@ -46,7 +47,7 @@ export default function UserAuthorizationPage() {
   useEffect(() => {
     if (authModalOpen && currentUser) {
       loadAllRoles();
-      loadUserRoles(currentUser.userId as number);
+      loadUserRoles(currentUser.userId as string);
     }
   }, [authModalOpen, currentUser]);
 
@@ -108,15 +109,17 @@ export default function UserAuthorizationPage() {
     },
   ];
 
-  const handleTransferChange = (newTargetKeys: string[]) => {
+  // @ts-ignore
+  const handleTransferChange: TransferProps["onChange"] = (newTargetKeys: string[]) => {
     setTargetKeys(newTargetKeys);
   };
 
   const handleAssignRoles = async () => {
     if (!currentUser) return;
+    setBtnLoading(true);
     const roleIds = targetKeys.map(Number);
     const resp = await assignRolesToUser({
-      userId: currentUser.userId as number,
+      userId: currentUser.userId as string,
       roleIds: roleIds,
     });
     handleResponse({
@@ -127,6 +130,9 @@ export default function UserAuthorizationPage() {
       },
       onError: () => {
         Notify.fail("授权失败:" + resp.msg);
+      },
+      onFinish: () => {
+        setBtnLoading(false);
       },
     });
   };
@@ -177,6 +183,7 @@ export default function UserAuthorizationPage() {
       <Modal
         title={`用户授权 - ${currentUser?.nickName || currentUser?.account}`}
         open={authModalOpen}
+        confirmLoading={btnLoading}
         onCancel={() => handleAuthModalOpen(false)}
         onOk={handleAssignRoles}
         width={700}
@@ -189,16 +196,17 @@ export default function UserAuthorizationPage() {
           }))}
           titles={["未分配角色", "已分配角色"]}
           targetKeys={targetKeys}
-          onChange={handleTransferChange}
-          render={(item) => item.title}
-          listStyle={{
-            width: 300,
-            height: 400,
+          render={(item) => {
+            return <div>{item.title}</div>;
           }}
+          onChange={handleTransferChange}
+          classNames={{
+            section: "w-full! h-[50vh]!"
+          }}
+
           showSearch
           filterOption={(input, option) =>
-            (option.title as string).toLowerCase().includes(input.toLowerCase()) ||
-            (option.description as string).toLowerCase().includes(input.toLowerCase())
+            (option.title as string).toLowerCase().includes(input.toLowerCase()) || (option.description as string).toLowerCase().includes(input.toLowerCase())
           }
         />
       </Modal>

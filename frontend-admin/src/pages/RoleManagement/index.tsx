@@ -63,7 +63,7 @@ export default function RoleTablePage() {
           <a
             onClick={async () => {
               const resp = await deleteRole({
-                roleId: record.roleId as number,
+                roleId: record.roleId as string,
               });
               handleResponse({
                 resp,
@@ -161,7 +161,7 @@ export default function RoleTablePage() {
         onSubmit={async (data: API.RoleUpdateRequest) => {
           const resp = await updateRole({
             ...data,
-            roleId: currentRecord?.roleId as number
+            roleId: currentRecord?.roleId as string
           });
           handleResponse({
             resp,

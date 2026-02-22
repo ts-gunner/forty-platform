@@ -1,15 +1,16 @@
-import { getRoleList } from "@/services/steins-admin/roleController";
-import { getPermissionsByRoleId, assignPermissionsToRole } from "@/services/steins-admin/rolePermissionRelController";
 import { getPermissionList } from "@/services/steins-admin/permissionController";
+import { getRoleList } from "@/services/steins-admin/roleController";
+import { assignPermissionsToRole, getPermissionsByRoleId } from "@/services/steins-admin/rolePermissionRelController";
 import { handleResponse, Notify } from "@/utils/common";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
-import { Modal, Transfer } from "antd";
-import { useRef, useState, useEffect } from "react";
+import { Modal, Transfer, TransferProps } from "antd";
+import { useEffect, useRef, useState } from "react";
 
 export default function RoleAuthorizationPage() {
   const actionRef = useRef<ActionType>();
   const [pageSize, setPageSize] = useState(20);
   const [authModalOpen, handleAuthModalOpen] = useState<boolean>(false);
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [currentRole, setCurrentRole] = useState<API.RoleVo>();
   const [allPermissions, setAllPermissions] = useState<API.PermissionVo[]>([]);
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
@@ -27,7 +28,7 @@ export default function RoleAuthorizationPage() {
     });
   };
 
-  const loadRolePermissions = async (roleId: number) => {
+  const loadRolePermissions = async (roleId: string) => {
     const resp = await getPermissionsByRoleId({ roleId });
     handleResponse({
       resp,
@@ -44,7 +45,7 @@ export default function RoleAuthorizationPage() {
   useEffect(() => {
     if (authModalOpen && currentRole) {
       loadAllPermissions();
-      loadRolePermissions(currentRole.roleId as number);
+      loadRolePermissions(currentRole.roleId as string);
     }
   }, [authModalOpen, currentRole]);
 
@@ -99,15 +100,17 @@ export default function RoleAuthorizationPage() {
     },
   ];
 
-  const handleTransferChange = (newTargetKeys: string[]) => {
+  // @ts-ignore
+  const handleTransferChange: TransferProps["onChange"] = (newTargetKeys: string[]) => {
     setTargetKeys(newTargetKeys);
   };
 
   const handleAssignPermissions = async () => {
     if (!currentRole) return;
+    setBtnLoading(true);
     const permissionIds = targetKeys.map(Number);
     const resp = await assignPermissionsToRole({
-      roleId: currentRole.roleId as number,
+      roleId: currentRole.roleId as string,
       permissionIds: permissionIds,
     });
     handleResponse({
@@ -118,6 +121,9 @@ export default function RoleAuthorizationPage() {
       },
       onError: () => {
         Notify.fail("授权失败:" + resp.msg);
+      },
+      onFinish: () => {
+        setBtnLoading(false);
       },
     });
   };
@@ -167,6 +173,7 @@ export default function RoleAuthorizationPage() {
       <Modal
         title={`角色授权 - ${currentRole?.roleName}`}
         open={authModalOpen}
+        confirmLoading={btnLoading}
         onCancel={() => handleAuthModalOpen(false)}
         onOk={handleAssignPermissions}
         width={700}
@@ -180,15 +187,15 @@ export default function RoleAuthorizationPage() {
           titles={["未分配权限", "已分配权限"]}
           targetKeys={targetKeys}
           onChange={handleTransferChange}
-          render={(item) => item.title}
-          listStyle={{
-            width: 300,
-            height: 400,
+          render={(item) => {
+            return <div>{item.title}</div>;
+          }}
+          classNames={{
+            section: "w-full! h-[50vh]!",
           }}
           showSearch
           filterOption={(input, option) =>
-            (option.title as string).toLowerCase().includes(input.toLowerCase()) ||
-            (option.description as string).toLowerCase().includes(input.toLowerCase())
+            (option.title as string).toLowerCase().includes(input.toLowerCase()) || (option.description as string).toLowerCase().includes(input.toLowerCase())
           }
         />
       </Modal>

@@ -1,13 +1,14 @@
 import { Form, Input, Modal } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 type ModalProps = {
   modalOpen: boolean;
   handleModalOpen: any;
   value: API.RoleVo | undefined;
-  onSubmit: (data: API.RoleUpdateRequest) => void;
+  onSubmit: (data: API.RoleUpdateRequest) => Promise<void>;
 };
 export default function UpdateRoleModal({ modalOpen, handleModalOpen, value, onSubmit }: ModalProps) {
   const [formRef] = Form.useForm();
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
   useEffect(() => {
     if (modalOpen && value) {
       formRef.setFieldsValue(value);
@@ -21,12 +22,15 @@ export default function UpdateRoleModal({ modalOpen, handleModalOpen, value, onS
       open={modalOpen}
       closable={false}
       className=""
+      confirmLoading={btnLoading}
       onCancel={() => handleModalOpen(false)}
       onOk={async () => {
+        setBtnLoading(true);
         const data = await formRef.validateFields();
-        onSubmit({
+        await onSubmit({
           ...data,
         });
+        setBtnLoading(false);
       }}
     >
       <div className="p-3">

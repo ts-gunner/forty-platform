@@ -1,5 +1,5 @@
 import { Form, Input, Modal, Select } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const PermissionTypeOptions = [
   { label: "菜单", value: 0 },
@@ -10,10 +10,11 @@ type ModalProps = {
   modalOpen: boolean;
   handleModalOpen: any;
   value: API.PermissionVo | undefined;
-  onSubmit: (data: API.PermissionUpdateRequest) => void;
+  onSubmit: (data: API.PermissionUpdateRequest) => Promise<void>;
 };
 export default function UpdatePermissionModal({ modalOpen, handleModalOpen, value, onSubmit }: ModalProps) {
   const [formRef] = Form.useForm();
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
   useEffect(() => {
     if (modalOpen && value) {
       formRef.setFieldsValue(value);
@@ -27,12 +28,15 @@ export default function UpdatePermissionModal({ modalOpen, handleModalOpen, valu
       open={modalOpen}
       closable={false}
       className=""
+      confirmLoading={btnLoading}
       onCancel={() => handleModalOpen(false)}
       onOk={async () => {
+        setBtnLoading(true);
         const data = await formRef.validateFields();
-        onSubmit({
+        await onSubmit({
           ...data,
         });
+        setBtnLoading(false);
       }}
     >
       <div className="p-3">

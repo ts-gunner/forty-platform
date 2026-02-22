@@ -96,8 +96,9 @@ func (PermissionService) CreatePermission(ctx context.Context, req request.Permi
 			return errors.New("权限标识已存在")
 		}
 	}
-
+	permId, _ := global.IdCreator.NextID()
 	permission := entity.SysPermission{
+		PermissionId:   permId,
 		PermissionName: req.PermissionName,
 		Type:           req.Type,
 		Perms:          req.Perms,
