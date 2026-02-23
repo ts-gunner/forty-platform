@@ -1,4 +1,4 @@
-import { createUser, deleteUser, getUserList, updateUser } from "@/services/steins-admin/userController";
+import { createUser, deleteUser, getUserList, updatePassword, updateUser } from "@/services/steins-admin/userController";
 import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
@@ -6,6 +6,7 @@ import { Button } from "antd";
 import { useRef, useState } from "react";
 import CreateUserModal from "./CreateUserModal";
 import UpdateUserModal from "./UpdateUserModal";
+import ResetPwdModal from "./ResetPwdModal";
 
 export default function UserTablePage() {
   const actionRef = useRef<ActionType>();
@@ -13,6 +14,7 @@ export default function UserTablePage() {
   const [currentRecord, setCurrentRecord] = useState<API.UserVo>();
   const [createModalOpen, handleCreateModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [resetPwdModalOpen, handleResetPwdModalOpen] = useState<boolean>(false);
   const columns: ProColumns<API.UserVo>[] = [
     {
       title: "用户名",
@@ -66,7 +68,14 @@ export default function UserTablePage() {
           >
             更新
           </a>
-
+          <a
+            onClick={() => {
+              setCurrentRecord(record);
+              handleResetPwdModalOpen(true);
+            }}
+          >
+            重置密码
+          </a>
           <a
             onClick={async () => {
               const resp = await deleteUser({
@@ -186,6 +195,29 @@ export default function UserTablePage() {
           });
         }}
         value={currentRecord}
+      />
+      <ResetPwdModal
+        modalOpen={resetPwdModalOpen}
+        handleModalOpen={handleResetPwdModalOpen}
+        onSubmit={async (data: API.UserResetPwdRequest) => {
+          const resp = await updatePassword({
+            newPassword: data.newPassword,
+            userId: currentRecord?.userId as string
+          });
+          handleResponse({
+            resp,
+            onSuccess: () => {
+              Notify.ok("更新成功!");
+              actionRef.current?.reload();
+            },
+            onError: () => {
+              Notify.fail("更新失败:" + resp.msg);
+            },
+            onFinish: () => {
+              handleResetPwdModalOpen(false);
+            },
+          });
+        }}
       />
     </div>
   );

@@ -6,6 +6,7 @@ import { Button } from "antd";
 import { useRef, useState } from "react";
 import CreateRoleModal from "./CreateRoleModal";
 import UpdateRoleModal from "./UpdateRoleModal";
+import dayjs from "dayjs";
 
 export default function RoleTablePage() {
   const actionRef = useRef<ActionType>();
@@ -35,6 +36,9 @@ export default function RoleTablePage() {
       align: "center",
       hideInSearch: true,
       width: 180,
+      render: (_, record) => {
+        return dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss");
+      },
     },
     {
       title: "更新时间",
@@ -43,6 +47,9 @@ export default function RoleTablePage() {
       align: "center",
       hideInSearch: true,
       width: 180,
+      render: (_, record) => {
+        return dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss");
+      },
     },
     {
       title: "操作",

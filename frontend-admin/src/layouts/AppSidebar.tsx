@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "umi";
 
 // Assume these icons are imported from an icon library
-import { ICONS_MAP } from "@/constants/config";
+import config, { ICONS_MAP } from "@/constants/config";
 import { useSidebar } from "../context/SidebarContext";
 import {
   ChevronDownIcon,
@@ -162,7 +162,7 @@ const AppSidebar: React.FC<{siderMenus: Record<string, Sider.NavItem[]>}> = ({si
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`}>
-        <Link to="/">
+        <Link to="/" className="flex items-center gap-2">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img className="dark:hidden h-12 w-auto" src={ICONS_MAP.navbarLogo} alt="Logo" />
@@ -171,6 +171,7 @@ const AppSidebar: React.FC<{siderMenus: Record<string, Sider.NavItem[]>}> = ({si
           ) : (
             <img src={ICONS_MAP.logo} alt="Logo" width={32} height={32} />
           )}
+          <span className="text-2xl font-bold">{config.title}</span>
         </Link>
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">

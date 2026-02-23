@@ -4,6 +4,7 @@ import { assignPermissionsToRole, getPermissionsByRoleId } from "@/services/stei
 import { handleResponse, Notify } from "@/utils/common";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Modal, Transfer, TransferProps } from "antd";
+import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 
 export default function RoleAuthorizationPage() {
@@ -71,6 +72,9 @@ export default function RoleAuthorizationPage() {
       align: "center",
       hideInSearch: true,
       width: 180,
+      render: (_, record) => {
+        return dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss");
+      },
     },
     {
       title: "更新时间",
@@ -79,6 +83,9 @@ export default function RoleAuthorizationPage() {
       align: "center",
       hideInSearch: true,
       width: 180,
+      render: (_, record) => {
+        return dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss");
+      },
     },
     {
       title: "操作",

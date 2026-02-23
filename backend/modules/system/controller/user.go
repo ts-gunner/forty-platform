@@ -20,7 +20,7 @@ func (UserRouter) InitUserRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup.GET("/detail", getUserDetail)
 	routerGroup.POST("/create", createUser)
 	routerGroup.PUT("/update", updateUser)
-	routerGroup.PUT("/updatePwd", updatePassword)
+	routerGroup.PUT("/resetPwd", updatePassword)
 	routerGroup.DELETE("/delete", deleteUser)
 }
 
