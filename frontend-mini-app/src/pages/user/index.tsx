@@ -1,10 +1,8 @@
 
-import { View, Image, Text } from "@tarojs/components"
-import { ATTACHMENT } from '../../constant/resource'
+import { login } from "@tarojs/taro"
+import { View } from "@tarojs/components"
 import { useDispatch, useSelector } from "react-redux"
 import { Dispatch, RootState } from "../../store"
-import { login } from "@tarojs/taro"
-import { AtToast } from "taro-ui"
 
 export default function UserPage() {
   const dispatch = useDispatch<Dispatch>()
@@ -23,7 +21,7 @@ export default function UserPage() {
   }
   return (
     <View>
-      <Image src={ATTACHMENT.mine_bg} className="w-full" mode="aspectFit"></Image>
+      hello
     </View>
  
   )
