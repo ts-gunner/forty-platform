@@ -1,7 +1,7 @@
 export default defineAppConfig({
   tabBar: {
-    color: "black",
-    selectedColor: "#007aff",
+    color: "#97a3b6",
+    selectedColor: "#388E3C",
     backgroundColor: "#FFFFFF",
     list: [
       {
@@ -13,8 +13,8 @@ export default defineAppConfig({
   
       {
         pagePath: "pages/user/index",
-        iconPath: "static/mine.png",
-        selectedIconPath: "static/mine_active.png",
+        iconPath: "static/user.png",
+        selectedIconPath: "static/user_active.png",
         text: "用户中心"
       }
     ]

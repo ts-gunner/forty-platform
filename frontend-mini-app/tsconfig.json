@@ -11,20 +11,26 @@
     "outDir": "lib",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "sourceMap": true,
     "rootDir": ".",
     "jsx": "react-jsx",
     "allowJs": true,
     "resolveJsonModule": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "paths": {
       // TS5090 leading './'
       "@/*": ["./src/*"]
     }
   },
-  "include": ["./src", "./types", "./config"],
+  "include": [
+    "./src",
+    "./types",
+    "./config",
+    "../../**/*.d.ts",
+    "../../**/*.ts",
+    "../../**/*.tsx"
+  ],
+  "exclude": ["**/*.config.js"],
   "compileOnSave": false
 }
