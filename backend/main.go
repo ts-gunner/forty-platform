@@ -24,4 +24,5 @@ func initializeSystem() {
 	} else {
 		global.DB = db
 	}
+	global.Enforcer = core.InitCasbinEnforcer()
 }

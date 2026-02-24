@@ -1,7 +1,12 @@
 package core
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/casbin/casbin/v3"
+	"github.com/casbin/casbin/v3/model"
+	gormadapter "github.com/casbin/gorm-adapter/v3"
+	"github.com/drone/envsubst"
 	"github.com/fsnotify/fsnotify"
 	"github.com/sony/sonyflake/v2"
 	"github.com/spf13/viper"
@@ -12,17 +17,35 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"os"
+	"strings"
 )
 
 // 初始化读取配置
 func InitViperConfig() *viper.Viper {
 
 	v := viper.New()
-	v.SetConfigFile(constant.CONFIG_FILEPATH)
-	err := v.ReadInConfig()
+
+	content, err := os.ReadFile(constant.CONFIG_FILEPATH)
 	if err != nil {
-		panic(fmt.Errorf("读取配置文件失败: %w \n", err))
+		panic(fmt.Errorf("无法读取配置文件: %w", err))
 	}
+	renderedContent, err := envsubst.EvalEnv(string(content))
+	if err != nil {
+		panic(fmt.Errorf("环境变量渲染失败: %w", err))
+	}
+	v.SetConfigType("yaml")
+	if err := v.ReadConfig(bytes.NewBufferString(renderedContent)); err != nil {
+		panic(fmt.Errorf("解析配置文件失败: %w", err))
+	}
+
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+	v.AutomaticEnv()
+	v.AllowEmptyEnv(true)
+	if err = v.Unmarshal(&global.Config); err != nil {
+		panic(fmt.Errorf("解析配置文件失败: %w", err))
+	}
+
+	// 监听配置
 	v.WatchConfig()
 	v.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Println("配置文件发生改动:", e.Name)
@@ -32,9 +55,6 @@ func InitViperConfig() *viper.Viper {
 		// 重新设置logger
 		//Logger = InitZapLogger()
 	})
-	if err = v.Unmarshal(&global.Config); err != nil {
-		panic(fmt.Errorf("解析配置文件失败: %w", err))
-	}
 	return v
 }
 
@@ -68,4 +88,37 @@ func InitIDCreator() *sonyflake.Sonyflake {
 		panic("创建id生成器失败: " + err.Error())
 	}
 	return sf
+}
+
+func InitCasbinEnforcer() *casbin.Enforcer {
+	if global.DB == nil {
+		db, _ := InitGorm()
+		global.DB = db
+	}
+	adapter, err := gormadapter.NewAdapterByDB(global.DB)
+	if err != nil {
+		panic("创建casbin适配器失败: " + err.Error())
+	}
+	// RBAC模型
+	m, err := model.NewModelFromString(`
+[request_definition]
+r = sub, obj, act
+
+[policy_definition]
+p = sub, obj, act
+
+[policy_effect]
+e = some(where (p.eft == allow))
+
+[matchers]
+m = r.sub == p.sub && r.obj == p.obj && r.act == p.act
+`)
+	enforcer, err := casbin.NewEnforcer(m, adapter)
+	if err != nil {
+		panic("创建casbin校验器失败: " + err.Error())
+	}
+	if err = enforcer.LoadPolicy(); err != nil {
+		panic("加载权限配置失败: " + err.Error())
+	}
+	return enforcer
 }

@@ -28,12 +28,14 @@ backend
 | mysql-driver |       gorm.io/driver/mysql        |   mysql驱动   |
 |    copier    |     github.com/jinzhu/copier      |    对象复制     |
 |     jwt      |   github.com/golang-jwt/jwt/v5    |     鉴权      |
-|    casbin    |    github.com/casbin/casbin/v2    |    权限校验     |
+|    casbin    |    github.com/casbin/casbin/v3    |    权限校验     |
 | gorm-adapter | github.com/casbin/gorm-adapter/v3 |  权限校验的适配器   |
 |  go-swagger  |   github.com/swaggo/gin-swagger   |    api文档    |
 |    lancet    |  	github.com/duke-git/lancet/v2   |   go工具箱	    |
-|    redis     |  	github.com/go-redis/redis/v8  |   redis	    |
-|     gmsm     |  	github.com/tjfoc/gmsm  |    国密算法	    |
+|    redis     |   	github.com/go-redis/redis/v8   |   redis	    |
+|     gmsm     |      	github.com/tjfoc/gmsm       |    国密算法	    |
+
+
 
 
 # Q&A

@@ -1,6 +1,7 @@
 package global
 
 import (
+	"github.com/casbin/casbin/v3"
 	"github.com/go-redis/redis/v8"
 	"github.com/sony/sonyflake/v2"
 	"github.com/spf13/viper"
@@ -16,4 +17,5 @@ var (
 	Logger    *zap.Logger
 	Redis     *redis.Client
 	IdCreator *sonyflake.Sonyflake
+	Enforcer  *casbin.Enforcer
 )

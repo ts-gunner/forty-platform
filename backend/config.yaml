@@ -1,5 +1,5 @@
 mysql:
-    path: 127.0.0.1
+    path: ${FORTY_APP_MYSQL_HOST:127.0.0.1}
     port: "3306"
     db-name: forty_dev
     username: root
@@ -9,7 +9,7 @@ mysql:
 
 redis:
     port: "6379"
-    host: 127.0.0.1
+    host: ${FORTY_APP_REDIS_HOST:127.0.0.1}
     password: "123456"
     db: 8
 
