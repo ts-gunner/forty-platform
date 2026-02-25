@@ -19,7 +19,7 @@ export default defineAppConfig({
       }
     ]
   },
-  entryPagePath: "pages/home/index",
+  entryPagePath: "pages/user/index",
   pages: [
     'pages/home/index', "pages/user/index"
   ],
