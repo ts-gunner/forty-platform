@@ -5,6 +5,7 @@ import { Dispatch, RootState } from "../../store";
 import { useNavbar } from "../../context/NavbarContext";
 import { ICON_MAP, IMAGE_MAP } from "../../constant/global";
 import { cn } from "../../utils/common";
+import { MORE_FUNCTION_ICONS, MY_ORDER_ICONS, MY_SERVICE_ICONS } from "../../constant/mock";
 
 export default function UserPage() {
   const dispatch = useDispatch<Dispatch>();
@@ -49,7 +50,8 @@ export default function UserPage() {
         <View className="flex justify-between items-center px-4">
           <UserComponent />
 
-          <View className="flex items-center gap-2">
+          <View className="flex items-center gap-4">
+            <CardComponent icon={<Image src={ICON_MAP.takeCareMode} className="h-6 w-6" />} title="关怀版" className="gap-0 text-sm" />
             <CardComponent icon={<Image src={ICON_MAP.settingIcon} className="h-6 w-6" />} title="设置" className="gap-0 text-sm" />
           </View>
         </View>
@@ -66,7 +68,7 @@ export default function UserPage() {
 const UserComponent = () => {
   return (
     <View className="flex items-center gap-2">
-      <View className="h-12 w-12 p-1 bg-black rounded-full">
+      <View className="h-12 w-12 p-2 bg-gray-300 rounded-full">
         <Image src={ICON_MAP.defaultAvatar} className="h-full w-full" />
       </View>
       <Text className="font-bold tracking-wide">请点击登录</Text>
@@ -74,33 +76,6 @@ const UserComponent = () => {
   )
 }
 
-const orderData = [
-  {
-    key: "0",
-    title: "全部",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-  {
-    key: "1",
-    title: "待支付",  // 问诊、体检、预约、购药、服务下单未付款
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-  {
-    key: "2",
-    title: "待处理",  // 医生未接诊、体检未排期、药师未回复、服务未开始
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-  {
-    key: "3",
-    title: "待服务",  // 已接诊未结束、体检进行中、配送中药品在路上
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-  {
-    key: "5",
-    title: "退款",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-]
 // 我的订单
 const MyOrderComponent = () => {
 
@@ -108,9 +83,9 @@ const MyOrderComponent = () => {
     <View className="flex justify-center mt-4">
       <View className="rounded-xl p-3 bg-white w-[95%] shadow">
         <Text className="font-[600]">我的订单</Text>
-        <View className="grid grid-cols-5 mt-6 ">
+        <View className="grid grid-cols-4 mt-6 ">
           {
-            orderData.map(it => (
+            MY_ORDER_ICONS.map(it => (
               <CardComponent key={it.key} icon={it.icon} title={it.title} className="text-sm gap-1" />
             ))
           }
@@ -120,33 +95,6 @@ const MyOrderComponent = () => {
   )
 }
 
-const serviceData = [
-   {
-    key: "1",
-    title: "我的报告",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-    {
-    key: "2",
-    title: "体检数据",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-   {
-    key: "3",
-    title: "专属健管",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-  {
-    key: "4",
-    title: "AI助手",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-   {
-    key: "5",
-    title: "挂号记录",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-]
 // 我的服务
 const MyServiceComponent = () => {
   return (
@@ -155,7 +103,7 @@ const MyServiceComponent = () => {
         <Text className="font-[600]">我的服务</Text>
         <View className="grid grid-cols-4 mt-6 gap-2 gap-y-6">
           {
-            serviceData.map(it => (
+            MY_SERVICE_ICONS.map(it => (
               <CardComponent key={it.key} icon={it.icon} title={it.title} />
             ))
           }
@@ -167,33 +115,6 @@ const MyServiceComponent = () => {
 }
 
 
-const functionData = [
-  {
-    key: "1",
-    title: "入驻护士",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-  {
-    key: "2",
-    title: "关于我们",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-  {
-    key: "3",
-    title: "联系客服",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-  {
-    key: "4",
-    title: "意见反馈",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-  {
-    key: "5",
-    title: "兑换码",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
-  },
-]
 // 更多功能
 const MoreFunctionComponent = () => {
   return (
@@ -202,7 +123,7 @@ const MoreFunctionComponent = () => {
         <Text className="font-[600]">更多功能</Text>
         <View className="grid grid-cols-4 mt-6 gap-2 gap-y-6">
           {
-            functionData.map(it => (
+            MORE_FUNCTION_ICONS.map(it => (
               <CardComponent key={it.key} icon={it.icon} title={it.title} />
             ))
           }
