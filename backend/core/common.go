@@ -95,7 +95,7 @@ func InitCasbinEnforcer() *casbin.Enforcer {
 		db, _ := InitGorm()
 		global.DB = db
 	}
-	adapter, err := gormadapter.NewAdapterByDB(global.DB)
+	adapter, err := gormadapter.NewAdapterByDBWithCustomTable(global.DB, &gormadapter.CasbinRule{}, "casbin_rbac_rule")
 	if err != nil {
 		panic("创建casbin适配器失败: " + err.Error())
 	}
@@ -107,11 +107,14 @@ r = sub, obj, act
 [policy_definition]
 p = sub, obj, act
 
+[role_definition]
+g = _, _
+
 [policy_effect]
 e = some(where (p.eft == allow))
 
 [matchers]
-m = r.sub == p.sub && r.obj == p.obj && r.act == p.act
+m = g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act
 `)
 	enforcer, err := casbin.NewEnforcer(m, adapter)
 	if err != nil {
