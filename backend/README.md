@@ -18,22 +18,22 @@ backend
 # go依赖
 
 
-|   package    |              origin               |   remark    |
-|:------------:|:---------------------------------:|:-----------:|
-|     gin      |     github.com/gin-gonic/gin      |  go web框架   |
-|    viper     |      github.com/spf13/viper       | 读取配置文件，支持监听 |
-|     zap      |          go.uber.org/zap          |    日志框架     |
-|    cobra     |      github.com/spf13/cobra       |    cli工具    |
-|     gorm     |           gorm.io/gorm            |   gorm框架    |
-| mysql-driver |       gorm.io/driver/mysql        |   mysql驱动   |
-|    copier    |     github.com/jinzhu/copier      |    对象复制     |
-|     jwt      |   github.com/golang-jwt/jwt/v5    |     鉴权      |
-|    casbin    |    github.com/casbin/casbin/v3    |    权限校验     |
-| gorm-adapter | github.com/casbin/gorm-adapter/v3 |  权限校验的适配器   |
-|  go-swagger  |   github.com/swaggo/gin-swagger   |    api文档    |
-|    lancet    |  	github.com/duke-git/lancet/v2   |   go工具箱	    |
-|    redis     |   	github.com/go-redis/redis/v8   |   redis	    |
-|     gmsm     |      	github.com/tjfoc/gmsm       |    国密算法	    |
+|   package    |              origin               |      remark      |
+|:------------:|:---------------------------------:|:----------------:|
+|     gin      |     github.com/gin-gonic/gin      |     go web框架     |
+|    viper     |      github.com/spf13/viper       |   读取配置文件，支持监听    |
+|     zap      |          go.uber.org/zap          |       日志框架       |
+|    cobra     |      github.com/spf13/cobra       |      cli工具       |
+|     gorm     |           gorm.io/gorm            |      gorm框架      |
+| mysql-driver |       gorm.io/driver/mysql        |     mysql驱动      |
+|    copier    |     github.com/jinzhu/copier      |       对象复制       |
+|     jwt      |   github.com/golang-jwt/jwt/v5    |        鉴权        |
+|    casbin    |    github.com/casbin/casbin/v3    |       权限校验       |
+| gorm-adapter | github.com/casbin/gorm-adapter/v3 |     权限校验的适配器     |
+|  go-swagger  |   github.com/swaggo/gin-swagger   |      api文档       |
+|      lo      |  	github.com/samber/lo   | go工具包，类似lodash	  |
+|    redis     |   	github.com/go-redis/redis/v8   |      redis	      |
+|     gmsm     |      	github.com/tjfoc/gmsm       |      国密算法	       |
 
 
 
@@ -43,3 +43,8 @@ backend
 ## 无法使用makefile的指令
 
 需要自行安装minGW
+
+
+# BUG
+
+1. 修改角色标识时，casbin不会更新标识

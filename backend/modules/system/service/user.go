@@ -10,6 +10,7 @@ import (
 	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
 	"github.com/ts-gunner/forty-platform/common/utils"
 	"gorm.io/gorm"
+	"strconv"
 	"time"
 )
 
@@ -173,6 +174,9 @@ func (UserService) DeleteUser(ctx context.Context, userId int64) error {
 	}
 	userId = utils.GetLoginUserId(ctx)
 	localTime := time.Now().Local()
+	// 清理casbin的policy和group
+	_, _ = global.Enforcer.RemoveFilteredPolicy(0, strconv.FormatInt(userId, 10))
+	_, _ = global.Enforcer.RemoveFilteredGroupingPolicy(0, strconv.FormatInt(userId, 10))
 	return global.DB.Model(user).Updates(entity.SysUser{
 		BaseRecordField: entity.BaseRecordField{
 			DeleterId: &userId,

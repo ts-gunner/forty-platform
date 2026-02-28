@@ -2,6 +2,9 @@ package service
 
 import (
 	"errors"
+	"github.com/samber/lo"
+	"github.com/ts-gunner/forty-platform/common/utils"
+	"strconv"
 
 	"github.com/ts-gunner/forty-platform/common/entity"
 	"github.com/ts-gunner/forty-platform/common/global"
@@ -97,32 +100,49 @@ func (UserRoleRelService) AssignRolesToUser(req request.UserRoleRelAssignRequest
 		if err := tx.Where("user_id = ?", req.UserId).Delete(&entity.SysUserRoleRel{}).Error; err != nil {
 			return err
 		}
-
-		rels := make([]entity.SysUserRoleRel, len(req.RoleIds))
-		for i, roleId := range req.RoleIds {
-			rels[i] = entity.SysUserRoleRel{
-				UserId: req.UserId,
-				RoleId: roleId,
+		roleRels := lo.Map(roles, func(role entity.SysRole, index int) entity.SysUserRoleRel {
+			return entity.SysUserRoleRel{
+				RoleId: role.RoleId,
+				UserId: user.UserId,
 			}
-		}
+		})
+		roleKeys := lo.Map(roles, func(role entity.SysRole, index int) string {
+			return role.RoleKey
+		})
 
-		if len(rels) > 0 {
-			if err := tx.Create(&rels).Error; err != nil {
+		if len(roleRels) > 0 {
+			if err := tx.Create(&roleRels).Error; err != nil {
 				return err
 			}
 		}
-
-		return nil
+		// casbin绑定用户角色
+		return utils.SyncUserRoleBind(global.Enforcer, strconv.FormatInt(user.UserId, 10), roleKeys)
 	})
 }
 
 func (UserRoleRelService) RemoveRoleFromUser(req request.UserRoleRelRemoveRequest) error {
-	result := global.DB.Where("user_id = ? AND role_id = ?", req.UserId, req.RoleId).Delete(&entity.SysUserRoleRel{})
-	if result.Error != nil {
-		return result.Error
+
+	var role entity.SysRole
+	if err := global.DB.Where("role_id = ?", req.RoleId).First(&role).Error; err != nil {
+		return errors.New("角色不存在")
 	}
-	if result.RowsAffected == 0 {
-		return errors.New("关联关系不存在")
-	}
-	return nil
+
+	return global.DB.Transaction(func(tx *gorm.DB) error {
+		// 删除业务关联表
+		result := tx.Where("user_id = ? AND role_id = ?", req.UserId, req.RoleId).Delete(&entity.SysUserRoleRel{})
+		if result.Error != nil {
+			return result.Error
+		}
+		if result.RowsAffected == 0 {
+			return errors.New("关联关系不存在")
+		}
+
+		// 3. 同步删除 Casbin 中的 g 规则
+		sub := strconv.FormatInt(req.UserId, 10)
+		obj := role.RoleKey
+
+		// RemoveGroupingPolicy 会删除具体的某一条用户-角色对
+		_, err := global.Enforcer.RemoveGroupingPolicy(sub, obj)
+		return err
+	})
 }

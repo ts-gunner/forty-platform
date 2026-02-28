@@ -95,7 +95,7 @@ func InitCasbinEnforcer() *casbin.Enforcer {
 		db, _ := InitGorm()
 		global.DB = db
 	}
-	adapter, err := gormadapter.NewAdapterByDBWithCustomTable(global.DB, &gormadapter.CasbinRule{}, "casbin_rbac_rule")
+	adapter, err := gormadapter.NewAdapterByDB(global.DB)
 	if err != nil {
 		panic("创建casbin适配器失败: " + err.Error())
 	}
