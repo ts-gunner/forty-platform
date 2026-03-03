@@ -1,0 +1,8 @@
+.mesh-gradient {
+  background-color: #fcfafb;
+  background-image: 
+    radial-gradient(at 10% 20%, rgba(244, 63, 94, 0.08) 0px, transparent 40%), /* 玫瑰红 */
+    radial-gradient(at 90% 10%, rgba(168, 85, 247, 0.08) 0px, transparent 40%), /* 淡紫平衡 */
+    radial-gradient(at 80% 90%, rgba(251, 113, 133, 0.1) 0px, transparent 40%),
+    radial-gradient(at 20% 80%, rgba(254, 205, 211, 0.15) 0px, transparent 40%);
+}
