@@ -48,7 +48,7 @@ export default function HomePage() {
   });
 
   return (
-    <View className="mesh-gradient min-h-screen">
+    <View className="mesh-gradient min-h-screen pb-16" >
       <AtToast
         isOpened={dataLoading}
         text={loadingText}
