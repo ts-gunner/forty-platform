@@ -3,7 +3,6 @@
 // 图片素材
 export const IMAGE_MAP = {
 
-    userHeaderBackground: "https://pic1.imgdb.cn/item/699e939486daecd63652f05e.jpg",
 }
 
 // 图标素材

@@ -24,22 +24,8 @@ export default function UserPage() {
     });
   };
   return (
-    <View className="relative bg-gray-100/50 min-h-screen">
-      <View className="absolute w-screen z-1">
-        <Image
-          src={IMAGE_MAP.userHeaderBackground}
-          className="w-full"
-          mode="scaleToFill"
-        />
-        {/* 渐变蒙版 */}
-        <View
-          className="absolute bottom-0 left-0 right-0 h-16 z-5 blur-sm"
-          style={{
-            // 调整渐变参数，让过渡更自然
-            background: "linear-gradient(to top, rgb(255, 255, 255, 2), rgba(226, 225, 225, 0))",
-          }}
-        />
-      </View>
+    <View className="mesh-gradient relative bg-gray-100/50 min-h-screen">
+      
       <View
         className="relative z-[999]"
         style={{
