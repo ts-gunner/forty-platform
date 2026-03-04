@@ -5,24 +5,37 @@ export default defineAppConfig({
     // selectedColor: "#388E3C",
     // backgroundColor: "#FFFFFF",
     list: [
-      {
-        pagePath: "pages/home/index",
-        iconPath: "static/home.png",
-        selectedIconPath: "static/home_active.png",
-        text: "首页"
-      },
-  
-      {
-        pagePath: "pages/user/index",
-        iconPath: "static/user.png",
-        selectedIconPath: "static/user_active.png",
-        text: "用户中心"
-      }
+      
+        {
+              text: "我的客户",
+              iconPath: "/static/customer.png",
+              selectedIconPath: "/static/customer_active.png",
+              pagePath: "pages/customer/index"
+          },
+          {
+              text: "全部客户",
+              iconPath: "/static/all_customer.png",
+              selectedIconPath: "/static/all_customer_active.png",
+              pagePath: "pages/all_customer/index"
+          },
+           {
+              text: "收藏",
+              iconPath: "/static/collection.png",
+              selectedIconPath: "/static/collection_active.png",
+              pagePath: "pages/collection/index"
+          },
+        
+          {
+              text: "我的",
+              iconPath: "/static/user.png",
+              selectedIconPath: "/static/user_active.png",
+              pagePath: "pages/user/index"
+          },
     ]
   },
-  entryPagePath: "pages/home/index",
+  entryPagePath: "pages/customer/index",
   pages: [
-    'pages/home/index', "pages/user/index"
+    'pages/all_customer/index', 'pages/customer/index',  'pages/collection/index',"pages/user/index", "pages/settings/index"
   ],
   window: {
     navigationBarTitleText: '安健社区服务',

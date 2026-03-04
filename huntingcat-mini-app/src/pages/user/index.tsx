@@ -1,10 +1,11 @@
-import { login } from "@tarojs/taro";
+import Taro, { login } from "@tarojs/taro";
 import { Image, Text, View } from "@tarojs/components";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "../../store";
 import { useNavbar } from "../../context/NavbarContext";
 import { ICON_MAP, IMAGE_MAP } from "../../constant/global";
 import { cn } from "../../utils/common";
+import { ROUTERS } from "../../constant/menus";
 
 export default function UserPage() {
   const dispatch = useDispatch<Dispatch>();
@@ -25,7 +26,7 @@ export default function UserPage() {
   };
   return (
     <View className="mesh-gradient relative bg-gray-100/50 min-h-screen">
-      
+
       <View
         className="relative z-[999]"
         style={{
@@ -36,7 +37,14 @@ export default function UserPage() {
           <UserComponent />
 
           <View className="flex items-center gap-2">
-            <CardComponent icon={<Image src={ICON_MAP.settingIcon} className="h-6 w-6" />} title="设置" className="gap-0 text-sm" />
+            <CardComponent
+              icon={<Image src={ICON_MAP.settingIcon} className="h-6 w-6" />} 
+              title="设置"
+               className="gap-0 text-sm"
+               onClick={() => {
+                Taro.navigateTo({ url: ROUTERS.settings })
+               }}
+                />
           </View>
         </View>
         <MyOrderComponent />
@@ -107,17 +115,17 @@ const MyOrderComponent = () => {
 }
 
 const serviceData = [
-   {
+  {
     key: "1",
     title: "我的报告",
     icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
   },
-    {
+  {
     key: "2",
     title: "体检数据",
     icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
   },
-   {
+  {
     key: "3",
     title: "专属健管",
     icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
@@ -127,7 +135,7 @@ const serviceData = [
     title: "AI助手",
     icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
   },
-   {
+  {
     key: "5",
     title: "挂号记录",
     icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />
@@ -199,10 +207,10 @@ const MoreFunctionComponent = () => {
   )
 }
 
-const CardComponent = ({ icon, title, className }: { icon: React.ReactNode, title: string, className?: string }) => {
+const CardComponent = ({ icon, title, className, onClick }: { icon: React.ReactNode, title: string, className?: string; onClick?: () => void }) => {
 
   return (
-    <View className={cn("flex flex-col gap-2 justify-center items-center", className)}>
+    <View className={cn("flex flex-col gap-2 justify-center items-center", className)} onClick={onClick}>
       {icon}
       <Text className="text-[0.9em]">{title}</Text>
     </View>
