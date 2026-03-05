@@ -3,7 +3,7 @@ import { Image, Text, View } from "@tarojs/components";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "../../store";
 import { useNavbar } from "../../context/NavbarContext";
-import { ICON_MAP, IMAGE_MAP } from "../../constant/global";
+import { ICON_MAP, IMAGE_MAP, THEME_CONFIG } from "../../constant/global";
 import { cn } from "../../utils/common";
 import { ROUTERS } from "../../constant/menus";
 import { withGlobalLayout } from "../../utils/withGlobalLayout";
@@ -49,100 +49,81 @@ function UserPage() {
             />
           </View>
         </View>
-        <MyOrderComponent />
+        <StatsSection />
         <MyServiceComponent />
-        <MoreFunctionComponent />
       </View>
     </View>
   );
 }
+const StatsSection = () => (
+  <View className="px-2 py-2">
+    <View 
+      className="flex justify-between items-center rounded-2xl p-4 shadow-lg"
+      style={{ backgroundColor: THEME_CONFIG.active }}
+    >
+      {[
+        { label: '客户总数', count: '1,280' },
+        { label: '核心客户', count: '45' },
+        { label: '本月新增', count: '12' }
+      ].map((item, i, arr) => (
+        <View key={i} className="flex flex-col items-center flex-1">
+          {/* 数据值：大字突出 */}
+          <Text className="text-white text-xl font-bold mb-1">{item.count}</Text>
+          {/* 标签：小字半透明 */}
+          <Text className="text-white/70 text-xs">{item.label}</Text>
+          
+          {/* 分隔线：除了最后一项，每项右侧加一条淡色竖线 */}
+          {i !== arr.length - 1 && (
+            <View className="absolute right-0 top-1/4 h-1/2 w-[1px] bg-white/20" />
+          )}
+        </View>
+      ))}
+    </View>
+  </View>
+);
 
 // 左上角的用户信息
 const UserComponent = () => {
   return (
-    <View className="flex items-center gap-2">
-      <View className="h-12 w-12 p-1 bg-black rounded-full">
-        <Image src={ICON_MAP.defaultAvatar} className="h-full w-full" />
+    <View 
+      className="flex items-center gap-3 active:opacity-70" 
+      // onTap={onPress}
+    >
+      <View className={`h-16 w-16 overflow-hidden rounded-full border border-gray-100 bg-red-400 p-1`}>
+        <Image
+          src={ICON_MAP.defaultAvatar}
+          mode="aspectFill"
+          lazyLoad
+          className="h-full w-full"
+        />
       </View>
-      <Text className="font-bold tracking-wide">请点击登录</Text>
+
+      {/* 文字描述 */}
+      <Text className="text-gray-800 font-medium text-base tracking-tight">
+        请点击登录
+      </Text>
     </View>
   );
 };
 
-const orderData = [
-  {
-    key: "0",
-    title: "全部",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-  {
-    key: "1",
-    title: "待支付", // 问诊、体检、预约、购药、服务下单未付款
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-  {
-    key: "2",
-    title: "待处理", // 医生未接诊、体检未排期、药师未回复、服务未开始
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-  {
-    key: "3",
-    title: "待服务", // 已接诊未结束、体检进行中、配送中药品在路上
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-  {
-    key: "5",
-    title: "退款",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-];
-// 我的订单
-const MyOrderComponent = () => {
-  return (
-    <View className="flex justify-center mt-4">
-      <View className="rounded-xl p-3 bg-white w-[95%] shadow">
-        <Text className="font-[600]">我的订单</Text>
-        <View className="grid grid-cols-5 mt-6 ">
-          {orderData.map((it) => (
-            <CardComponent
-              key={it.key}
-              icon={it.icon}
-              title={it.title}
-              className="text-sm gap-1"
-            />
-          ))}
-        </View>
-      </View>
-    </View>
-  );
-};
 
 const serviceData = [
   {
     key: "1",
-    title: "我的报告",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
+    title: "拜访记录",
+    icon: <Image src={ICON_MAP.visitRecordIcon} lazyLoad className="h-6 w-6" />,
   },
   {
     key: "2",
-    title: "体检数据",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
+    title: "电话记录",
+    icon: <Image src={ICON_MAP.phoneRecordIcon} lazyLoad className="h-6 w-6" />,
   },
   {
     key: "3",
-    title: "专属健管",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
+    title: "附近企业",
+    icon: <Image src={ICON_MAP.rangCompanyIcon} lazyLoad className="h-6 w-6" />,
   },
-  {
-    key: "4",
-    title: "AI助手",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-  {
-    key: "5",
-    title: "挂号记录",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
+  
 ];
 // 我的服务
 const MyServiceComponent = () => {
@@ -160,48 +141,7 @@ const MyServiceComponent = () => {
   );
 };
 
-const functionData = [
-  {
-    key: "1",
-    title: "入驻护士",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-  {
-    key: "2",
-    title: "关于我们",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-  {
-    key: "3",
-    title: "联系客服",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-  {
-    key: "4",
-    title: "意见反馈",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-  {
-    key: "5",
-    title: "兑换码",
-    icon: <Image src={ICON_MAP.settingIcon} className="h-6 w-6" />,
-  },
-];
-// 更多功能
-const MoreFunctionComponent = () => {
-  return (
-    <View className="flex justify-center mt-4">
-      <View className="rounded-xl p-3 bg-white w-[95%] shadow">
-        <Text className="font-[600]">更多功能</Text>
-        <View className="grid grid-cols-4 mt-6 gap-2 gap-y-6">
-          {functionData.map((it) => (
-            <CardComponent key={it.key} icon={it.icon} title={it.title} />
-          ))}
-        </View>
-      </View>
-    </View>
-  );
-};
+
 
 const CardComponent = ({
   icon,

@@ -26,7 +26,7 @@ type ModalType = {
 
 export default function AddCustomerModal({ modalOpen, handleModalOpen }: ModalType) {
   // --- 拆解后的 State，保持字段名与原本完全一致 ---
-  
+
   // 基本信息 State
   const [baseInfo, setBaseInfo] = useState({
     companyName: "",
@@ -39,6 +39,7 @@ export default function AddCustomerModal({ modalOpen, handleModalOpen }: ModalTy
   // 项目基本信息 State
   const [projectInfo, setProjectInfo] = useState({
     projectName: "",
+    region: [],
     detailAddr: "",
     cooperationType: "",
     customerType: "",
@@ -81,17 +82,17 @@ export default function AddCustomerModal({ modalOpen, handleModalOpen }: ModalTy
       {/* 头部：保持原本的 UI */}
       <View className="flex justify-between items-center p-4 border-b border-gray-100">
         <Text className="text-lg font-medium text-gray-800">创建客户</Text>
-        <AtIcon 
-          value="close" 
-          size="18" 
-          color={THEME_CONFIG.inactive} 
+        <AtIcon
+          value="close"
+          size="18"
+          color={THEME_CONFIG.inactive}
           onClick={closeModal}
         />
       </View>
 
       <AtModalContent>
         <View className="space-y-6 px-4">
-          
+
           {/* Section: 基本信息 */}
           <View>
             <View className="flex items-center gap-2 mb-3">
@@ -115,8 +116,27 @@ export default function AddCustomerModal({ modalOpen, handleModalOpen }: ModalTy
             </View>
             <View className="bg-white rounded-lg overflow-hidden border border-gray-100">
               <AtInput cursor={-1} name="projectName" title="主营项目" placeholder="请输入" value={projectInfo.projectName} onChange={(v) => updateProjectInfo('projectName', v)} />
-              <AtInput cursor={-1} name="detailAddr" title="详细地址" placeholder="请输入" value={projectInfo.detailAddr} onChange={(v) => updateProjectInfo('detailAddr', v)} />
-              
+              <Picker mode="region" onChange={(e) => updateProjectInfo('region', e.detail.value)}>
+                <AtListItem
+                  title="区域地址"
+                  note={projectInfo.region.join(" / ") || '请选择'}
+                  arrow="right"
+                />
+              </Picker>
+
+              <View className="p-[24px] bg-white border-b border-gray-50">
+                <View className="text-[1.1em] mb-2">详细地址</View>
+                <AtTextarea
+                  className="bg-gray-50 rounded-md p-2 border-none"
+                  value={projectInfo.detailAddr}
+                  onChange={(v) => updateProjectInfo('detailAddr', v)}
+                  maxLength={100}
+                  placeholder="请输入街道、门牌号等详细信息"
+                  height={120} // 可以根据需要调整高度
+                  count={false} // 隐藏计数器保持简洁
+                  
+                />
+              </View>
               <AtList hasBorder={false}>
                 <Picker mode="selector" range={COOPERATION_TYPE_LIST} onChange={(e) => updateProjectInfo('cooperationType', COOPERATION_TYPE_LIST[e.detail.value])}>
                   <AtListItem title="合作类型" extraText={projectInfo.cooperationType || '请选择'} arrow="right" />
@@ -153,7 +173,7 @@ export default function AddCustomerModal({ modalOpen, handleModalOpen }: ModalTy
 
       <AtModalAction>
         <Button onClick={closeModal} className="text-gray-500 bg-transparent border-none">取消</Button>
-        <Button 
+        <Button
           onClick={handleSubmit}
           className="font-bold bg-transparent border-none"
           style={{ color: THEME_CONFIG.active }}

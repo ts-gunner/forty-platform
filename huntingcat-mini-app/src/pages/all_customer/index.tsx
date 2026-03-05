@@ -1,14 +1,15 @@
-import { View, Text, Input } from "@tarojs/components";
+import { View, Text, Input, Button } from "@tarojs/components";
 import "./index.scss";
 import { MockData } from "@/typing";
 import { CUSTOMER_INFO_LIST } from "../../constant/mock";
 import { useNavbar } from "../../context/NavbarContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Taro, { useDidShow, useReachBottom } from "@tarojs/taro";
-import { AtToast } from "taro-ui";
+import { AtDrawer, AtIcon, AtToast } from "taro-ui";
 import { withGlobalLayout } from "../../utils/withGlobalLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { THEME_CONFIG } from "../../constant/global";
 const PAGE_SIZE = 10; // 每页显示条数
 
 function AllCustomerPage() {
@@ -17,10 +18,9 @@ function AllCustomerPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [loadingText, setLoadingText] = useState<string>("加载数据中");
-  const [customerData, setCustomerData] = useState<MockData.CustomerDataType[]>(
-    [],
-  );
- 
+  const [customerData, setCustomerData] = useState<MockData.CustomerDataType[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filterParams, setFilterParams] = useState({ category: '', type: '' });
   useEffect(() => {
     refresh();
   }, []);
@@ -56,34 +56,28 @@ function AllCustomerPage() {
         text={loadingText}
         status="loading"
       ></AtToast>
-      {/* 搜索栏 - 吸顶处理 */}
-      <View
-        className="fixed top-0 left-0 right-0 z-50 px-4 pb-2 w-full box-border"
-        style={{ paddingTop: `${navBarHeight + 8}px` }}
-      >
-        <SearchComponent value={keyword} onInput={setKeyword} />
+
+      <View className=" w-full" style={{ paddingTop: `${navBarHeight}px` }}>
+        <View className="flex items-center gap-2 p-3">
+          <View className="flex-1">
+            <SearchComponent value={keyword} onInput={setKeyword} />
+          </View>
+          <View
+            onClick={() => setIsFilterOpen(true)}
+            className="flex items-center justify-center w-10 h-10 bg-white/40 backdrop-blur-md rounded-full border border-white/40 shadow-sm active:scale-90 transition-all"
+          >
+            <AtIcon value='filter' size='18' color='#4B5563' />
+          </View>
+        </View>
       </View>
 
       <View
         className="p-3 flex flex-col gap-2"
-        style={{ paddingTop: `${navBarHeight + 64}px` }}
       >
         {customerData.map((it, idx) => (
           <CustomerCard key={idx} data={it} />
         ))}
 
-        {/* 分页状态提示
-        <View className="py-6 text-center">
-          {customerData.length === 0 ? (
-            <Text className="text-gray-400 text-sm">暂无匹配客户</Text>
-          ) : hasMore ? (
-            <Text className="text-gray-400 text-xs italic">
-              正在加载更多...
-            </Text>
-          ) : (
-            <Text className="text-gray-300 text-xs">—— 已显示全部客户 ——</Text>
-          )}
-        </View> */}
       </View>
     </View>
   );
@@ -130,8 +124,10 @@ const CustomerCard: React.FC<{ data: MockData.CustomerDataType }> = ({
           </Text>
         </View>
         {/* 标签化处理 */}
-        <View className="ml-4 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">
-          <Text className="text-xs font-medium text-blue-600">{data.tag}</Text>
+        <View className="px-3 py-1  shadow rounded-full flex justify-center items-center" style={{
+          backgroundColor: THEME_CONFIG.active
+        }}>
+          <Text className="text-xs font-medium text-white">{data.tag}</Text>
         </View>
       </View>
 
@@ -154,4 +150,6 @@ const InfoItem = ({ label, value }: { label: string; value: string }) => (
     <Text className="text-gray-600 font-medium">{value}</Text>
   </View>
 );
+
+
 export default withGlobalLayout(AllCustomerPage);

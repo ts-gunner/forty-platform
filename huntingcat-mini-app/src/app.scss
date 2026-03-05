@@ -10,6 +10,7 @@
 @import "~taro-ui/dist/style/components/input.scss";
 @import "~taro-ui/dist/style/components/list.scss";
 @import "~taro-ui/dist/style/components/textarea.scss";
+@import "~taro-ui/dist/style/components/drawer.scss";
 
 .mesh-gradient {
   background-color: #fcfafb;
@@ -19,3 +20,4 @@
     radial-gradient(at 80% 90%, rgba(251, 113, 133, 0.1) 0px, transparent 40%),
     radial-gradient(at 20% 80%, rgba(254, 205, 211, 0.15) 0px, transparent 40%);
 }
+
