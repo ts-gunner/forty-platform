@@ -4,11 +4,14 @@ import { MockData } from "@/typing";
 import { CUSTOMER_INFO_LIST } from "../../constant/mock";
 import { useNavbar } from "../../context/NavbarContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useReachBottom } from "@tarojs/taro";
+import Taro, { useDidShow, useReachBottom } from "@tarojs/taro";
 import { AtToast } from "taro-ui";
+import { withGlobalLayout } from "../../utils/withGlobalLayout";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 const PAGE_SIZE = 10; // 每页显示条数
 
-export default function HomePage() {
+function AllCustomerPage() {
   const { navBarHeight } = useNavbar();
   const [keyword, setKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +20,7 @@ export default function HomePage() {
   const [customerData, setCustomerData] = useState<MockData.CustomerDataType[]>(
     [],
   );
-
+ 
   useEffect(() => {
     refresh();
   }, []);
@@ -25,7 +28,6 @@ export default function HomePage() {
   const refresh = async (pageNumber: number = 1) => {
     setDataLoading(true);
     setCustomerData(CUSTOMER_INFO_LIST);
-    await delay(2000);
     setDataLoading(false);
     return CUSTOMER_INFO_LIST;
   };
@@ -43,12 +45,12 @@ export default function HomePage() {
 
   // 4. 触底加载更多
   useReachBottom(() => {
-    console.log("触碰底部")
+    console.log("触碰底部");
     setCurrentPage((prev) => prev + 1);
   });
 
   return (
-    <View className="mesh-gradient min-h-screen pb-16" >
+    <View className="mesh-gradient min-h-screen pb-16">
       <AtToast
         isOpened={dataLoading}
         text={loadingText}
@@ -152,3 +154,4 @@ const InfoItem = ({ label, value }: { label: string; value: string }) => (
     <Text className="text-gray-600 font-medium">{value}</Text>
   </View>
 );
+export default withGlobalLayout(AllCustomerPage);

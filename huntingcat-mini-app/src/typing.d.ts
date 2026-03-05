@@ -5,6 +5,10 @@ declare namespace ReduxModel {
         routerIndex: number
         tabList: TabBarItem[]
     }
+
+    type CrmModelType = {
+        addCustomerModalOpen: boolean
+    }
 }
 
 

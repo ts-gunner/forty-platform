@@ -3,17 +3,17 @@ import { View, Text, Image } from '@tarojs/components'
 import Taro, { TabBarItem } from '@tarojs/taro'
 import { useDispatch, useSelector } from 'react-redux'
 import "./index.scss"
-import { useNavbar } from '../context/NavbarContext'
 import { ICON_MAP, THEME_CONFIG } from '../constant/global'
 export default function CustomTabBar() {
   const dispatch = useDispatch<Dispatch>()
-  const { tabBarHeight } = useNavbar()
+ 
   const tabList = useSelector((state: RootState) => state.routerModel.tabList)
   const routerIndex = useSelector((state: RootState) => state.routerModel.routerIndex)
   const clickTab = (index: number, path: string) => {
     dispatch.routerModel.setRouteIndex(index)
     Taro.switchTab({ url: path })
   }
+ 
   return (
     <View className='glass-navbar'>
       {
@@ -33,7 +33,9 @@ export default function CustomTabBar() {
                   alignItems: 'center',     // 新增
                   height: '100%'        // 确保高度充满以对齐
                 }}
-              // onClick={handlePlusClick}
+              onClick={() => {
+                dispatch.crmModel.setAddCustomerModalOpen(true)
+              }}
               >
                 <View style={{
                   top: "-20px",        // 让圆球向上偏移

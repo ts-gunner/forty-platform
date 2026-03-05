@@ -9,6 +9,7 @@ import "./app.scss";
 import { NavbarProvider } from "./context/NavbarContext";
 
 const persistor = getPersistor();
+
 function App({ children }: PropsWithChildren<any>) {
   useLaunch(() => {
     console.log("App launched.");

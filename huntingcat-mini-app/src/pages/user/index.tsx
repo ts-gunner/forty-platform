@@ -6,8 +6,9 @@ import { useNavbar } from "../../context/NavbarContext";
 import { ICON_MAP, IMAGE_MAP } from "../../constant/global";
 import { cn } from "../../utils/common";
 import { ROUTERS } from "../../constant/menus";
+import { withGlobalLayout } from "../../utils/withGlobalLayout";
 
-export default function UserPage() {
+function UserPage() {
   const dispatch = useDispatch<Dispatch>();
   const { navBarHeight } = useNavbar();
   const isAuth = useSelector((state: RootState) => state.authModel.isAuth);
@@ -216,3 +217,5 @@ const CardComponent = ({ icon, title, className, onClick }: { icon: React.ReactN
     </View>
   )
 }
+
+export default withGlobalLayout(UserPage)

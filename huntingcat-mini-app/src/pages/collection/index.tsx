@@ -1,7 +1,12 @@
-import React from 'react'
+import { useSelector } from "react-redux";
+import { withGlobalLayout } from "../../utils/withGlobalLayout";
+import React from "react";
+import { RootState } from "@/store";
+import Taro, { useDidShow } from "@tarojs/taro";
 
-export default function CollectionPage() {
-  return (
-    <div>CollectionPage</div>
-  )
+function CollectionPage() {
+
+  return <div>CollectionPage</div>;
 }
+
+export default withGlobalLayout(CollectionPage);
