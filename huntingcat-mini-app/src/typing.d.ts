@@ -21,5 +21,7 @@ declare namespace MockData {
         position: string  // 岗位
         tag: string  // 分类
 
+        key: string
+
     }
 }

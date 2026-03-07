@@ -4,10 +4,11 @@
 
 export const ROUTERS = {
     customer: "/pages/customer/index",
-    all_customer: "/pages/all_customer/index",
+    allCustomer: "/pages/all_customer/index",
     collection: "/pages/collection/index",
     mine: "/pages/user/index",
-    settings: "/pages/settings/index"
+    settings: "/pages/settings/index",
+    customerDetail: "/pages/customer_detail/index",
 }
 
 export default [
@@ -21,7 +22,7 @@ export default [
         text: "全部客户",
         iconPath: "/static/all_customer.png",
         selectedIconPath: "/static/all_customer_active.png",
-        pagePath: ROUTERS.all_customer
+        pagePath: ROUTERS.allCustomer
     },
      {
         text: "收藏",

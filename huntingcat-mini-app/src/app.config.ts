@@ -35,7 +35,9 @@ export default defineAppConfig({
   },
   entryPagePath: "pages/customer/index",
   pages: [
-    'pages/all_customer/index', 'pages/customer/index',  'pages/collection/index',"pages/user/index", "pages/settings/index"
+    'pages/all_customer/index', 'pages/customer/index',  'pages/collection/index',"pages/user/index", "pages/settings/index",
+    "pages/customer_detail/index"
+  
   ],
   window: {
   },
