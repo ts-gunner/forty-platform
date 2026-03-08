@@ -1,14 +1,16 @@
 package core
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/ts-gunner/forty-platform/common/global"
 	"github.com/ts-gunner/forty-platform/common/handler"
 	_ "github.com/ts-gunner/forty-platform/docs"
-	"github.com/ts-gunner/forty-platform/modules/system/controller"
-	"net/http"
+	crmController "github.com/ts-gunner/forty-platform/modules/crm/controller"
+	systemController "github.com/ts-gunner/forty-platform/modules/system/controller"
 )
 
 func initRouter() *gin.Engine {
@@ -27,7 +29,8 @@ func initRouter() *gin.Engine {
 		}),
 	)
 	initSwagger(swaggerGroup)
-	controller.SystemRouter.InitSystemRouter(contextGroup)
+	systemController.SystemRouter.InitSystemRouter(contextGroup)
+	crmController.CrmRouter.InitCrmRouter(contextGroup)
 	return r
 }
 

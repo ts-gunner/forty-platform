@@ -22,7 +22,7 @@ func (UserRoleRelRouter) InitUserRoleRelRouter(moduleName string, router *gin.Ro
 	routerGroup.DELETE("/remove", removeRoleFromUser)
 }
 
-// @Tags userRoleRelController
+// @Tags SystemUserRoleRelController
 // @ID getRolesByUserId
 // @Router /system/userRoleRel/listByUser [get]
 // @Summary 根据用户ID获取角色列表
@@ -47,7 +47,7 @@ func getRolesByUserId(c *gin.Context) {
 	response.Data[[]systemResponse.UserRoleRelVo](result, c)
 }
 
-// @Tags userRoleRelController
+// @Tags SystemUserRoleRelController
 // @ID getUsersByRoleId
 // @Router /system/userRoleRel/listByRole [get]
 // @Summary 根据角色ID获取用户列表
@@ -72,7 +72,7 @@ func getUsersByRoleId(c *gin.Context) {
 	response.Data[[]systemResponse.UserWithRoleVo](result, c)
 }
 
-// @Tags userRoleRelController
+// @Tags SystemUserRoleRelController
 // @ID assignRolesToUser
 // @Router /system/userRoleRel/assign [post]
 // @Summary 为用户分配角色
@@ -96,7 +96,7 @@ func assignRolesToUser(c *gin.Context) {
 	response.Ok(c)
 }
 
-// @Tags userRoleRelController
+// @Tags SystemUserRoleRelController
 // @ID removeRoleFromUser
 // @Router /system/userRoleRel/remove [delete]
 // @Summary 移除用户的角色

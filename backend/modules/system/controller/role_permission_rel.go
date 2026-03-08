@@ -22,7 +22,7 @@ func (RolePermissionRelRouter) InitRolePermissionRelRouter(moduleName string, ro
 	routerGroup.DELETE("/remove", removePermissionFromRole)
 }
 
-// @Tags rolePermissionRelController
+// @Tags SystemRolePermissionRelController
 // @ID getPermissionsByRoleId
 // @Router /system/rolePermissionRel/listByRole [get]
 // @Summary 根据角色ID获取权限列表
@@ -47,7 +47,7 @@ func getPermissionsByRoleId(c *gin.Context) {
 	response.Data[[]systemResponse.RolePermissionRelVo](result, c)
 }
 
-// @Tags rolePermissionRelController
+// @Tags SystemRolePermissionRelController
 // @ID getRolesByPermissionId
 // @Router /system/rolePermissionRel/listByPermission [get]
 // @Summary 根据权限ID获取角色列表
@@ -72,7 +72,7 @@ func getRolesByPermissionId(c *gin.Context) {
 	response.Data[[]systemResponse.RoleWithPermissionVo](result, c)
 }
 
-// @Tags rolePermissionRelController
+// @Tags SystemRolePermissionRelController
 // @ID assignPermissionsToRole
 // @Router /system/rolePermissionRel/assign [post]
 // @Summary 为角色分配权限
@@ -96,7 +96,7 @@ func assignPermissionsToRole(c *gin.Context) {
 	response.Ok(c)
 }
 
-// @Tags rolePermissionRelController
+// @Tags SystemRolePermissionRelController
 // @ID removePermissionFromRole
 // @Router /system/rolePermissionRel/remove [delete]
 // @Summary 移除角色的权限

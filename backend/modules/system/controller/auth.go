@@ -2,9 +2,10 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/jinzhu/copier"
 	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ts-gunner/forty-platform/common/global"
@@ -22,7 +23,7 @@ func (AuthRouter) InitAuthRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup.GET("/getCurrentUser", getCurrentUser)
 }
 
-// @Tags authController
+// @Tags SystemAuthController
 // @ID adminPwdLogin
 // @Router /system/auth/adminPwdLogin [post]
 // @Summary 运营端账号密码登录
@@ -60,7 +61,7 @@ func adminPwdLogin(c *gin.Context) {
 	}
 }
 
-// @Tags authController
+// @Tags SystemAuthController
 // @ID getCurrentUser
 // @Router /system/auth/getCurrentUser [get]
 // @Summary 运营端获取当前用户

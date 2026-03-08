@@ -23,7 +23,7 @@ func (PermissionRouter) InitPermissionRouter(moduleName string, router *gin.Rout
 	routerGroup.DELETE("/delete", deletePermission)
 }
 
-// @Tags permissionController
+// @Tags SystemPermissionController
 // @ID getPermissionList
 // @Router /system/permission/list [get]
 // @Summary 获取权限列表
@@ -52,7 +52,7 @@ func getPermissionList(c *gin.Context) {
 	response.Data[response.PageResult[systemResponse.PermissionVo]](*result, c)
 }
 
-// @Tags permissionController
+// @Tags SystemPermissionController
 // @ID getPermissionDetail
 // @Router /system/permission/detail [get]
 // @Summary 获取权限详情
@@ -76,7 +76,7 @@ func getPermissionDetail(c *gin.Context) {
 	response.Data[systemResponse.PermissionVo](*result, c)
 }
 
-// @Tags permissionController
+// @Tags SystemPermissionController
 // @ID createPermission
 // @Router /system/permission/create [post]
 // @Summary 创建权限
@@ -100,7 +100,7 @@ func createPermission(c *gin.Context) {
 	response.Ok(c)
 }
 
-// @Tags permissionController
+// @Tags SystemPermissionController
 // @ID updatePermission
 // @Router /system/permission/update [put]
 // @Summary 更新权限
@@ -124,7 +124,7 @@ func updatePermission(c *gin.Context) {
 	response.Ok(c)
 }
 
-// @Tags permissionController
+// @Tags SystemPermissionController
 // @ID deletePermission
 // @Router /system/permission/delete [delete]
 // @Summary 删除权限

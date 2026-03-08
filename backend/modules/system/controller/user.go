@@ -24,7 +24,7 @@ func (UserRouter) InitUserRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup.DELETE("/delete", deleteUser)
 }
 
-// @Tags userController
+// @Tags SystemUserController
 // @ID getUserList
 // @Router /system/user/list [get]
 // @Summary 获取用户列表
@@ -54,7 +54,7 @@ func getUserList(c *gin.Context) {
 	response.Data[response.PageResult[systemResponse.UserVo]](*result, c)
 }
 
-// @Tags userController
+// @Tags SystemUserController
 // @ID getUserDetail
 // @Router /system/user/detail [get]
 // @Summary 获取用户详情
@@ -78,7 +78,7 @@ func getUserDetail(c *gin.Context) {
 	response.Data[systemResponse.UserVo](*result, c)
 }
 
-// @Tags userController
+// @Tags SystemUserController
 // @ID createUser
 // @Router /system/user/create [post]
 // @Summary 创建用户
@@ -103,7 +103,7 @@ func createUser(c *gin.Context) {
 	response.Ok(c)
 }
 
-// @Tags userController
+// @Tags SystemUserController
 // @ID updateUser
 // @Router /system/user/update [put]
 // @Summary 更新用户
@@ -127,7 +127,7 @@ func updateUser(c *gin.Context) {
 	response.Ok(c)
 }
 
-// @Tags userController
+// @Tags SystemUserController
 // @ID updatePassword
 // @Router /system/user/resetPwd [put]
 // @Summary 重置密码
@@ -151,7 +151,7 @@ func updatePassword(c *gin.Context) {
 	response.Ok(c)
 }
 
-// @Tags userController
+// @Tags SystemUserController
 // @ID deleteUser
 // @Router /system/user/delete [delete]
 // @Summary 删除用户

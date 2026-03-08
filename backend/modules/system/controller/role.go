@@ -23,7 +23,7 @@ func (RoleRouter) InitRoleRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup.DELETE("/delete", deleteRole)
 }
 
-// @Tags roleController
+// @Tags SystemRoleController
 // @ID getRoleList
 // @Router /system/role/list [get]
 // @Summary 获取角色列表
@@ -51,7 +51,7 @@ func getRoleList(c *gin.Context) {
 	response.Data[response.PageResult[systemResponse.RoleVo]](*result, c)
 }
 
-// @Tags roleController
+// @Tags SystemRoleController
 // @ID getRoleDetail
 // @Router /system/role/detail [get]
 // @Summary 获取角色详情
@@ -75,7 +75,7 @@ func getRoleDetail(c *gin.Context) {
 	response.Data[systemResponse.RoleVo](*result, c)
 }
 
-// @Tags roleController
+// @Tags SystemRoleController
 // @ID createRole
 // @Router /system/role/create [post]
 // @Summary 创建角色
@@ -99,7 +99,7 @@ func createRole(c *gin.Context) {
 	response.Ok(c)
 }
 
-// @Tags roleController
+// @Tags SystemRoleController
 // @ID updateRole
 // @Router /system/role/update [put]
 // @Summary 更新角色
@@ -123,7 +123,7 @@ func updateRole(c *gin.Context) {
 	response.Ok(c)
 }
 
-// @Tags roleController
+// @Tags SystemRoleController
 // @ID deleteRole
 // @Router /system/role/delete [delete]
 // @Summary 删除角色
