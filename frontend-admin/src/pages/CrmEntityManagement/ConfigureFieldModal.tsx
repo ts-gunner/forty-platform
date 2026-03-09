@@ -19,11 +19,12 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
   }, [modalOpen, value]);
   return (
     <Modal
-      title="创建客户实体"
+      title="创建客户实体字段"
       open={modalOpen}
       closable={false}
       className=""
       confirmLoading={btnLoading}
+      destroyOnHidden
       onCancel={() => handleModalOpen(false)}
       onOk={async () => {
         setBtnLoading(true);

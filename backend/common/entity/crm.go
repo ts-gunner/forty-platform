@@ -1,9 +1,5 @@
 package entity
 
-/*
-*
-客户表定义
-*/
 type CrmCustomerEntity struct {
 	Id          int64  `gorm:"primary_key;column:id;AUTO_INCREMENT"`
 	EntityName  string `gorm:"column:entity_name;not null;comment:客户实体表名"`
@@ -15,10 +11,6 @@ type CrmCustomerEntity struct {
 
 func (CrmCustomerEntity) TableName() string { return "crm_customer_entity" }
 
-/*
-*
-客户实体表有哪些字段
-*/
 type CrmCustomerFields struct {
 	Id          int64  `gorm:"primary_key;column:id;AUTO_INCREMENT"`
 	EntityId    int64  `gorm:"column:entity_id;not null;comment:客户实体定义表id"`
@@ -33,10 +25,6 @@ type CrmCustomerFields struct {
 
 func (CrmCustomerFields) TableName() string { return "crm_customer_fields" }
 
-/*
-*
-客户实体表具体数据
-*/
 type CrmCustomerValues struct {
 	Id           int64          `gorm:"primary_key;column:id;AUTO_INCREMENT"`
 	CustomerName string         `gorm:"column:customer_name;not null;comment:固定字段，客户名称"`

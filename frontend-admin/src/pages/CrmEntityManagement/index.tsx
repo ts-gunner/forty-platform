@@ -208,7 +208,9 @@ export default function CrmEntityTablePage() {
       <ConfigureFieldModal 
         modalOpen={configureFieldModalOpen}
         handleModalOpen={handleConfigureFieldModalOpen}
-        onSubmit={async () => {}}
+        onSubmit={async () => {
+          
+        }}
         value={currentRecord}
       />
     </div>

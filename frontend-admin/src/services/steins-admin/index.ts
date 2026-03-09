@@ -3,6 +3,7 @@
 // API 更新时间：
 // API 唯一标识：
 import * as crmEntityController from "./crmEntityController";
+import * as crmEntityFieldController from "./crmEntityFieldController";
 import * as systemAuthController from "./systemAuthController";
 import * as systemPermissionController from "./systemPermissionController";
 import * as systemRoleController from "./systemRoleController";
@@ -11,6 +12,7 @@ import * as systemUserController from "./systemUserController";
 import * as systemUserRoleRelController from "./systemUserRoleRelController";
 export default {
   crmEntityController,
+  crmEntityFieldController,
   systemAuthController,
   systemPermissionController,
   systemRoleController,

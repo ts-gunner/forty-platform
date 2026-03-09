@@ -192,6 +192,74 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/field/addEntityField": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityFieldController"
+                ],
+                "summary": "添加实体表字段",
+                "operationId": "addEntityField",
+                "parameters": [
+                    {
+                        "description": "添加实体表字段",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.AddCrmEntityFieldRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/field/deleteEntityField": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityFieldController"
+                ],
+                "summary": "删除实体表字段",
+                "operationId": "deleteEntityField",
+                "parameters": [
+                    {
+                        "description": "删除实体表字段",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.DeleteCrmEntityFieldRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/field/getFieldsByEntityId": {
             "get": {
                 "produces": [
@@ -215,6 +283,40 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.ApiResult-array_crm_CrmEntityFieldVo"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/field/updateEntityField": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityFieldController"
+                ],
+                "summary": "更新实体表字段",
+                "operationId": "updateEntityField",
+                "parameters": [
+                    {
+                        "description": "更新实体表字段",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.UpdateCrmEntityFieldRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
                         }
                     }
                 }
@@ -1111,6 +1213,40 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "crm.AddCrmEntityFieldRequest": {
+            "type": "object",
+            "required": [
+                "dataType",
+                "entityId",
+                "fieldKey",
+                "fieldName",
+                "isRequired",
+                "sortOrder"
+            ],
+            "properties": {
+                "dataType": {
+                    "type": "integer"
+                },
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "fieldKey": {
+                    "type": "string",
+                    "example": ""
+                },
+                "fieldName": {
+                    "type": "string",
+                    "example": ""
+                },
+                "isRequired": {
+                    "type": "boolean"
+                },
+                "sortOrder": {
+                    "type": "integer"
+                }
+            }
+        },
         "crm.CrmEntityFieldVo": {
             "type": "object",
             "properties": {
@@ -1163,6 +1299,18 @@ const docTemplate = `{
                 }
             }
         },
+        "crm.DeleteCrmEntityFieldRequest": {
+            "type": "object",
+            "required": [
+                "fieldId"
+            ],
+            "properties": {
+                "fieldId": {
+                    "type": "string",
+                    "example": "0"
+                }
+            }
+        },
         "crm.EntityCreateRequest": {
             "type": "object",
             "required": [
@@ -1211,6 +1359,33 @@ const docTemplate = `{
                 },
                 "entityName": {
                     "type": "string"
+                }
+            }
+        },
+        "crm.UpdateCrmEntityFieldRequest": {
+            "type": "object",
+            "required": [
+                "fieldId"
+            ],
+            "properties": {
+                "dataType": {
+                    "type": "integer"
+                },
+                "fieldId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "fieldKey": {
+                    "type": "string"
+                },
+                "fieldName": {
+                    "type": "string"
+                },
+                "isRequired": {
+                    "type": "boolean"
+                },
+                "sortOrder": {
+                    "type": "integer"
                 }
             }
         },

@@ -14,17 +14,6 @@ import (
 
 type EntityService struct{}
 
-func (EntityService) GetEntityById(entityId int64) (*entity.CrmCustomerEntity, error) {
-	var entityObj entity.CrmCustomerEntity
-	if err := global.DB.Where(map[string]any{
-		"id":        entityId,
-		"is_delete": 0,
-	}).First(&entityObj).Error; err != nil {
-		return nil, err
-	}
-	return &entityObj, nil
-}
-
 func (EntityService) GetEntityByCode(entityCode string) (*entity.CrmCustomerEntity, error) {
 	var entityObj entity.CrmCustomerEntity
 	if err := global.DB.Where(map[string]any{
@@ -104,7 +93,7 @@ func (s EntityService) CreateEntity(ctx context.Context, req request.EntityCreat
 }
 
 func (s EntityService) UpdateEntity(ctx context.Context, req request.EntityUpdateRequest) error {
-	entityObj, err := s.GetEntityById(req.EntityId)
+	entityObj, err := entityModel.GetEntityById(req.EntityId)
 	if err != nil {
 		return errors.New("实体不存在")
 	}
@@ -135,7 +124,7 @@ func (s EntityService) UpdateEntity(ctx context.Context, req request.EntityUpdat
 }
 
 func (s EntityService) DeleteEntity(ctx context.Context, entityId int64) error {
-	entityObj, err := s.GetEntityById(entityId)
+	entityObj, err := entityModel.GetEntityById(entityId)
 	if err != nil {
 		return errors.New("实体不存在")
 	}
@@ -148,7 +137,7 @@ func (s EntityService) DeleteEntity(ctx context.Context, entityId int64) error {
 }
 
 func (s EntityService) GetEntityDetail(entityId int64) (*crmResponse.CrmEntityVo, error) {
-	entityObj, err := s.GetEntityById(entityId)
+	entityObj, err := entityModel.GetEntityById(entityId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("实体不存在")

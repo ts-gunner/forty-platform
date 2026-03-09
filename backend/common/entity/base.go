@@ -7,6 +7,7 @@ type BaseRecordField struct {
 	UpdaterId *int64 `json:"updaterId" gorm:"column:updater_id;comment:更新者id"`
 	DeleterId *int64 `json:"deleterId" gorm:"column:deleter_id;comment:删除者id"`
 }
+
 type BaseSchemaField struct {
 	IsDelete   int8       `json:"isDelete" gorm:"default:0;column:is_delete"`
 	CreateTime time.Time  `json:"createTime" gorm:"column:create_time;autoCreateTime:milli"`

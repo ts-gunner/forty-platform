@@ -17,13 +17,13 @@ export async function createEntity(
   });
 }
 
-/** 删除客户实体 DELETE /crm/entity/delete */
+/** 删除客户实体 POST /crm/entity/delete */
 export async function deleteEntity(
   body: API.EntityDeleteRequest,
   options?: { [key: string]: any }
 ) {
   return request<API.ApiResultAny>("/crm/entity/delete", {
-    method: "DELETE",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
@@ -65,13 +65,13 @@ export async function getEntityList(
   );
 }
 
-/** 更新客户实体 PUT /crm/entity/update */
+/** 更新客户实体 POST /crm/entity/update */
 export async function updateEntity(
   body: API.EntityUpdateRequest,
   options?: { [key: string]: any }
 ) {
   return request<API.ApiResultAny>("/crm/entity/update", {
-    method: "PUT",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
