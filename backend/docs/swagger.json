@@ -42,7 +42,7 @@
             }
         },
         "/crm/entity/delete": {
-            "delete": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],
@@ -151,7 +151,7 @@
             }
         },
         "/crm/entity/update": {
-            "put": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],

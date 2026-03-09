@@ -590,7 +590,7 @@ paths:
       tags:
       - CrmEntityController
   /crm/entity/delete:
-    delete:
+    post:
       consumes:
       - application/json
       operationId: deleteEntity
@@ -661,7 +661,7 @@ paths:
       tags:
       - CrmEntityController
   /crm/entity/update:
-    put:
+    post:
       consumes:
       - application/json
       operationId: updateEntity

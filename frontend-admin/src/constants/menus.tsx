@@ -1,4 +1,4 @@
-import { UserCog, Shield, Key, UserCheck, Lock } from "lucide-react";
+import { UserCog, Shield, Key, UserCheck, Lock, Database } from "lucide-react";
 const SIDER_MENUS: Record<string, Sider.NavItem[]> = {
   
   Menu: [
@@ -27,6 +27,11 @@ const SIDER_MENUS: Record<string, Sider.NavItem[]> = {
       icon: <Lock />,
       name: "roleAuthorization",
       path: "/role_authorization",
+    },
+    {
+      icon: <Database />,
+      name: "crmEntityManagement",
+      path: "/crm_entity",
     },
     
   ],

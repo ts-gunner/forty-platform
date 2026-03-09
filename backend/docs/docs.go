@@ -50,7 +50,7 @@ const docTemplate = `{
             }
         },
         "/crm/entity/delete": {
-            "delete": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],
@@ -159,7 +159,7 @@ const docTemplate = `{
             }
         },
         "/crm/entity/update": {
-            "put": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],

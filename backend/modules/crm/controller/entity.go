@@ -19,8 +19,8 @@ func (EntityRouter) InitEntityRouter(moduleName string, router *gin.RouterGroup)
 	routerGroup.GET("/list", getEntityList)
 	routerGroup.GET("/detail", getEntityDetail)
 	routerGroup.POST("/create", createEntity)
-	routerGroup.PUT("/update", updateEntity)
-	routerGroup.DELETE("/delete", deleteEntity)
+	routerGroup.POST("/update", updateEntity)
+	routerGroup.POST("/delete", deleteEntity)
 }
 
 // @Tags CrmEntityController
@@ -101,7 +101,7 @@ func createEntity(c *gin.Context) {
 
 // @Tags CrmEntityController
 // @ID updateEntity
-// @Router /crm/entity/update [put]
+// @Router /crm/entity/update [post]
 // @Summary 更新客户实体
 // @Accept json
 // @Produce json
@@ -125,7 +125,7 @@ func updateEntity(c *gin.Context) {
 
 // @Tags CrmEntityController
 // @ID deleteEntity
-// @Router /crm/entity/delete [delete]
+// @Router /crm/entity/delete [post]
 // @Summary 删除客户实体
 // @Accept json
 // @Produce json
