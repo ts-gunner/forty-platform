@@ -1,4 +1,23 @@
 definitions:
+  crm.CrmEntityFieldVo:
+    properties:
+      dataType:
+        type: integer
+      displayName:
+        type: string
+      entityId:
+        example: "0"
+        type: string
+      fieldKey:
+        type: string
+      id:
+        example: "0"
+        type: string
+      isRequired:
+        type: boolean
+      sortOrder:
+        type: integer
+    type: object
   crm.CrmEntityVo:
     properties:
       createTime:
@@ -55,6 +74,19 @@ definitions:
         example: 200
         type: integer
       data: {}
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-array_crm_CrmEntityFieldVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/crm.CrmEntityFieldVo'
+        type: array
       msg:
         example: 成功
         type: string
@@ -682,6 +714,24 @@ paths:
       summary: 更新客户实体
       tags:
       - CrmEntityController
+  /crm/field/getFieldsByEntityId:
+    get:
+      operationId: getFieldsByEntityId
+      parameters:
+      - description: 实体表id
+        in: query
+        name: entityId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-array_crm_CrmEntityFieldVo'
+      summary: 根据实体表id获取实体表字段
+      tags:
+      - CrmEntityFieldController
   /system/auth/adminPwdLogin:
     post:
       consumes:

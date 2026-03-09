@@ -11,13 +11,15 @@ const MODULE_NAME = "crm"
 
 type RouterGroup struct {
 	EntityRouter
+	EntityFieldRouter
 }
 
 func (rg *RouterGroup) InitCrmRouter(r *gin.RouterGroup) {
 	rg.InitEntityRouter(MODULE_NAME, r)
-
+	rg.InitEntityFieldRouter(MODULE_NAME, r)
 }
 
 var (
-	entityService = service.CrmService.EntityService
+	entityService      = service.CrmService.EntityService
+	entityFieldService = service.CrmService.EntityFieldService
 )

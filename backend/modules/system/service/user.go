@@ -97,8 +97,8 @@ func (UserService) GetUserList(req request.UserListRequest) (*response.PageResul
 	}, nil
 }
 
-func (UserService) CreateUser(ctx context.Context, req request.UserCreateRequest) error {
-	existUser, _ := UserService{}.GetSysUserByAccount(req.Account)
+func (s UserService) CreateUser(ctx context.Context, req request.UserCreateRequest) error {
+	existUser, _ := s.GetSysUserByAccount(req.Account)
 	if existUser != nil {
 		return errors.New("账号已存在")
 	}
@@ -123,8 +123,8 @@ func (UserService) CreateUser(ctx context.Context, req request.UserCreateRequest
 	return global.DB.Create(&user).Error
 }
 
-func (UserService) UpdateUser(ctx context.Context, req request.UserUpdateRequest) error {
-	user, err := UserService{}.GetSysUserById(req.UserId)
+func (s UserService) UpdateUser(ctx context.Context, req request.UserUpdateRequest) error {
+	user, err := s.GetSysUserById(req.UserId)
 	if err != nil {
 		return errors.New("用户不存在")
 	}
@@ -153,8 +153,8 @@ func (UserService) UpdateUser(ctx context.Context, req request.UserUpdateRequest
 	return global.DB.Model(user).Updates(updates).Error
 }
 
-func (UserService) ResetPassword(ctx context.Context, req request.UserResetPwdRequest) error {
-	user, err := UserService{}.GetSysUserById(req.UserId)
+func (s UserService) ResetPassword(ctx context.Context, req request.UserResetPwdRequest) error {
+	user, err := s.GetSysUserById(req.UserId)
 	if err != nil {
 		return errors.New("用户不存在")
 	}
@@ -167,8 +167,8 @@ func (UserService) ResetPassword(ctx context.Context, req request.UserResetPwdRe
 	}).Error
 }
 
-func (UserService) DeleteUser(ctx context.Context, userId int64) error {
-	user, err := UserService{}.GetSysUserById(userId)
+func (s UserService) DeleteUser(ctx context.Context, userId int64) error {
+	user, err := s.GetSysUserById(userId)
 	if err != nil {
 		return errors.New("用户不存在")
 	}
@@ -188,8 +188,8 @@ func (UserService) DeleteUser(ctx context.Context, userId int64) error {
 	}).Error
 }
 
-func (UserService) GetUserDetail(userId int64) (*systemResponse.UserVo, error) {
-	user, err := UserService{}.GetSysUserById(userId)
+func (s UserService) GetUserDetail(userId int64) (*systemResponse.UserVo, error) {
+	user, err := s.GetSysUserById(userId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("用户不存在")

@@ -192,6 +192,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/field/getFieldsByEntityId": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityFieldController"
+                ],
+                "summary": "根据实体表id获取实体表字段",
+                "operationId": "getFieldsByEntityId",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "实体表id",
+                        "name": "entityId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-array_crm_CrmEntityFieldVo"
+                        }
+                    }
+                }
+            }
+        },
         "/system/auth/adminPwdLogin": {
             "post": {
                 "consumes": [
@@ -1083,6 +1111,34 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "crm.CrmEntityFieldVo": {
+            "type": "object",
+            "properties": {
+                "dataType": {
+                    "type": "integer"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "fieldKey": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "isRequired": {
+                    "type": "boolean"
+                },
+                "sortOrder": {
+                    "type": "integer"
+                }
+            }
+        },
         "crm.CrmEntityVo": {
             "type": "object",
             "properties": {
@@ -1166,6 +1222,25 @@ const docTemplate = `{
                     "example": 200
                 },
                 "data": {},
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "response.ApiResult-array_crm_CrmEntityFieldVo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/crm.CrmEntityFieldVo"
+                    }
+                },
                 "msg": {
                     "type": "string",
                     "example": "成功"

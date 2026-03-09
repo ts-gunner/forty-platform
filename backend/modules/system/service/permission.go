@@ -89,9 +89,9 @@ func (PermissionService) GetPermissionList(req request.PermissionListRequest) (*
 	}, nil
 }
 
-func (PermissionService) CreatePermission(ctx context.Context, req request.PermissionCreateRequest) error {
+func (s PermissionService) CreatePermission(ctx context.Context, req request.PermissionCreateRequest) error {
 	if req.Perms != "" {
-		existPerm, _ := PermissionService{}.GetPermissionByPerms(req.Perms)
+		existPerm, _ := s.GetPermissionByPerms(req.Perms)
 		if existPerm != nil {
 			return errors.New("权限标识已存在")
 		}
@@ -110,8 +110,8 @@ func (PermissionService) CreatePermission(ctx context.Context, req request.Permi
 	return global.DB.Create(&permission).Error
 }
 
-func (PermissionService) UpdatePermission(ctx context.Context, req request.PermissionUpdateRequest) error {
-	permission, err := PermissionService{}.GetPermissionById(req.PermissionId)
+func (s PermissionService) UpdatePermission(ctx context.Context, req request.PermissionUpdateRequest) error {
+	permission, err := s.GetPermissionById(req.PermissionId)
 	if err != nil {
 		return errors.New("权限不存在")
 	}
@@ -124,7 +124,7 @@ func (PermissionService) UpdatePermission(ctx context.Context, req request.Permi
 		updates["type"] = *req.Type
 	}
 	if req.Perms != "" {
-		existPerm, _ := PermissionService{}.GetPermissionByPerms(req.Perms)
+		existPerm, _ := s.GetPermissionByPerms(req.Perms)
 		if existPerm != nil && existPerm.PermissionId != req.PermissionId {
 			return errors.New("权限标识已存在")
 		}
@@ -141,8 +141,8 @@ func (PermissionService) UpdatePermission(ctx context.Context, req request.Permi
 	return global.DB.Model(permission).Updates(updates).Error
 }
 
-func (PermissionService) DeletePermission(ctx context.Context, permissionId int64) error {
-	permission, err := PermissionService{}.GetPermissionById(permissionId)
+func (s PermissionService) DeletePermission(ctx context.Context, permissionId int64) error {
+	permission, err := s.GetPermissionById(permissionId)
 	if err != nil {
 		return errors.New("权限不存在")
 	}
@@ -154,8 +154,8 @@ func (PermissionService) DeletePermission(ctx context.Context, permissionId int6
 	}).Error
 }
 
-func (PermissionService) GetPermissionDetail(permissionId int64) (*systemResponse.PermissionVo, error) {
-	permission, err := PermissionService{}.GetPermissionById(permissionId)
+func (s PermissionService) GetPermissionDetail(permissionId int64) (*systemResponse.PermissionVo, error) {
+	permission, err := s.GetPermissionById(permissionId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("权限不存在")

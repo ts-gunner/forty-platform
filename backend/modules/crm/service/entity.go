@@ -85,8 +85,8 @@ func (EntityService) GetCrmEntityList(req request.GetEntityListRequest) (*respon
 	}, nil
 }
 
-func (EntityService) CreateEntity(ctx context.Context, req request.EntityCreateRequest) error {
-	existEntity, _ := EntityService{}.GetEntityByCode(req.EntityCode)
+func (s EntityService) CreateEntity(ctx context.Context, req request.EntityCreateRequest) error {
+	existEntity, _ := s.GetEntityByCode(req.EntityCode)
 	if existEntity != nil {
 		return errors.New("实体标识已存在")
 	}
@@ -103,8 +103,8 @@ func (EntityService) CreateEntity(ctx context.Context, req request.EntityCreateR
 	return global.DB.Create(&entityObj).Error
 }
 
-func (EntityService) UpdateEntity(ctx context.Context, req request.EntityUpdateRequest) error {
-	entityObj, err := EntityService{}.GetEntityById(req.EntityId)
+func (s EntityService) UpdateEntity(ctx context.Context, req request.EntityUpdateRequest) error {
+	entityObj, err := s.GetEntityById(req.EntityId)
 	if err != nil {
 		return errors.New("实体不存在")
 	}
@@ -114,7 +114,7 @@ func (EntityService) UpdateEntity(ctx context.Context, req request.EntityUpdateR
 		updates["entity_name"] = req.EntityName
 	}
 	if req.EntityCode != "" {
-		existEntity, _ := EntityService{}.GetEntityByCode(req.EntityCode)
+		existEntity, _ := s.GetEntityByCode(req.EntityCode)
 		if existEntity != nil && existEntity.Id != req.EntityId {
 			return errors.New("实体标识已存在")
 		}
@@ -134,8 +134,8 @@ func (EntityService) UpdateEntity(ctx context.Context, req request.EntityUpdateR
 	return global.DB.Model(entityObj).Updates(updates).Error
 }
 
-func (EntityService) DeleteEntity(ctx context.Context, entityId int64) error {
-	entityObj, err := EntityService{}.GetEntityById(entityId)
+func (s EntityService) DeleteEntity(ctx context.Context, entityId int64) error {
+	entityObj, err := s.GetEntityById(entityId)
 	if err != nil {
 		return errors.New("实体不存在")
 	}
@@ -147,8 +147,8 @@ func (EntityService) DeleteEntity(ctx context.Context, entityId int64) error {
 	}).Error
 }
 
-func (EntityService) GetEntityDetail(entityId int64) (*crmResponse.CrmEntityVo, error) {
-	entityObj, err := EntityService{}.GetEntityById(entityId)
+func (s EntityService) GetEntityDetail(entityId int64) (*crmResponse.CrmEntityVo, error) {
+	entityObj, err := s.GetEntityById(entityId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("实体不存在")

@@ -85,8 +85,8 @@ func (RoleService) GetRoleList(req request.RoleListRequest) (*response.PageResul
 	}, nil
 }
 
-func (RoleService) CreateRole(ctx context.Context, req request.RoleCreateRequest) error {
-	existRole, _ := RoleService{}.GetRoleByKey(req.RoleKey)
+func (s RoleService) CreateRole(ctx context.Context, req request.RoleCreateRequest) error {
+	existRole, _ := s.GetRoleByKey(req.RoleKey)
 	if existRole != nil {
 		return errors.New("角色标识已存在")
 	}
@@ -103,8 +103,8 @@ func (RoleService) CreateRole(ctx context.Context, req request.RoleCreateRequest
 	return global.DB.Create(&role).Error
 }
 
-func (RoleService) UpdateRole(ctx context.Context, req request.RoleUpdateRequest) error {
-	role, err := RoleService{}.GetRoleById(req.RoleId)
+func (s RoleService) UpdateRole(ctx context.Context, req request.RoleUpdateRequest) error {
+	role, err := s.GetRoleById(req.RoleId)
 	if err != nil {
 		return errors.New("角色不存在")
 	}
@@ -114,7 +114,7 @@ func (RoleService) UpdateRole(ctx context.Context, req request.RoleUpdateRequest
 		updates["role_name"] = req.RoleName
 	}
 	if req.RoleKey != "" {
-		existRole, _ := RoleService{}.GetRoleByKey(req.RoleKey)
+		existRole, _ := s.GetRoleByKey(req.RoleKey)
 		if existRole != nil && existRole.RoleId != req.RoleId {
 			return errors.New("角色标识已存在")
 		}
@@ -131,8 +131,8 @@ func (RoleService) UpdateRole(ctx context.Context, req request.RoleUpdateRequest
 	return global.DB.Model(role).Updates(updates).Error
 }
 
-func (RoleService) DeleteRole(ctx context.Context, roleId int64) error {
-	role, err := RoleService{}.GetRoleById(roleId)
+func (s RoleService) DeleteRole(ctx context.Context, roleId int64) error {
+	role, err := s.GetRoleById(roleId)
 	if err != nil {
 		return errors.New("角色不存在")
 	}
@@ -144,8 +144,8 @@ func (RoleService) DeleteRole(ctx context.Context, roleId int64) error {
 	}).Error
 }
 
-func (RoleService) GetRoleDetail(roleId int64) (*systemResponse.RoleVo, error) {
-	role, err := RoleService{}.GetRoleById(roleId)
+func (s RoleService) GetRoleDetail(roleId int64) (*systemResponse.RoleVo, error) {
+	role, err := s.GetRoleById(roleId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("角色不存在")
