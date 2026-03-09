@@ -9,7 +9,7 @@ import SIDER_MENUS from "@/constants/menus";
 import { Dispatch } from "@/store";
 import {useDispatch} from "react-redux"
 import { SIGN_IN } from "@/constants/config";
-import { getCurrentUser } from "@/services/steins-admin/authController";
+import { getCurrentUser } from "@/services/steins-admin/systemAuthController";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();

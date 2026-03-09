@@ -1,4 +1,4 @@
-import { createPermission, deletePermission, getPermissionList, updatePermission } from "@/services/steins-admin/permissionController";
+import { createPermission, deletePermission, getPermissionList, updatePermission } from "@/services/steins-admin/systemPermissionController";
 import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";

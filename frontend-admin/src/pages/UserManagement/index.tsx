@@ -1,4 +1,4 @@
-import { createUser, deleteUser, getUserList, updatePassword, updateUser } from "@/services/steins-admin/userController";
+import { createUser, deleteUser, getUserList, updatePassword, updateUser } from "@/services/steins-admin/systemUserController";
 import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";

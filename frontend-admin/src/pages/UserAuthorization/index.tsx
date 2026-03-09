@@ -1,6 +1,6 @@
-import { getRoleList } from "@/services/steins-admin/roleController";
-import { getUserList } from "@/services/steins-admin/userController";
-import { assignRolesToUser, getRolesByUserId } from "@/services/steins-admin/userRoleRelController";
+import { getRoleList } from "@/services/steins-admin/systemRoleController";
+import { getUserList } from "@/services/steins-admin/systemUserController";
+import { assignRolesToUser, getRolesByUserId } from "@/services/steins-admin/systemUserRoleRelController";
 import { handleResponse, Notify } from "@/utils/common";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Modal, Transfer } from "antd";

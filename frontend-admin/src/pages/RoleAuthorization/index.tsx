@@ -1,6 +1,6 @@
-import { getPermissionList } from "@/services/steins-admin/permissionController";
-import { getRoleList } from "@/services/steins-admin/roleController";
-import { assignPermissionsToRole, getPermissionsByRoleId } from "@/services/steins-admin/rolePermissionRelController";
+import { getPermissionList } from "@/services/steins-admin/systemPermissionController";
+import { getRoleList } from "@/services/steins-admin/systemRoleController";
+import { assignPermissionsToRole, getPermissionsByRoleId } from "@/services/steins-admin/systemRolePermissionRelController";
 import { handleResponse, Notify } from "@/utils/common";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Modal, Transfer, TransferProps } from "antd";

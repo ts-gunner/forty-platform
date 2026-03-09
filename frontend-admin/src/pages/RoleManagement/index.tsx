@@ -1,4 +1,4 @@
-import { createRole, deleteRole, getRoleList, updateRole } from "@/services/steins-admin/roleController";
+import { createRole, deleteRole, getRoleList, updateRole } from "@/services/steins-admin/systemRoleController";
 import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";

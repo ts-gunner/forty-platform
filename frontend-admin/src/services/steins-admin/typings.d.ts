@@ -38,6 +38,18 @@ declare namespace API {
     msg?: string;
   };
 
+  type ApiResultCrmCrmEntityVo = {
+    code?: number;
+    data?: CrmEntityVo;
+    msg?: string;
+  };
+
+  type ApiResultResponsePageResultCrmCrmEntityVo = {
+    code?: number;
+    data?: PageResultCrmCrmEntityVo;
+    msg?: string;
+  };
+
   type ApiResultResponsePageResultSystemPermissionVo = {
     code?: number;
     data?: PageResultSystemPermissionVo;
@@ -84,6 +96,48 @@ declare namespace API {
     code?: number;
     data?: UserVo;
     msg?: string;
+  };
+
+  type CrmEntityVo = {
+    createTime?: string;
+    description?: string;
+    entityCode?: string;
+    entityId?: string;
+    entityName?: string;
+    updateTime?: string;
+  };
+
+  type EntityCreateRequest = {
+    description?: string;
+    entityCode: string;
+    entityName: string;
+  };
+
+  type EntityDeleteRequest = {
+    entityId: string;
+  };
+
+  type EntityUpdateRequest = {
+    description?: string;
+    entityCode?: string;
+    entityId: string;
+    entityName?: string;
+  };
+
+  type getEntityDetailParams = {
+    /** 实体ID */
+    entityId: number;
+  };
+
+  type getEntityListParams = {
+    /** 页码 */
+    pageNum?: number;
+    /** 每页数量 */
+    pageSize?: number;
+    /** 实体名称 */
+    entityName?: string;
+    /** 实体标识 */
+    entityCode?: string;
   };
 
   type getPermissionDetailParams = {
@@ -158,6 +212,13 @@ declare namespace API {
   type getUsersByRoleIdParams = {
     /** 角色ID */
     roleId: string;
+  };
+
+  type PageResultCrmCrmEntityVo = {
+    list?: CrmEntityVo[];
+    pageNum?: number;
+    pageSize?: number;
+    total?: number;
   };
 
   type PageResultSystemPermissionVo = {

@@ -1,7 +1,7 @@
 import SignInForm from "@/components/auth/SignInForm";
 import PageMeta from "@/components/common/PageMeta";
 import config from "@/constants/config";
-import { adminPwdLogin } from "@/services/steins-admin/authController";
+import { adminPwdLogin } from "@/services/steins-admin/systemAuthController";
 import { encryptMd5, handleResponse, Notify } from "@/utils/common";
 import { useState } from "react";
 import { useIntl } from "react-intl";
