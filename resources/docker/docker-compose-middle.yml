@@ -1,8 +1,8 @@
-name: steins-middle
+name: forty-middle
 services:
   
   mysql:
-    container_name: steins-mysql
+    container_name: forty-mysql
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/mysql:8.0.41
     ports:
       - 3306:3306
@@ -16,7 +16,7 @@ services:
       - middle-network
 
   redis:
-    container_name: steins-redis
+    container_name: forty-redis
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:5.0.14
     ports:
       - "6379:6379"
