@@ -15,6 +15,183 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/crm/entity/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityController"
+                ],
+                "summary": "创建客户实体",
+                "operationId": "createEntity",
+                "parameters": [
+                    {
+                        "description": "创建实体参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.EntityCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/entity/delete": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityController"
+                ],
+                "summary": "删除客户实体",
+                "operationId": "deleteEntity",
+                "parameters": [
+                    {
+                        "description": "删除实体参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.EntityDeleteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/entity/detail": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityController"
+                ],
+                "summary": "获取客户实体详情",
+                "operationId": "getEntityDetail",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "实体ID",
+                        "name": "entityId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-crm_CrmEntityVo"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/entity/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityController"
+                ],
+                "summary": "获取客户实体列表",
+                "operationId": "getEntityList",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageNum",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "实体名称",
+                        "name": "entityName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "实体标识",
+                        "name": "entityCode",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-response_PageResult-crm_CrmEntityVo"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/entity/update": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityController"
+                ],
+                "summary": "更新客户实体",
+                "operationId": "updateEntity",
+                "parameters": [
+                    {
+                        "description": "更新实体参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.EntityUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/system/auth/adminPwdLogin": {
             "post": {
                 "consumes": [
@@ -24,7 +201,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "authController"
+                    "SystemAuthController"
                 ],
                 "summary": "运营端账号密码登录",
                 "operationId": "adminPwdLogin",
@@ -55,7 +232,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "authController"
+                    "SystemAuthController"
                 ],
                 "summary": "运营端获取当前用户",
                 "operationId": "getCurrentUser",
@@ -78,7 +255,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "permissionController"
+                    "SystemPermissionController"
                 ],
                 "summary": "创建权限",
                 "operationId": "createPermission",
@@ -112,7 +289,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "permissionController"
+                    "SystemPermissionController"
                 ],
                 "summary": "删除权限",
                 "operationId": "deletePermission",
@@ -143,7 +320,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "permissionController"
+                    "SystemPermissionController"
                 ],
                 "summary": "获取权限详情",
                 "operationId": "getPermissionDetail",
@@ -172,7 +349,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "permissionController"
+                    "SystemPermissionController"
                 ],
                 "summary": "获取权限列表",
                 "operationId": "getPermissionList",
@@ -227,7 +404,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "permissionController"
+                    "SystemPermissionController"
                 ],
                 "summary": "更新权限",
                 "operationId": "updatePermission",
@@ -261,7 +438,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "roleController"
+                    "SystemRoleController"
                 ],
                 "summary": "创建角色",
                 "operationId": "createRole",
@@ -295,7 +472,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "roleController"
+                    "SystemRoleController"
                 ],
                 "summary": "删除角色",
                 "operationId": "deleteRole",
@@ -326,7 +503,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "roleController"
+                    "SystemRoleController"
                 ],
                 "summary": "获取角色详情",
                 "operationId": "getRoleDetail",
@@ -355,7 +532,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "roleController"
+                    "SystemRoleController"
                 ],
                 "summary": "获取角色列表",
                 "operationId": "getRoleList",
@@ -404,7 +581,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "roleController"
+                    "SystemRoleController"
                 ],
                 "summary": "更新角色",
                 "operationId": "updateRole",
@@ -438,7 +615,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "rolePermissionRelController"
+                    "SystemRolePermissionRelController"
                 ],
                 "summary": "为角色分配权限",
                 "operationId": "assignPermissionsToRole",
@@ -469,7 +646,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "rolePermissionRelController"
+                    "SystemRolePermissionRelController"
                 ],
                 "summary": "根据权限ID获取角色列表",
                 "operationId": "getRolesByPermissionId",
@@ -498,7 +675,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "rolePermissionRelController"
+                    "SystemRolePermissionRelController"
                 ],
                 "summary": "根据角色ID获取权限列表",
                 "operationId": "getPermissionsByRoleId",
@@ -530,7 +707,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "rolePermissionRelController"
+                    "SystemRolePermissionRelController"
                 ],
                 "summary": "移除角色的权限",
                 "operationId": "removePermissionFromRole",
@@ -564,7 +741,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "userController"
+                    "SystemUserController"
                 ],
                 "summary": "创建用户",
                 "operationId": "createUser",
@@ -598,7 +775,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "userController"
+                    "SystemUserController"
                 ],
                 "summary": "删除用户",
                 "operationId": "deleteUser",
@@ -629,7 +806,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "userController"
+                    "SystemUserController"
                 ],
                 "summary": "获取用户详情",
                 "operationId": "getUserDetail",
@@ -658,7 +835,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "userController"
+                    "SystemUserController"
                 ],
                 "summary": "获取用户列表",
                 "operationId": "getUserList",
@@ -719,7 +896,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "userController"
+                    "SystemUserController"
                 ],
                 "summary": "重置密码",
                 "operationId": "updatePassword",
@@ -753,7 +930,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "userController"
+                    "SystemUserController"
                 ],
                 "summary": "更新用户",
                 "operationId": "updateUser",
@@ -787,7 +964,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "userRoleRelController"
+                    "SystemUserRoleRelController"
                 ],
                 "summary": "为用户分配角色",
                 "operationId": "assignRolesToUser",
@@ -818,7 +995,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "userRoleRelController"
+                    "SystemUserRoleRelController"
                 ],
                 "summary": "根据角色ID获取用户列表",
                 "operationId": "getUsersByRoleId",
@@ -847,7 +1024,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "userRoleRelController"
+                    "SystemUserRoleRelController"
                 ],
                 "summary": "根据用户ID获取角色列表",
                 "operationId": "getRolesByUserId",
@@ -879,7 +1056,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "userRoleRelController"
+                    "SystemUserRoleRelController"
                 ],
                 "summary": "移除用户的角色",
                 "operationId": "removeRoleFromUser",
@@ -906,6 +1083,81 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "crm.CrmEntityVo": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "entityCode": {
+                    "type": "string"
+                },
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "entityName": {
+                    "type": "string"
+                },
+                "updateTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "crm.EntityCreateRequest": {
+            "type": "object",
+            "required": [
+                "entityCode",
+                "entityName"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "entityCode": {
+                    "type": "string"
+                },
+                "entityName": {
+                    "type": "string"
+                }
+            }
+        },
+        "crm.EntityDeleteRequest": {
+            "type": "object",
+            "required": [
+                "entityId"
+            ],
+            "properties": {
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
+                }
+            }
+        },
+        "crm.EntityUpdateRequest": {
+            "type": "object",
+            "required": [
+                "entityId"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "entityCode": {
+                    "type": "string"
+                },
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "entityName": {
+                    "type": "string"
+                }
+            }
+        },
         "response.ApiResult-any": {
             "type": "object",
             "properties": {
@@ -989,6 +1241,38 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/system.UserWithRoleVo"
                     }
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "response.ApiResult-crm_CrmEntityVo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/crm.CrmEntityVo"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "response.ApiResult-response_PageResult-crm_CrmEntityVo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/response.PageResult-crm_CrmEntityVo"
                 },
                 "msg": {
                     "type": "string",
@@ -1121,6 +1405,26 @@ const docTemplate = `{
                 "msg": {
                     "type": "string",
                     "example": "成功"
+                }
+            }
+        },
+        "response.PageResult-crm_CrmEntityVo": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/crm.CrmEntityVo"
+                    }
+                },
+                "pageNum": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

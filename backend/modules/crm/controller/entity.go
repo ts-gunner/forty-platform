@@ -16,19 +16,24 @@ type EntityRouter struct{}
 
 func (EntityRouter) InitEntityRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup := router.Group(fmt.Sprintf("/%s/entity", moduleName))
-	routerGroup.GET("/getCrmEntities", getCrmEntities)
+	routerGroup.GET("/list", getEntityList)
+	routerGroup.GET("/detail", getEntityDetail)
+	routerGroup.POST("/create", createEntity)
+	routerGroup.PUT("/update", updateEntity)
+	routerGroup.DELETE("/delete", deleteEntity)
 }
 
 // @Tags CrmEntityController
-// @ID getCrmEntities
-// @Router /crm/entity/getCrmEntities [post]
-// @Summary 查看客户实体表信息（非字段信息）
+// @ID getEntityList
+// @Router /crm/entity/list [get]
+// @Summary 获取客户实体列表
 // @Produce json
 // @Param pageNum query int false "页码" in:query
 // @Param pageSize query int false "每页数量" in:query
-// @Param EntityName query string false "实体名称" in:query
+// @Param entityName query string false "实体名称" in:query
+// @Param entityCode query string false "实体标识" in:query
 // @Success 200 {object} response.ApiResult[response.PageResult[crmResponse.CrmEntityVo]]
-func getCrmEntities(c *gin.Context) {
+func getEntityList(c *gin.Context) {
 	var req request.GetEntityListRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
 		global.Logger.Error("参数校验异常", zap.Any("request", req))
@@ -36,12 +41,108 @@ func getCrmEntities(c *gin.Context) {
 		return
 	}
 
-	// todo: 获取实体信息
 	result, err := entityService.GetCrmEntityList(req)
 	if err != nil {
-		global.Logger.Error("获取客户实体表信息失败", zap.Error(err))
-		response.Fail(http.StatusInternalServerError, fmt.Sprintf("获取客户实体表信息失败:%v", err), c)
+		global.Logger.Error("获取客户实体列表失败", zap.Error(err))
+		response.Fail(http.StatusInternalServerError, fmt.Sprintf("获取客户实体列表失败: %v", err), c)
 		return
 	}
+
 	response.Data[response.PageResult[crmResponse.CrmEntityVo]](*result, c)
+}
+
+// @Tags CrmEntityController
+// @ID getEntityDetail
+// @Router /crm/entity/detail [get]
+// @Summary 获取客户实体详情
+// @Produce json
+// @Param entityId query int true "实体ID" in:query
+// @Success 200 {object} response.ApiResult[crmResponse.CrmEntityVo]
+func getEntityDetail(c *gin.Context) {
+	var req request.EntityDetailRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		global.Logger.Error("参数校验异常", zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	result, err := entityService.GetEntityDetail(req.EntityId)
+	if err != nil {
+		response.Fail(http.StatusBadRequest, err.Error(), c)
+		return
+	}
+
+	response.Data[crmResponse.CrmEntityVo](*result, c)
+}
+
+// @Tags CrmEntityController
+// @ID createEntity
+// @Router /crm/entity/create [post]
+// @Summary 创建客户实体
+// @Accept json
+// @Produce json
+// @Param request body request.EntityCreateRequest true "创建实体参数"
+// @Success 200 {object} response.ApiResult[any]
+func createEntity(c *gin.Context) {
+	var req request.EntityCreateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		global.Logger.Error("参数校验异常", zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	if err := entityService.CreateEntity(c.Request.Context(), req); err != nil {
+		response.Fail(http.StatusBadRequest, err.Error(), c)
+		return
+	}
+
+	response.Ok(c)
+}
+
+// @Tags CrmEntityController
+// @ID updateEntity
+// @Router /crm/entity/update [put]
+// @Summary 更新客户实体
+// @Accept json
+// @Produce json
+// @Param request body request.EntityUpdateRequest true "更新实体参数"
+// @Success 200 {object} response.ApiResult[any]
+func updateEntity(c *gin.Context) {
+	var req request.EntityUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		global.Logger.Error("参数校验异常", zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	if err := entityService.UpdateEntity(c.Request.Context(), req); err != nil {
+		response.Fail(http.StatusBadRequest, err.Error(), c)
+		return
+	}
+
+	response.Ok(c)
+}
+
+// @Tags CrmEntityController
+// @ID deleteEntity
+// @Router /crm/entity/delete [delete]
+// @Summary 删除客户实体
+// @Accept json
+// @Produce json
+// @Param request body request.EntityDeleteRequest true "删除实体参数"
+// @Success 200 {object} response.ApiResult[any]
+func deleteEntity(c *gin.Context) {
+	var req request.EntityDeleteRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		global.Logger.Error("参数校验异常", zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	if err := entityService.DeleteEntity(c.Request.Context(), req.EntityId); err != nil {
+		response.Fail(http.StatusBadRequest, err.Error(), c)
+		return
+	}
+
+	response.Ok(c)
 }

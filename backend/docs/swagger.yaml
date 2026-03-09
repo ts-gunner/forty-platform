@@ -1,4 +1,54 @@
 definitions:
+  crm.CrmEntityVo:
+    properties:
+      createTime:
+        type: string
+      description:
+        type: string
+      entityCode:
+        type: string
+      entityId:
+        example: "0"
+        type: string
+      entityName:
+        type: string
+      updateTime:
+        type: string
+    type: object
+  crm.EntityCreateRequest:
+    properties:
+      description:
+        type: string
+      entityCode:
+        type: string
+      entityName:
+        type: string
+    required:
+    - entityCode
+    - entityName
+    type: object
+  crm.EntityDeleteRequest:
+    properties:
+      entityId:
+        example: "0"
+        type: string
+    required:
+    - entityId
+    type: object
+  crm.EntityUpdateRequest:
+    properties:
+      description:
+        type: string
+      entityCode:
+        type: string
+      entityId:
+        example: "0"
+        type: string
+      entityName:
+        type: string
+    required:
+    - entityId
+    type: object
   response.ApiResult-any:
     properties:
       code:
@@ -57,6 +107,28 @@ definitions:
         items:
           $ref: '#/definitions/system.UserWithRoleVo'
         type: array
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-crm_CrmEntityVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/crm.CrmEntityVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-response_PageResult-crm_CrmEntityVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/response.PageResult-crm_CrmEntityVo'
       msg:
         example: 成功
         type: string
@@ -148,6 +220,19 @@ definitions:
       msg:
         example: 成功
         type: string
+    type: object
+  response.PageResult-crm_CrmEntityVo:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/crm.CrmEntityVo'
+        type: array
+      pageNum:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
     type: object
   response.PageResult-system_PermissionVo:
     properties:
@@ -482,6 +567,121 @@ info:
   title: 四零专属管理后台
   version: "1.0"
 paths:
+  /crm/entity/create:
+    post:
+      consumes:
+      - application/json
+      operationId: createEntity
+      parameters:
+      - description: 创建实体参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.EntityCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 创建客户实体
+      tags:
+      - CrmEntityController
+  /crm/entity/delete:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteEntity
+      parameters:
+      - description: 删除实体参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.EntityDeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 删除客户实体
+      tags:
+      - CrmEntityController
+  /crm/entity/detail:
+    get:
+      operationId: getEntityDetail
+      parameters:
+      - description: 实体ID
+        in: query
+        name: entityId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-crm_CrmEntityVo'
+      summary: 获取客户实体详情
+      tags:
+      - CrmEntityController
+  /crm/entity/list:
+    get:
+      operationId: getEntityList
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 实体名称
+        in: query
+        name: entityName
+        type: string
+      - description: 实体标识
+        in: query
+        name: entityCode
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-response_PageResult-crm_CrmEntityVo'
+      summary: 获取客户实体列表
+      tags:
+      - CrmEntityController
+  /crm/entity/update:
+    put:
+      consumes:
+      - application/json
+      operationId: updateEntity
+      parameters:
+      - description: 更新实体参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.EntityUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 更新客户实体
+      tags:
+      - CrmEntityController
   /system/auth/adminPwdLogin:
     post:
       consumes:
@@ -503,7 +703,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-string'
       summary: 运营端账号密码登录
       tags:
-      - authController
+      - SystemAuthController
   /system/auth/getCurrentUser:
     get:
       operationId: getCurrentUser
@@ -516,7 +716,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-system_AdminLoginUserVo'
       summary: 运营端获取当前用户
       tags:
-      - authController
+      - SystemAuthController
   /system/permission/create:
     post:
       consumes:
@@ -538,7 +738,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 创建权限
       tags:
-      - permissionController
+      - SystemPermissionController
   /system/permission/delete:
     delete:
       consumes:
@@ -560,7 +760,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 删除权限
       tags:
-      - permissionController
+      - SystemPermissionController
   /system/permission/detail:
     get:
       operationId: getPermissionDetail
@@ -579,7 +779,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-system_PermissionVo'
       summary: 获取权限详情
       tags:
-      - permissionController
+      - SystemPermissionController
   /system/permission/list:
     get:
       operationId: getPermissionList
@@ -613,7 +813,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-response_PageResult-system_PermissionVo'
       summary: 获取权限列表
       tags:
-      - permissionController
+      - SystemPermissionController
   /system/permission/update:
     put:
       consumes:
@@ -635,7 +835,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 更新权限
       tags:
-      - permissionController
+      - SystemPermissionController
   /system/role/create:
     post:
       consumes:
@@ -657,7 +857,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 创建角色
       tags:
-      - roleController
+      - SystemRoleController
   /system/role/delete:
     delete:
       consumes:
@@ -679,7 +879,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 删除角色
       tags:
-      - roleController
+      - SystemRoleController
   /system/role/detail:
     get:
       operationId: getRoleDetail
@@ -698,7 +898,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-system_RoleVo'
       summary: 获取角色详情
       tags:
-      - roleController
+      - SystemRoleController
   /system/role/list:
     get:
       operationId: getRoleList
@@ -728,7 +928,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-response_PageResult-system_RoleVo'
       summary: 获取角色列表
       tags:
-      - roleController
+      - SystemRoleController
   /system/role/update:
     put:
       consumes:
@@ -750,7 +950,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 更新角色
       tags:
-      - roleController
+      - SystemRoleController
   /system/rolePermissionRel/assign:
     post:
       consumes:
@@ -772,7 +972,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 为角色分配权限
       tags:
-      - rolePermissionRelController
+      - SystemRolePermissionRelController
   /system/rolePermissionRel/listByPermission:
     get:
       operationId: getRolesByPermissionId
@@ -791,7 +991,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-array_system_RoleWithPermissionVo'
       summary: 根据权限ID获取角色列表
       tags:
-      - rolePermissionRelController
+      - SystemRolePermissionRelController
   /system/rolePermissionRel/listByRole:
     get:
       operationId: getPermissionsByRoleId
@@ -810,7 +1010,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-array_system_RolePermissionRelVo'
       summary: 根据角色ID获取权限列表
       tags:
-      - rolePermissionRelController
+      - SystemRolePermissionRelController
   /system/rolePermissionRel/remove:
     delete:
       consumes:
@@ -832,7 +1032,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 移除角色的权限
       tags:
-      - rolePermissionRelController
+      - SystemRolePermissionRelController
   /system/user/create:
     post:
       consumes:
@@ -854,7 +1054,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 创建用户
       tags:
-      - userController
+      - SystemUserController
   /system/user/delete:
     delete:
       consumes:
@@ -876,7 +1076,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 删除用户
       tags:
-      - userController
+      - SystemUserController
   /system/user/detail:
     get:
       operationId: getUserDetail
@@ -895,7 +1095,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-system_UserVo'
       summary: 获取用户详情
       tags:
-      - userController
+      - SystemUserController
   /system/user/list:
     get:
       operationId: getUserList
@@ -933,7 +1133,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-response_PageResult-system_UserVo'
       summary: 获取用户列表
       tags:
-      - userController
+      - SystemUserController
   /system/user/resetPwd:
     put:
       consumes:
@@ -955,7 +1155,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 重置密码
       tags:
-      - userController
+      - SystemUserController
   /system/user/update:
     put:
       consumes:
@@ -977,7 +1177,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 更新用户
       tags:
-      - userController
+      - SystemUserController
   /system/userRoleRel/assign:
     post:
       consumes:
@@ -999,7 +1199,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 为用户分配角色
       tags:
-      - userRoleRelController
+      - SystemUserRoleRelController
   /system/userRoleRel/listByRole:
     get:
       operationId: getUsersByRoleId
@@ -1018,7 +1218,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-array_system_UserWithRoleVo'
       summary: 根据角色ID获取用户列表
       tags:
-      - userRoleRelController
+      - SystemUserRoleRelController
   /system/userRoleRel/listByUser:
     get:
       operationId: getRolesByUserId
@@ -1037,7 +1237,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-array_system_UserRoleRelVo'
       summary: 根据用户ID获取角色列表
       tags:
-      - userRoleRelController
+      - SystemUserRoleRelController
   /system/userRoleRel/remove:
     delete:
       consumes:
@@ -1059,5 +1259,5 @@ paths:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 移除用户的角色
       tags:
-      - userRoleRelController
+      - SystemUserRoleRelController
 swagger: "2.0"

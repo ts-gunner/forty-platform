@@ -3,14 +3,14 @@ mysql:
     port: "3306"
     db-name: forty_dev
     username: root
-    password: "root"
+    password: "123456"
     max-idle-conns: 10
     max-open-conns: 100
 
 redis:
     port: "6379"
     host: ${FORTY_APP_REDIS_HOST:127.0.0.1}
-    password: "123456"
+    password: ""
     db: 8
 
 servlet:
