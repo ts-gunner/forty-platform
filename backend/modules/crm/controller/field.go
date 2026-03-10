@@ -45,7 +45,7 @@ func getFieldsByEntityId(c *gin.Context) {
 
 // @Tags CrmEntityFieldController
 // @ID upsertEntityField
-// @Router /crm/field/addEntityField [post]
+// @Router /crm/field/upsertEntityField [post]
 // @Summary 更新实体表所有字段
 // @Accept json
 // @Produce json
@@ -58,7 +58,7 @@ func upsertEntityField(c *gin.Context) {
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return
 	}
-	if err := entityFieldService.AddEntityField(c.Request.Context(), req); err != nil {
+	if err := entityFieldService.UpsertEntityField(c.Request.Context(), req); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}

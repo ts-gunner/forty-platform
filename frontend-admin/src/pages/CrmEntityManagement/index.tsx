@@ -8,6 +8,8 @@ import { useRef, useState } from "react";
 import CreateEntityModal from "./CreateEntityModal";
 import UpdateEntityModal from "./UpdateEntityModal";
 import ConfigureFieldModal from "./ConfigureFieldModal";
+import PageMeta from "@/components/common/PageMeta";
+import config from "@/constants/config";
 
 export default function CrmEntityTablePage() {
   const actionRef = useRef<ActionType>();
@@ -112,6 +114,7 @@ export default function CrmEntityTablePage() {
 
   return (
     <div>
+       <PageMeta title={`${config.title} | 客户信息管理`} description={config.description} />
       <ProTable<API.CrmEntityVo, API.getEntityListParams>
         actionRef={actionRef}
         columns={columns}
