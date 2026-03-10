@@ -1,13 +1,4 @@
 declare namespace API {
-  type AddCrmEntityFieldRequest = {
-    dataType: number;
-    entityId: string;
-    fieldKey: string;
-    fieldName: string;
-    isRequired: boolean;
-    sortOrder: number;
-  };
-
   type AdminLoginUserVo = {
     account?: string;
     avatar?: string;
@@ -113,6 +104,16 @@ declare namespace API {
     msg?: string;
   };
 
+  type CrmEntityField = {
+    dataType: number;
+    fieldKey: string;
+    fieldName: string;
+    id?: string;
+    isRequired: boolean;
+    options?: string;
+    sortOrder: number;
+  };
+
   type CrmEntityFieldVo = {
     dataType?: number;
     displayName?: string;
@@ -130,10 +131,6 @@ declare namespace API {
     entityId?: string;
     entityName?: string;
     updateTime?: string;
-  };
-
-  type DeleteCrmEntityFieldRequest = {
-    fieldId: string;
   };
 
   type EntityCreateRequest = {
@@ -353,13 +350,9 @@ declare namespace API {
     roleName?: string;
   };
 
-  type UpdateCrmEntityFieldRequest = {
-    dataType?: number;
-    fieldId: string;
-    fieldKey?: string;
-    fieldName?: string;
-    isRequired?: boolean;
-    sortOrder?: number;
+  type UpsertCrmEntityFieldRequest = {
+    entityId: string;
+    fields: CrmEntityField[];
   };
 
   type UserCreateRequest = {

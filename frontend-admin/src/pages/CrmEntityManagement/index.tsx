@@ -114,7 +114,7 @@ export default function CrmEntityTablePage() {
 
   return (
     <div>
-       <PageMeta title={`${config.title} | 客户信息管理`} description={config.description} />
+      <PageMeta title={`${config.title} | 客户信息管理`} description={config.description} />
       <ProTable<API.CrmEntityVo, API.getEntityListParams>
         actionRef={actionRef}
         columns={columns}
@@ -208,11 +208,11 @@ export default function CrmEntityTablePage() {
         }}
         value={currentRecord}
       />
-      <ConfigureFieldModal 
+      <ConfigureFieldModal
         modalOpen={configureFieldModalOpen}
         handleModalOpen={handleConfigureFieldModalOpen}
         onSubmit={async () => {
-          
+
         }}
         value={currentRecord}
       />

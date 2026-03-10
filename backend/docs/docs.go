@@ -192,74 +192,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/crm/field/addEntityField": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "CrmEntityFieldController"
-                ],
-                "summary": "添加实体表字段",
-                "operationId": "addEntityField",
-                "parameters": [
-                    {
-                        "description": "添加实体表字段",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/crm.AddCrmEntityFieldRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ApiResult-any"
-                        }
-                    }
-                }
-            }
-        },
-        "/crm/field/deleteEntityField": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "CrmEntityFieldController"
-                ],
-                "summary": "删除实体表字段",
-                "operationId": "deleteEntityField",
-                "parameters": [
-                    {
-                        "description": "删除实体表字段",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/crm.DeleteCrmEntityFieldRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ApiResult-any"
-                        }
-                    }
-                }
-            }
-        },
         "/crm/field/getFieldsByEntityId": {
             "get": {
                 "produces": [
@@ -288,7 +220,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/crm/field/updateEntityField": {
+        "/crm/field/upsertEntityField": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -299,16 +231,16 @@ const docTemplate = `{
                 "tags": [
                     "CrmEntityFieldController"
                 ],
-                "summary": "更新实体表字段",
-                "operationId": "updateEntityField",
+                "summary": "更新实体表所有字段",
+                "operationId": "upsertEntityField",
                 "parameters": [
                     {
-                        "description": "更新实体表字段",
+                        "description": "添加实体表字段",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/crm.UpdateCrmEntityFieldRequest"
+                            "$ref": "#/definitions/crm.UpsertCrmEntityFieldRequest"
                         }
                     }
                 ],
@@ -1213,11 +1145,10 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "crm.AddCrmEntityFieldRequest": {
+        "crm.CrmEntityField": {
             "type": "object",
             "required": [
                 "dataType",
-                "entityId",
                 "fieldKey",
                 "fieldName",
                 "isRequired",
@@ -1227,10 +1158,6 @@ const docTemplate = `{
                 "dataType": {
                     "type": "integer"
                 },
-                "entityId": {
-                    "type": "string",
-                    "example": "0"
-                },
                 "fieldKey": {
                     "type": "string",
                     "example": ""
@@ -1239,8 +1166,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": ""
                 },
+                "id": {
+                    "type": "string",
+                    "example": "0"
+                },
                 "isRequired": {
                     "type": "boolean"
+                },
+                "options": {
+                    "type": "string"
                 },
                 "sortOrder": {
                     "type": "integer"
@@ -1299,18 +1233,6 @@ const docTemplate = `{
                 }
             }
         },
-        "crm.DeleteCrmEntityFieldRequest": {
-            "type": "object",
-            "required": [
-                "fieldId"
-            ],
-            "properties": {
-                "fieldId": {
-                    "type": "string",
-                    "example": "0"
-                }
-            }
-        },
         "crm.EntityCreateRequest": {
             "type": "object",
             "required": [
@@ -1362,30 +1284,22 @@ const docTemplate = `{
                 }
             }
         },
-        "crm.UpdateCrmEntityFieldRequest": {
+        "crm.UpsertCrmEntityFieldRequest": {
             "type": "object",
             "required": [
-                "fieldId"
+                "entityId",
+                "fields"
             ],
             "properties": {
-                "dataType": {
-                    "type": "integer"
-                },
-                "fieldId": {
+                "entityId": {
                     "type": "string",
                     "example": "0"
                 },
-                "fieldKey": {
-                    "type": "string"
-                },
-                "fieldName": {
-                    "type": "string"
-                },
-                "isRequired": {
-                    "type": "boolean"
-                },
-                "sortOrder": {
-                    "type": "integer"
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/crm.CrmEntityField"
+                    }
                 }
             }
         },

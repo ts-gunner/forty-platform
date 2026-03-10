@@ -49,10 +49,10 @@ func getFieldsByEntityId(c *gin.Context) {
 // @Summary 更新实体表所有字段
 // @Accept json
 // @Produce json
-// @Param request body request.AddCrmEntityFieldRequest true "添加实体表字段"
+// @Param request body request.UpsertCrmEntityFieldRequest true "添加实体表字段"
 // @Success 200 {object} response.ApiResult[any]
 func upsertEntityField(c *gin.Context) {
-	var req request.AddCrmEntityFieldRequest
+	var req request.UpsertCrmEntityFieldRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		global.Logger.Error("参数校验异常", zap.Any("request", req))
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)

@@ -1,24 +1,25 @@
 definitions:
-  crm.AddCrmEntityFieldRequest:
+  crm.CrmEntityField:
     properties:
       dataType:
         type: integer
-      entityId:
-        example: "0"
-        type: string
       fieldKey:
         example: ""
         type: string
       fieldName:
         example: ""
         type: string
+      id:
+        example: "0"
+        type: string
       isRequired:
         type: boolean
+      options:
+        type: string
       sortOrder:
         type: integer
     required:
     - dataType
-    - entityId
     - fieldKey
     - fieldName
     - isRequired
@@ -59,14 +60,6 @@ definitions:
       updateTime:
         type: string
     type: object
-  crm.DeleteCrmEntityFieldRequest:
-    properties:
-      fieldId:
-        example: "0"
-        type: string
-    required:
-    - fieldId
-    type: object
   crm.EntityCreateRequest:
     properties:
       description:
@@ -101,23 +94,18 @@ definitions:
     required:
     - entityId
     type: object
-  crm.UpdateCrmEntityFieldRequest:
+  crm.UpsertCrmEntityFieldRequest:
     properties:
-      dataType:
-        type: integer
-      fieldId:
+      entityId:
         example: "0"
         type: string
-      fieldKey:
-        type: string
-      fieldName:
-        type: string
-      isRequired:
-        type: boolean
-      sortOrder:
-        type: integer
+      fields:
+        items:
+          $ref: '#/definitions/crm.CrmEntityField'
+        type: array
     required:
-    - fieldId
+    - entityId
+    - fields
     type: object
   response.ApiResult-any:
     properties:
@@ -765,50 +753,6 @@ paths:
       summary: 更新客户实体
       tags:
       - CrmEntityController
-  /crm/field/addEntityField:
-    post:
-      consumes:
-      - application/json
-      operationId: addEntityField
-      parameters:
-      - description: 添加实体表字段
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/crm.AddCrmEntityFieldRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ApiResult-any'
-      summary: 添加实体表字段
-      tags:
-      - CrmEntityFieldController
-  /crm/field/deleteEntityField:
-    post:
-      consumes:
-      - application/json
-      operationId: deleteEntityField
-      parameters:
-      - description: 删除实体表字段
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/crm.DeleteCrmEntityFieldRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ApiResult-any'
-      summary: 删除实体表字段
-      tags:
-      - CrmEntityFieldController
   /crm/field/getFieldsByEntityId:
     get:
       operationId: getFieldsByEntityId
@@ -827,18 +771,18 @@ paths:
       summary: 根据实体表id获取实体表字段
       tags:
       - CrmEntityFieldController
-  /crm/field/updateEntityField:
+  /crm/field/upsertEntityField:
     post:
       consumes:
       - application/json
-      operationId: updateEntityField
+      operationId: upsertEntityField
       parameters:
-      - description: 更新实体表字段
+      - description: 添加实体表字段
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/crm.UpdateCrmEntityFieldRequest'
+          $ref: '#/definitions/crm.UpsertCrmEntityFieldRequest'
       produces:
       - application/json
       responses:
@@ -846,7 +790,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.ApiResult-any'
-      summary: 更新实体表字段
+      summary: 更新实体表所有字段
       tags:
       - CrmEntityFieldController
   /system/auth/adminPwdLogin:

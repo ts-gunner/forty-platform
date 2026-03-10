@@ -67,7 +67,7 @@ func (EntityFieldService) GetFieldsByEntityId(entityId int64) ([]response.CrmEnt
 
 field_key是用来查询客户数据时跟customer_values表的json数据做映射，因此一旦设置，就不允许修改。
 */
-func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.AddCrmEntityFieldRequest) error {
+func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.UpsertCrmEntityFieldRequest) error {
 	_, err := entityModel.GetEntityById(req.EntityId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -75,7 +75,7 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Add
 		}
 		return err
 	}
-
+	
 	//var existField entity.CrmCustomerFields
 	//if err := global.DB.Where("entity_id = ? AND field_key = ? AND is_delete = 0", req.EntityId, req.FieldKey).First(&existField).Error; err == nil {
 	//	return errors.New("字段标识已存在")
