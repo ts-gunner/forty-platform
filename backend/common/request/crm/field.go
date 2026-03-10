@@ -5,14 +5,17 @@ type GetCrmEntityFieldRequest struct {
 }
 
 type AddCrmEntityFieldRequest struct {
-	EntityId   int64  `json:"entityId,string" binding:"required"`
+	EntityId int64            `json:"entityId,string" binding:"required"`
+	Fields   []CrmEntityField `json:"fields" binding:"required"`
+}
+type CrmEntityField struct {
 	FieldName  string `json:"fieldName,string" binding:"required"`
 	FieldKey   string `json:"fieldKey,string" binding:"required"`
 	DataType   int    `json:"dataType" binding:"required"`
+	Options    string `json:"options"`
 	IsRequired bool   `json:"isRequired" binding:"required"`
 	SortOrder  int    `json:"sortOrder" binding:"required"`
 }
-
 type UpdateCrmEntityFieldRequest struct {
 	FieldId    int64  `json:"fieldId,string" binding:"required"`
 	FieldName  string `json:"fieldName"`

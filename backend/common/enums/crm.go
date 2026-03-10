@@ -7,4 +7,5 @@ const (
 	CrmDataTypeNumber                              // 数字
 	CrmDataTypeBoolean                             // 布尔值
 	CrmDataTypeDate                                // 日期
+	CrmDataTypePicker                              // 选择器
 )

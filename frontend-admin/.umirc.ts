@@ -27,6 +27,7 @@ export default defineConfig({
     { path: "/user_authorization", component: "./UserAuthorization" },
     { path: "/role_authorization", component: "./RoleAuthorization" },
     { path: "/crm_entity", component: "./CrmEntityManagement" },
+    { path: "/crm_valuecrm_value", component: "./CrmValueManagement" },
     { path: "/blank", component: "./Blank" },
     { path: "/signin", component: "./AuthPages/SignIn", layout: false },
     {

@@ -17,9 +17,7 @@ type EntityFieldRouter struct{}
 func (EntityFieldRouter) InitEntityFieldRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup := router.Group(fmt.Sprintf("/%s/field", moduleName))
 	routerGroup.GET("/getFieldsByEntityId", getFieldsByEntityId)
-	routerGroup.POST("/addEntityField", addEntityField)
-	routerGroup.POST("/updateEntityField", updateEntityField)
-	routerGroup.POST("/deleteEntityField", deleteEntityField)
+	routerGroup.POST("/upsertEntityField", upsertEntityField)
 }
 
 // @Tags CrmEntityFieldController
@@ -46,14 +44,14 @@ func getFieldsByEntityId(c *gin.Context) {
 }
 
 // @Tags CrmEntityFieldController
-// @ID addEntityField
+// @ID upsertEntityField
 // @Router /crm/field/addEntityField [post]
-// @Summary 添加实体表字段
+// @Summary 更新实体表所有字段
 // @Accept json
 // @Produce json
 // @Param request body request.AddCrmEntityFieldRequest true "添加实体表字段"
 // @Success 200 {object} response.ApiResult[any]
-func addEntityField(c *gin.Context) {
+func upsertEntityField(c *gin.Context) {
 	var req request.AddCrmEntityFieldRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		global.Logger.Error("参数校验异常", zap.Any("request", req))
@@ -61,54 +59,6 @@ func addEntityField(c *gin.Context) {
 		return
 	}
 	if err := entityFieldService.AddEntityField(c.Request.Context(), req); err != nil {
-		response.Fail(http.StatusBadRequest, err.Error(), c)
-		return
-	}
-
-	response.Ok(c)
-}
-
-// @Tags CrmEntityFieldController
-// @ID updateEntityField
-// @Router /crm/field/updateEntityField [post]
-// @Summary 更新实体表字段
-// @Accept json
-// @Produce json
-// @Param request body request.UpdateCrmEntityFieldRequest true "更新实体表字段"
-// @Success 200 {object} response.ApiResult[any]
-func updateEntityField(c *gin.Context) {
-	var req request.UpdateCrmEntityFieldRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		global.Logger.Error("参数校验异常", zap.Any("request", req))
-		response.Fail(http.StatusBadRequest, "参数校验异常", c)
-		return
-	}
-
-	if err := entityFieldService.UpdateEntityField(c.Request.Context(), req); err != nil {
-		response.Fail(http.StatusBadRequest, err.Error(), c)
-		return
-	}
-
-	response.Ok(c)
-}
-
-// @Tags CrmEntityFieldController
-// @ID deleteEntityField
-// @Router /crm/field/deleteEntityField [post]
-// @Summary 删除实体表字段
-// @Accept json
-// @Produce json
-// @Param request body request.DeleteCrmEntityFieldRequest true "删除实体表字段"
-// @Success 200 {object} response.ApiResult[any]
-func deleteEntityField(c *gin.Context) {
-	var req request.DeleteCrmEntityFieldRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		global.Logger.Error("参数校验异常", zap.Any("request", req))
-		response.Fail(http.StatusBadRequest, "参数校验异常", c)
-		return
-	}
-
-	if err := entityFieldService.DeleteEntityField(c.Request.Context(), req.FieldId); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}

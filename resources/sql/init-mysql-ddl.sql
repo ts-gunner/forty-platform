@@ -96,7 +96,6 @@ CREATE TABLE IF NOT EXISTS crm_customer_entity (
   `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `delete_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间'
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '客户表定义（如区分企业、个人等）';
-
 DROP TABLE IF EXISTS crm_customer_fields;
 
 CREATE TABLE IF NOT EXISTS crm_customer_fields (
@@ -104,8 +103,9 @@ CREATE TABLE IF NOT EXISTS crm_customer_fields (
   `entity_id`BIGINT UNSIGNED NOT NULL COMMENT '所属逻辑表ID',
   `field_key` VARCHAR(50) NOT NULL COMMENT '程序表字段名(英文)',
   `display_name` VARCHAR(100) NOT NULL COMMENT '字段名解释',
-  `data_type` TINYINT NOT NULL COMMENT '数据类型, text: 1, number: 2, select: 3',
-  `is_required` TINYINT DEFAULT false COMMENT '是否必填',
+  `data_type` TINYINT NOT NULL COMMENT '数据类型, 1-text, 2-number, 3-boolean, 4-picker',
+  `options` JSON COMMENT '当数据类型为选择器时的选项值',
+  `is_required` TINYINT DEFAULT 0 COMMENT '是否必填',
   `sort_order` INT DEFAULT 0 COMMENT '排序顺序',
   `creator_id` BIGINT NOT NULL COMMENT '创建者id',
   `updater_id` BIGINT COMMENT '更新者id',
@@ -115,7 +115,6 @@ CREATE TABLE IF NOT EXISTS crm_customer_fields (
   `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `delete_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间'
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户信息字段配置表';
-
 
 DROP TABLE IF EXISTS crm_customer_values;
 CREATE TABLE IF NOT EXISTS crm_customer_values (

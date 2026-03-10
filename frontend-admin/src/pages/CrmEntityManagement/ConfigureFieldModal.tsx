@@ -1,7 +1,7 @@
+import { PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Select } from "antd";
-import { Space, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
 type ModalProps = {
   modalOpen: boolean;
@@ -12,6 +12,7 @@ type ModalProps = {
 
 export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubmit, value }: ModalProps) {
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
+  const [formRef] = Form.useForm();
   useEffect(() => {
     if (modalOpen && value) {
       // formRef.setFieldsValue(value);
@@ -20,9 +21,8 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
     }
   }, [modalOpen, value]);
   const onFinish = (values: any) => {
-    console.log('Received values of form:', values);
+    console.log("Received values of form:", values);
   };
-
 
   return (
     <Modal
@@ -36,92 +36,91 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
       onCancel={() => handleModalOpen(false)}
       onOk={async () => {
         setBtnLoading(true);
-        // const data = await formRef.validateFields();
+        const data = await formRef.validateFields();
+        console.log(data);
         // await onSubmit(data);
         setBtnLoading(false);
       }}
     >
-      <div className="w-full">
-        <Form
-
-          name="dynamic_form_nest_item"
-          onFinish={onFinish}
-          autoComplete="off"
-        >
-          <Form.List name="users">
+      <div className="w-full h-[70vh] overflow-y-auto custom-scrollbar p-1">
+        <Form form={formRef} name="dynamic_form_nest_item" onFinish={onFinish} autoComplete="off">
+          <Form.List name="customers">
             {(fields, { add, remove }) => (
               <div className="">
                 <div className="flex items-center gap-2 mb-2 px-1">
                   <div className="flex-1 text-gray-500 font-medium text-center">字段Key</div>
                   <div className="flex-1 text-gray-500 font-medium text-center">字段名称</div>
                   <div className="flex-1 text-gray-500 font-medium text-center">数据类型</div>
+                  <div className="flex-1 text-gray-500 font-medium text-center">选项配置</div>
                   <div className="flex-1 text-gray-500 font-medium text-center">是否必填</div>
                   <div className="flex-1 text-gray-500 font-medium text-center">排列顺序</div>
                 </div>
                 {fields.map(({ key, name, ...restField }) => (
                   <div className="flex gap-2 mb-2 px-1">
-                    <Form.Item
-                      name={[name, 'fieldKey']}
-                      className="flex-1"
-                      rules={[{ required: true, message: '缺少字段key' }]}
-                    >
+                    <Form.Item name={[name, "fieldKey"]} className="flex-1" rules={[{ required: true, message: "缺少字段key" }]}>
                       <Input placeholder="填写字段key（仅限英文）" />
                     </Form.Item>
-                    <Form.Item
-                      className="flex-1"
-                      name={[name, 'displayName']}
-                      rules={[{ required: true, message: '缺少字段中文名' }]}
-                    >
+                    <Form.Item className="flex-1" name={[name, "displayName"]} rules={[{ required: true, message: "缺少字段中文名" }]}>
                       <Input placeholder="填写字段中文描述" />
                     </Form.Item>
-                    <Form.Item
-                      className="flex-1"
-                      name={[name, 'dataType']}
-                      initialValue={1}
-                      rules={[{ required: true, message: '数据类型' }]}
-                    >
-                      <Select options={[
-                        {
-                          label: "文本",
-                          value: 1
-                        },
-                        {
-                          label: "数字",
-                          value: 2
-                        },
-                        {
-                          label: "布尔",
-                          value: 3
-                        },
-                      ]} />
+                    <Form.Item className="flex-1" name={[name, "dataType"]} initialValue={1} rules={[{ required: true, message: "数据类型" }]}>
+                      <Select
+                        options={[
+                          {
+                            label: "文本",
+                            value: 1,
+                          },
+                          {
+                            label: "数字",
+                            value: 2,
+                          },
+                          {
+                            label: "布尔",
+                            value: 3,
+                          },
+                          {
+                            label: "选择器",
+                            value: 4,
+                          },
+                        ]}
+                      />
                     </Form.Item>
                     <Form.Item
                       className="flex-1"
-                      initialValue={1}
-                      name={[name, 'isRequired']}
-                      rules={[{ required: true, message: '是否必填' }]}
+                      shouldUpdate={(prevValues, curValues) => {
+                        return prevValues.customers?.[name]?.dataType !== curValues.customers?.[name]?.dataType;
+                      }}
                     >
-                      <Select options={[
-                        {
-                          label: "是",
-                          value: 1
-                        },
-                        {
-                          label: "否",
-                          value: 0
-                        },
-                      ]} />
+                      {({ getFieldValue }) => {
+                        const dataType = getFieldValue(["customers",name, "dataType"]);
+                        return dataType === 4 ? (
+                          <Form.Item {...restField} name={[name, "options"]} rules={[{ required: true, message: "请输入选项内容" }]}>
+                            <Input placeholder="选项(用逗号隔开，如: A,B,C)" />
+                          </Form.Item>
+                        ) : (
+                          <div className="text-gray-300 text-xs italic py-2 text-center">无需配置</div>
+                        );
+                      }}
                     </Form.Item>
-                    <Form.Item
-                      className="flex-1"
-                      name={[name, 'sortOrder']}
-                      initialValue={0}
-                      rules={[{ required: true, message: '排列顺序' }]}
-                    >
+                    <Form.Item className="flex-1" initialValue={1} name={[name, "isRequired"]} rules={[{ required: true, message: "是否必填" }]}>
+                      <Select
+                        options={[
+                          {
+                            label: "是",
+                            value: 1,
+                          },
+                          {
+                            label: "否",
+                            value: 0,
+                          },
+                        ]}
+                      />
+                    </Form.Item>
+                    <Form.Item className="flex-1" name={[name, "sortOrder"]} initialValue={0} rules={[{ required: true, message: "排列顺序" }]}>
                       <Input type="number" />
                     </Form.Item>
                     <Form.Item>
-                      <Trash2 onClick={() => remove(name)} className="w-5 h-5"/>
+                      <Trash2 onClick={() => remove(name)} className="w-5 h-5" />
                     </Form.Item>
                   </div>
                 ))}
