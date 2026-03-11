@@ -99,10 +99,10 @@ CREATE TABLE IF NOT EXISTS crm_customer_entity (
 DROP TABLE IF EXISTS crm_customer_fields;
 
 CREATE TABLE IF NOT EXISTS crm_customer_fields (
-  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `id` BIGINT UNSIGNED PRIMARY KEY,
   `entity_id`BIGINT UNSIGNED NOT NULL COMMENT '所属逻辑表ID',
   `field_key` VARCHAR(50) NOT NULL COMMENT '程序表字段名(英文)',
-  `display_name` VARCHAR(100) NOT NULL COMMENT '字段名解释',
+  `field_name` VARCHAR(100) NOT NULL COMMENT '字段名解释',
   `data_type` TINYINT NOT NULL COMMENT '数据类型, 1-text, 2-number, 3-boolean, 4-picker',
   `options` JSON COMMENT '当数据类型为选择器时的选项值',
   `is_required` TINYINT DEFAULT 0 COMMENT '是否必填',

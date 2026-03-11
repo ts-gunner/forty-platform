@@ -1159,12 +1159,10 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "fieldKey": {
-                    "type": "string",
-                    "example": ""
+                    "type": "string"
                 },
                 "fieldName": {
-                    "type": "string",
-                    "example": ""
+                    "type": "string"
                 },
                 "id": {
                     "type": "string",
@@ -1187,14 +1185,14 @@ const docTemplate = `{
                 "dataType": {
                     "type": "integer"
                 },
-                "displayName": {
-                    "type": "string"
-                },
                 "entityId": {
                     "type": "string",
                     "example": "0"
                 },
                 "fieldKey": {
+                    "type": "string"
+                },
+                "fieldName": {
                     "type": "string"
                 },
                 "id": {

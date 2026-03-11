@@ -10,5 +10,6 @@ type ServiceGroup struct {
 }
 
 var (
-	entityModel = model.CrmModel.CrmEntityModel
+	entityModel      = model.CrmModel.CrmEntityModel
+	entityFieldModel = model.CrmModel.CrmEntityFieldModel
 )

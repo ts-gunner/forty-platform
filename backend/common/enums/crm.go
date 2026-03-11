@@ -6,6 +6,6 @@ const (
 	CrmDataTypeText    CrmFieldDataType = iota + 1 // 文本
 	CrmDataTypeNumber                              // 数字
 	CrmDataTypeBoolean                             // 布尔值
-	CrmDataTypeDate                                // 日期
 	CrmDataTypePicker                              // 选择器
+	CrmDataTypeDate                                // 日期
 )

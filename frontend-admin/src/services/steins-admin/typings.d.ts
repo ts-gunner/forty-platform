@@ -116,9 +116,9 @@ declare namespace API {
 
   type CrmEntityFieldVo = {
     dataType?: number;
-    displayName?: string;
     entityId?: string;
     fieldKey?: string;
+    fieldName?: string;
     id?: string;
     isRequired?: boolean;
     sortOrder?: number;

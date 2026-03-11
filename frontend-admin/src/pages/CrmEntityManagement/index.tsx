@@ -10,6 +10,7 @@ import UpdateEntityModal from "./UpdateEntityModal";
 import ConfigureFieldModal from "./ConfigureFieldModal";
 import PageMeta from "@/components/common/PageMeta";
 import config from "@/constants/config";
+import { upsertEntityField } from "@/services/steins-admin/crmEntityFieldController";
 
 export default function CrmEntityTablePage() {
   const actionRef = useRef<ActionType>();
@@ -211,8 +212,18 @@ export default function CrmEntityTablePage() {
       <ConfigureFieldModal
         modalOpen={configureFieldModalOpen}
         handleModalOpen={handleConfigureFieldModalOpen}
-        onSubmit={async () => {
-
+        onSubmit={async (req: API.UpsertCrmEntityFieldRequest) => {
+            const resp = await upsertEntityField(req)
+            handleResponse({
+              resp,
+              onSuccess: () => {
+                Notify.ok("更新成功")
+                handleConfigureFieldModalOpen(false)
+              },
+              onError: () => {
+                Notify.fail("操作失败:" + resp.msg)
+              }
+            })
         }}
         value={currentRecord}
       />

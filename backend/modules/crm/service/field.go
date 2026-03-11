@@ -2,7 +2,15 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"github.com/samber/lo"
+	"github.com/ts-gunner/forty-platform/common/enums"
+	"github.com/ts-gunner/forty-platform/common/utils"
+	"gorm.io/datatypes"
+	"strings"
+	"time"
 
 	"github.com/jinzhu/copier"
 	"github.com/ts-gunner/forty-platform/common/entity"
@@ -48,15 +56,7 @@ func (EntityFieldService) GetFieldsByEntityId(entityId int64) ([]response.CrmEnt
 
 /*
 *
-1. 原更新逻辑：
-先把entity_id相关所有的字段都物理删除， 再添加所有字段
-
-该方案的风险点：
-1. 数据孤岛风险，当field_key改了名字后，JSON数据的字段没有改变，下次无法通过映射，把旧的key映射出来
-2. 物理删除，会引起id迅速增长，导致所有与其他表关联直接失效。
-3. 并发冲突：当A进行删除逻辑时，B查询时，会没有任何字段。
-
-2. 差分更新 (Upsert / Soft Update)
+差分更新 (Upsert / Soft Update)
 
 逻辑流程：
 查询当前数据库中该 entity_id 已有的字段。
@@ -64,6 +64,16 @@ func (EntityFieldService) GetFieldsByEntityId(entityId int64) ([]response.CrmEnt
 新增：数据库没有，前端有 -> 执行 INSERT。
 更新：数据库有，前端也有 -> 执行 UPDATE（保持 id 不变）。
 删除：数据库有，前端没有 -> 执行 is_delete = 1（逻辑删除）。
+
+请求的字段可能有以下情况:
+ 1. 数据库中存在，但修改了key  --> 直接抛异常，不给修改key
+ 2. 数据库存在，删除该记录  --> 添加到删除队列中
+ 3. 数据库存在，更新了非key和非dataType字段  --> 添加到更新队列中
+ 4. 数据库不存在，新增一条字段信息 --> 添加到插入队列中
+ 5. 数据库存在，新增相同key的字段信息 --> 直接抛异常，不给新增
+ 6. 数据库存在, 更新了dataType字段
+    如果选择了picker(4)，  --> 会影响现有的数据，导致现有数据匹配不上options里的值， 因直接抛异常，不给修改成picker(4)
+    但picker(4) 可以改成其他dataType
 
 field_key是用来查询客户数据时跟customer_values表的json数据做映射，因此一旦设置，就不允许修改。
 */
@@ -75,23 +85,128 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 		}
 		return err
 	}
-	
-	//var existField entity.CrmCustomerFields
-	//if err := global.DB.Where("entity_id = ? AND field_key = ? AND is_delete = 0", req.EntityId, req.FieldKey).First(&existField).Error; err == nil {
-	//	return errors.New("字段标识已存在")
-	//}
-	//
-	//fieldObject := &entity.CrmCustomerFields{
-	//	EntityId:    req.EntityId,
-	//	FieldKey:    req.FieldKey,
-	//	DisplayName: req.FieldName,
-	//	DataType:    req.DataType,
-	//	IsRequired:  req.IsRequired,
-	//	SortOrder:   req.SortOrder,
-	//	BaseRecordField: entity.BaseRecordField{
-	//		CreatorId: utils.GetLoginUserId(ctx),
-	//	},
-	//}
-	//return global.DB.Create(fieldObject).Error
-	return nil
+	return global.DB.Transaction(func(tx *gorm.DB) error {
+		// 找出所有跟entityId相关的字段
+		entityFields := entityFieldModel.GetEntityFieldsByEntityId(tx, req.EntityId)
+		existsFieldKeys := lo.Map(entityFields, func(it *entity.CrmCustomerFields, index int) string {
+			return it.FieldKey
+		})
+		var handledFieldIds []int64
+		var insertFields []entity.CrmCustomerFields
+
+		for _, curField := range req.Fields {
+			// 新增部分
+			if curField.Id == nil {
+				// 处理情况5
+				if lo.Contains(existsFieldKeys, curField.FieldKey) {
+					return errors.New(fmt.Sprintf("字段Key-[%s]已存在，不可重复添加", curField.FieldKey))
+				}
+
+				// 处理情况4
+				var options datatypes.JSON
+				// 如果datatype是4时，需要特殊处理, A,B,C -> ['A', 'B', 'C']
+				if enums.CrmFieldDataType(curField.DataType) == enums.CrmDataTypePicker {
+					optionArr := lo.Map(strings.Split(curField.Options, ","), func(it string, idx int) string {
+						return strings.TrimSpace(it)
+					})
+					optionArr = lo.Filter(optionArr, func(it string, idx int) bool {
+						return it != ""
+					})
+					jsonBytes, _ := json.Marshal(optionArr)
+					options = datatypes.JSON(jsonBytes)
+
+				}
+				newId, _ := global.IdCreator.NextID()
+				insertField := entity.CrmCustomerFields{
+					Id:         newId,
+					EntityId:   req.EntityId,
+					FieldKey:   curField.FieldKey,
+					FieldName:  curField.FieldName,
+					DataType:   curField.DataType,
+					Options:    &options,
+					IsRequired: curField.IsRequired,
+					SortOrder:  curField.SortOrder,
+					BaseRecordField: entity.BaseRecordField{
+						CreatorId: utils.GetLoginUserId(ctx),
+					},
+				}
+				insertFields = append(insertFields, insertField)
+				continue
+			}
+
+			// 更新部分
+			if curField.Id != nil {
+				preField, ok := lo.Find(entityFields, func(item *entity.CrmCustomerFields) bool {
+					return item.Id == *curField.Id
+				})
+				if !ok {
+					return errors.New(fmt.Sprintf("找不到对应[%s]的字段信息", curField.Id))
+				}
+				// 处理情况1
+				if preField.FieldKey != curField.FieldKey {
+					return errors.New(fmt.Sprintf("字段key不允许改变， 发生了改变: [%s] -> [%s]", preField.FieldKey, curField.FieldKey))
+				}
+
+				// 处理情况6
+				if preField.DataType != curField.DataType && enums.CrmFieldDataType(curField.DataType) == enums.CrmDataTypePicker {
+					return errors.New(fmt.Sprintf("字段key[%s]的数据类型发生改变，不能改成【选择器】， 会影响现有的数据", curField.FieldKey))
+				}
+				var options datatypes.JSON
+				// 如果datatype是4时，需要特殊处理, A,B,C -> ['A', 'B', 'C']
+				if enums.CrmFieldDataType(curField.DataType) == enums.CrmDataTypePicker {
+					optionArr := lo.Map(strings.Split(curField.Options, ","), func(it string, idx int) string {
+						return strings.TrimSpace(it)
+					})
+					optionArr = lo.Filter(optionArr, func(it string, idx int) bool {
+						return it != ""
+					})
+					jsonBytes, _ := json.Marshal(optionArr)
+					options = datatypes.JSON(jsonBytes)
+
+				}
+				// 处理情况3
+				if err = tx.Model(preField).Updates(map[string]any{
+					"field_name":  curField.FieldName,
+					"data_type":   curField.DataType,
+					"is_required": curField.IsRequired,
+					"sort_order":  curField.SortOrder,
+					"options":     options,
+					"updater_id":  utils.GetLoginUserId(ctx),
+				}).Error; err != nil {
+					global.Logger.Error("处理更新失败:" + err.Error())
+					return errors.New("处理更新失败")
+				}
+				handledFieldIds = append(handledFieldIds, preField.Id)
+				continue
+			}
+
+		}
+		// 处理情况2, 必须优先删除，再插入，否则会把插入的删除
+		deleteEntities := lo.Filter(entityFields, func(it *entity.CrmCustomerFields, idx int) bool {
+			return !lo.Contains(handledFieldIds, it.Id)
+		})
+		deleteEntityIds := lo.Map(deleteEntities, func(it *entity.CrmCustomerFields, index int) int64 {
+			return it.Id
+		})
+		if len(deleteEntityIds) > 0 {
+			if err = tx.Model(&entity.CrmCustomerFields{}).Where("id IN ?", deleteEntityIds).Updates(map[string]interface{}{
+				"is_delete":   1,
+				"delete_time": time.Now().Local(),
+				"deleter_id":  utils.GetLoginUserId(ctx),
+			}).Error; err != nil {
+				global.Logger.Error("处理删除失败:" + err.Error())
+				return errors.New("处理删除失败")
+			}
+		}
+
+		// 插入
+		if err = tx.CreateInBatches(insertFields, len(insertFields)).Error; err != nil {
+			global.Logger.Error("处理插入失败:" + err.Error())
+			return errors.New("处理插入失败")
+		}
+		// 删除部分
+
+		return nil
+	})
+
 }

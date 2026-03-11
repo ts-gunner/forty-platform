@@ -1,7 +1,7 @@
 package crm
 
 type GetCrmEntityFieldRequest struct {
-	EntityId int64 `json:"entityId,string" binding:"required"`
+	EntityId int64 `form:"entityId,string" binding:"required"`
 }
 
 type UpsertCrmEntityFieldRequest struct {
@@ -10,8 +10,8 @@ type UpsertCrmEntityFieldRequest struct {
 }
 type CrmEntityField struct {
 	Id         *int64 `json:"id,string"`
-	FieldName  string `json:"fieldName,string" binding:"required"`
-	FieldKey   string `json:"fieldKey,string" binding:"required"`
+	FieldName  string `json:"fieldName" binding:"required"`
+	FieldKey   string `json:"fieldKey" binding:"required"`
 	DataType   int    `json:"dataType" binding:"required"`
 	Options    string `json:"options"`
 	IsRequired bool   `json:"isRequired" binding:"required"`

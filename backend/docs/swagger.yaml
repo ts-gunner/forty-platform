@@ -4,10 +4,8 @@ definitions:
       dataType:
         type: integer
       fieldKey:
-        example: ""
         type: string
       fieldName:
-        example: ""
         type: string
       id:
         example: "0"
@@ -29,12 +27,12 @@ definitions:
     properties:
       dataType:
         type: integer
-      displayName:
-        type: string
       entityId:
         example: "0"
         type: string
       fieldKey:
+        type: string
+      fieldName:
         type: string
       id:
         example: "0"
