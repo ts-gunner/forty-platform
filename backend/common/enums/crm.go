@@ -8,4 +8,5 @@ const (
 	CrmDataTypeBoolean                             // 布尔值
 	CrmDataTypePicker                              // 选择器
 	CrmDataTypeDate                                // 日期
+	CrmDataTypeRegion                              // 行政区划
 )

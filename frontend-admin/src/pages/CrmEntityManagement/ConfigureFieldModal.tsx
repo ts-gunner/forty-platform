@@ -88,6 +88,7 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                 id: it.id || null,
                 options: it.options || "",
                 isRequired: Boolean(it.isRequired),
+                sortOrder: Number.parseInt(it.sortOrder)
               };
             }),
           });
@@ -113,8 +114,8 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                 return (
                   <div className="">
                     <div className="flex items-center gap-2 mb-2 px-1">
-                      <div className="flex-1 text-gray-500 font-medium text-center">字段Key</div>
                       <div className="flex-1 text-gray-500 font-medium text-center">字段名称</div>
+                      <div className="flex-1 text-gray-500 font-medium text-center">字段Key</div>
                       <div className="flex-1 text-gray-500 font-medium text-center">数据类型</div>
                       <div className="flex-1 text-gray-500 font-medium text-center">选项配置</div>
                       <div className="flex-1 text-gray-500 font-medium text-center">是否必填</div>
@@ -127,12 +128,13 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                           <Form.Item name={[name, "id"]} hidden>
                             <Input />
                           </Form.Item>
-                          <Form.Item className="flex-1" name={[name, "fieldKey"]} rules={[{ required: true, message: "缺少字段key" }]}>
-                            <Input placeholder="填写字段key（仅限英文）" disabled={Boolean(fieldId)} />
-                          </Form.Item>
                           <Form.Item className="flex-1" name={[name, "fieldName"]} rules={[{ required: true, message: "缺少字段中文名" }]}>
                             <Input placeholder="填写字段中文描述" disabled={name === 0} />
                           </Form.Item>
+                          <Form.Item className="flex-1" name={[name, "fieldKey"]} rules={[{ required: true, message: "缺少字段key" }]}>
+                            <Input placeholder="填写字段key（仅限英文）" disabled={Boolean(fieldId)} />
+                          </Form.Item>
+
                           <Form.Item className="flex-1" name={[name, "dataType"]} initialValue={1} rules={[{ required: true, message: "数据类型" }]}>
                             <Select
                               disabled={Boolean(fieldId)}
@@ -153,6 +155,14 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                                   label: "选择器",
                                   value: 4,
                                 },
+                                 {
+                                  label: "日期",
+                                  value: 5,
+                                },
+                                {
+                                  label: "行政区划",
+                                  value: 6,
+                                }
                               ]}
                             />
                           </Form.Item>
@@ -188,7 +198,7 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                               disabled={name === 0}
                             />
                           </Form.Item>
-                          <Form.Item className="flex-1" name={[name, "sortOrder"]} initialValue={0} rules={[{ required: true, message: "排列顺序" }]}>
+                          <Form.Item className="flex-1" name={[name, "sortOrder"]} initialValue={name} rules={[{ required: true, message: "排列顺序" }]}>
                             <Input type="number" disabled={name === 0} />
                           </Form.Item>
                           <Form.Item>

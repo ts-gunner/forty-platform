@@ -120,6 +120,7 @@ DROP TABLE IF EXISTS crm_customer_values;
 CREATE TABLE IF NOT EXISTS crm_customer_values (
   `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `customer_name` VARCHAR(100) NOT NULL COMMENT '固定字段, 客户名称',
+  `remark` VARCHAR(1000) COMMENT '备注',
   `values` JSON NULL COMMENT '客户数据',
    `creator_id` BIGINT NOT NULL COMMENT '创建者id',
   `updater_id` BIGINT COMMENT '更新者id',

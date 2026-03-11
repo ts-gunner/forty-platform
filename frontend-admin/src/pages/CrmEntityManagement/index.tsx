@@ -1,16 +1,16 @@
+import PageMeta from "@/components/common/PageMeta";
+import config from "@/constants/config";
 import { createEntity, deleteEntity, getEntityList, updateEntity } from "@/services/steins-admin/crmEntityController";
+import { upsertEntityField } from "@/services/steins-admin/crmEntityFieldController";
 import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
-import { Button } from "antd";
+import { Button, Popconfirm } from "antd";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
+import ConfigureFieldModal from "./ConfigureFieldModal";
 import CreateEntityModal from "./CreateEntityModal";
 import UpdateEntityModal from "./UpdateEntityModal";
-import ConfigureFieldModal from "./ConfigureFieldModal";
-import PageMeta from "@/components/common/PageMeta";
-import config from "@/constants/config";
-import { upsertEntityField } from "@/services/steins-admin/crmEntityFieldController";
 
 export default function CrmEntityTablePage() {
   const actionRef = useRef<ActionType>();
@@ -88,26 +88,31 @@ export default function CrmEntityTablePage() {
           >
             更新
           </a>
-
-          <a
-            onClick={async () => {
-              const resp = await deleteEntity({
-                entityId: record.entityId as string,
-              });
-              handleResponse({
-                resp,
-                onSuccess: () => {
-                  Notify.ok("实体已删除");
-                  actionRef.current?.reload();
-                },
-                onError: () => {
-                  Notify.fail("实体删除失败：" + resp.msg);
-                },
-              });
-            }}
+          <Popconfirm
+            title="二次确认删除"
+            description="是否删除该实体表？"
+            onConfirm={async () => {
+                const resp = await deleteEntity({
+                  entityId: record.entityId as string,
+                });
+                handleResponse({
+                  resp,
+                  onSuccess: () => {
+                    Notify.ok("实体已删除");
+                    actionRef.current?.reload();
+                  },
+                  onError: () => {
+                    Notify.fail("实体删除失败：" + resp.msg);
+                  },
+                });
+              }}
           >
-            删除
-          </a>
+            <a
+              
+            >
+              删除
+            </a>
+          </Popconfirm>
         </div>
       ),
     },
@@ -213,17 +218,17 @@ export default function CrmEntityTablePage() {
         modalOpen={configureFieldModalOpen}
         handleModalOpen={handleConfigureFieldModalOpen}
         onSubmit={async (req: API.UpsertCrmEntityFieldRequest) => {
-            const resp = await upsertEntityField(req)
-            handleResponse({
-              resp,
-              onSuccess: () => {
-                Notify.ok("更新成功")
-                handleConfigureFieldModalOpen(false)
-              },
-              onError: () => {
-                Notify.fail("操作失败:" + resp.msg)
-              }
-            })
+          const resp = await upsertEntityField(req);
+          handleResponse({
+            resp,
+            onSuccess: () => {
+              Notify.ok("更新成功");
+              handleConfigureFieldModalOpen(false);
+            },
+            onError: () => {
+              Notify.fail("操作失败:" + resp.msg);
+            },
+          });
         }}
         value={currentRecord}
       />
