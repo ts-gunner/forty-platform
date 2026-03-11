@@ -42,15 +42,23 @@ func (EntityFieldService) GetFieldsByEntityId(entityId int64) ([]response.CrmEnt
 		return nil, err
 	}
 
-	var entityFields []entity.CrmCustomerFields
+	var entityFields []*entity.CrmCustomerFields
 	if err := global.DB.Where("entity_id = ? and is_delete = 0", entityId).Order("sort_order ASC").Find(&entityFields).Error; err != nil {
 		return nil, err
 	}
 
-	var result []response.CrmEntityFieldVo
-	if err := copier.Copy(&result, entityFields); err != nil {
-		return nil, errors.New("该实体复制出现异常: " + err.Error())
-	}
+	result := lo.Map(entityFields, func(it *entity.CrmCustomerFields, idx int) response.CrmEntityFieldVo {
+		var opt = make([]string, 0)
+		if it.Options != nil {
+			_ = json.Unmarshal(*it.Options, &opt)
+		}
+
+		var vo response.CrmEntityFieldVo
+		_ = copier.Copy(&vo, it)
+		vo.Options = strings.Join(opt, ",")
+		return vo
+	})
+
 	return result, nil
 }
 
@@ -71,14 +79,15 @@ func (EntityFieldService) GetFieldsByEntityId(entityId int64) ([]response.CrmEnt
  3. 数据库存在，更新了非key和非dataType字段  --> 添加到更新队列中
  4. 数据库不存在，新增一条字段信息 --> 添加到插入队列中
  5. 数据库存在，新增相同key的字段信息 --> 直接抛异常，不给新增
- 6. 数据库存在, 更新了dataType字段
-    如果选择了picker(4)，  --> 会影响现有的数据，导致现有数据匹配不上options里的值， 因直接抛异常，不给修改成picker(4)
-    但picker(4) 可以改成其他dataType
+ 6. 数据库存在, 更新了dataType字段 --> 直接抛异常，不给修改dataType, 避免数据错乱
+
+7. 数据库已删除，但又插入相同key --> 不允许插入数据， 让用户在垃圾箱中找回
 
 field_key是用来查询客户数据时跟customer_values表的json数据做映射，因此一旦设置，就不允许修改。
 */
 func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.UpsertCrmEntityFieldRequest) error {
 	_, err := entityModel.GetEntityById(req.EntityId)
+	userId := utils.GetLoginUserId(ctx)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return errors.New("实体不存在")
@@ -86,9 +95,9 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 		return err
 	}
 	return global.DB.Transaction(func(tx *gorm.DB) error {
-		// 找出所有跟entityId相关的字段
-		entityFields := entityFieldModel.GetEntityFieldsByEntityId(tx, req.EntityId)
-		existsFieldKeys := lo.Map(entityFields, func(it *entity.CrmCustomerFields, index int) string {
+		// 找出所有跟entityId相关的字段(包含逻辑删除)
+		entityFields := entityFieldModel.GetEntityFieldsByEntityIdWithDeleted(tx, req.EntityId)
+		existsFieldKeys := lo.Map(entityFields, func(it entity.CrmCustomerFields, index int) string {
 			return it.FieldKey
 		})
 		var handledFieldIds []int64
@@ -97,9 +106,9 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 		for _, curField := range req.Fields {
 			// 新增部分
 			if curField.Id == nil {
-				// 处理情况5
+				// 处理情况5, 7
 				if lo.Contains(existsFieldKeys, curField.FieldKey) {
-					return errors.New(fmt.Sprintf("字段Key-[%s]已存在，不可重复添加", curField.FieldKey))
+					return errors.New(fmt.Sprintf("字段Key-[%s]已存在，不可重复添加或在回收站中找回", curField.FieldKey))
 				}
 
 				// 处理情况4
@@ -127,7 +136,7 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 					IsRequired: curField.IsRequired,
 					SortOrder:  curField.SortOrder,
 					BaseRecordField: entity.BaseRecordField{
-						CreatorId: utils.GetLoginUserId(ctx),
+						CreatorId: userId,
 					},
 				}
 				insertFields = append(insertFields, insertField)
@@ -136,7 +145,7 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 
 			// 更新部分
 			if curField.Id != nil {
-				preField, ok := lo.Find(entityFields, func(item *entity.CrmCustomerFields) bool {
+				preField, ok := lo.Find(entityFields, func(item entity.CrmCustomerFields) bool {
 					return item.Id == *curField.Id
 				})
 				if !ok {
@@ -148,8 +157,8 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 				}
 
 				// 处理情况6
-				if preField.DataType != curField.DataType && enums.CrmFieldDataType(curField.DataType) == enums.CrmDataTypePicker {
-					return errors.New(fmt.Sprintf("字段key[%s]的数据类型发生改变，不能改成【选择器】， 会影响现有的数据", curField.FieldKey))
+				if preField.DataType != curField.DataType {
+					return errors.New(fmt.Sprintf("字段 [%s] 的数据类型不允许修改。如需更改，请删除原字段并新增。", curField.FieldName))
 				}
 				var options datatypes.JSON
 				// 如果datatype是4时，需要特殊处理, A,B,C -> ['A', 'B', 'C']
@@ -171,7 +180,7 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 					"is_required": curField.IsRequired,
 					"sort_order":  curField.SortOrder,
 					"options":     options,
-					"updater_id":  utils.GetLoginUserId(ctx),
+					"updater_id":  userId,
 				}).Error; err != nil {
 					global.Logger.Error("处理更新失败:" + err.Error())
 					return errors.New("处理更新失败")
@@ -182,17 +191,17 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 
 		}
 		// 处理情况2, 必须优先删除，再插入，否则会把插入的删除
-		deleteEntities := lo.Filter(entityFields, func(it *entity.CrmCustomerFields, idx int) bool {
+		deleteEntities := lo.Filter(entityFields, func(it entity.CrmCustomerFields, idx int) bool {
 			return !lo.Contains(handledFieldIds, it.Id)
 		})
-		deleteEntityIds := lo.Map(deleteEntities, func(it *entity.CrmCustomerFields, index int) int64 {
+		deleteEntityIds := lo.Map(deleteEntities, func(it entity.CrmCustomerFields, index int) int64 {
 			return it.Id
 		})
 		if len(deleteEntityIds) > 0 {
 			if err = tx.Model(&entity.CrmCustomerFields{}).Where("id IN ?", deleteEntityIds).Updates(map[string]interface{}{
 				"is_delete":   1,
 				"delete_time": time.Now().Local(),
-				"deleter_id":  utils.GetLoginUserId(ctx),
+				"deleter_id":  userId,
 			}).Error; err != nil {
 				global.Logger.Error("处理删除失败:" + err.Error())
 				return errors.New("处理删除失败")
