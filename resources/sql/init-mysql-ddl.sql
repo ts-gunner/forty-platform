@@ -119,6 +119,7 @@ CREATE TABLE IF NOT EXISTS crm_customer_fields (
 DROP TABLE IF EXISTS crm_customer_values;
 CREATE TABLE IF NOT EXISTS crm_customer_values (
   `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `entity_id`BIGINT UNSIGNED NOT NULL COMMENT '所属逻辑表ID',
   `customer_name` VARCHAR(100) NOT NULL COMMENT '固定字段, 客户名称',
   `remark` VARCHAR(1000) COMMENT '备注',
   `values` JSON NULL COMMENT '客户数据',

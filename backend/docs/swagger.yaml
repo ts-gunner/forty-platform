@@ -39,8 +39,36 @@ definitions:
         type: string
       isRequired:
         type: boolean
+      options:
+        type: string
       sortOrder:
         type: integer
+    type: object
+  crm.CrmEntityValueObjectVo:
+    properties:
+      entity_value:
+        $ref: '#/definitions/response.PageResult-crm_CrmEntityValueVo'
+      entityId:
+        example: "0"
+        type: string
+      field_list:
+        items:
+          $ref: '#/definitions/crm.CrmEntityFieldVo'
+        type: array
+    type: object
+  crm.CrmEntityValueVo:
+    properties:
+      create_time:
+        type: string
+      customer_name:
+        type: string
+      id:
+        example: "0"
+        type: string
+      remark:
+        type: string
+      values:
+        type: string
     type: object
   crm.CrmEntityVo:
     properties:
@@ -180,6 +208,17 @@ definitions:
         example: 成功
         type: string
     type: object
+  response.ApiResult-crm_CrmEntityValueObjectVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/crm.CrmEntityValueObjectVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
   response.ApiResult-crm_CrmEntityVo:
     properties:
       code:
@@ -289,6 +328,19 @@ definitions:
       msg:
         example: 成功
         type: string
+    type: object
+  response.PageResult-crm_CrmEntityValueVo:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/crm.CrmEntityValueVo'
+        type: array
+      pageNum:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
     type: object
   response.PageResult-crm_CrmEntityVo:
     properties:
@@ -789,6 +841,32 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 更新实体表所有字段
+      tags:
+      - CrmEntityFieldController
+  /crm/value/list:
+    get:
+      operationId: getEntityValueList
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 实体表id
+        in: query
+        name: entityId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-crm_CrmEntityValueObjectVo'
+      summary: 获取对应的实体表数据
       tags:
       - CrmEntityFieldController
   /system/auth/adminPwdLogin:

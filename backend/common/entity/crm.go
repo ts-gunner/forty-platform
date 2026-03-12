@@ -30,6 +30,7 @@ func (CrmCustomerFields) TableName() string { return "crm_customer_fields" }
 
 type CrmCustomerValues struct {
 	Id           int64          `gorm:"primary_key;column:id;AUTO_INCREMENT"`
+	EntityId     int64          `gorm:"column:entity_id;not null;comment:客户实体定义表id"`
 	CustomerName string         `gorm:"column:customer_name;not null;comment:固定字段，客户名称"`
 	Remark       string         `gorm:"column:remark;comment:备注"`
 	Values       datatypes.JSON `gorm:"column:values;type:json;null;comment:客户数据"`

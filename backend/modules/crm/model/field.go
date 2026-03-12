@@ -2,6 +2,7 @@ package model
 
 import (
 	"github.com/ts-gunner/forty-platform/common/entity"
+	"github.com/ts-gunner/forty-platform/common/global"
 	"gorm.io/gorm"
 )
 
@@ -11,4 +12,14 @@ func (CrmEntityFieldModel) GetEntityFieldsByEntityIdWithDeleted(tx *gorm.DB, ent
 	var entityFields []entity.CrmCustomerFields
 	tx.Where("entity_id = ?", entityId).Find(&entityFields)
 	return entityFields
+}
+func (CrmEntityFieldModel) GetEntityFieldsByEntityId(tx *gorm.DB, entityId int64) ([]entity.CrmCustomerFields, error) {
+	var entityFields = make([]entity.CrmCustomerFields, 0)
+	if err := global.DB.Where(map[string]any{
+		"entity_id": entityId,
+		"is_delete": 0,
+	}).Find(&entityFields).Error; err != nil {
+		return entityFields, err
+	}
+	return entityFields, nil
 }

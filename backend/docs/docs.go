@@ -254,6 +254,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/value/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityFieldController"
+                ],
+                "summary": "获取对应的实体表数据",
+                "operationId": "getEntityValueList",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageNum",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "实体表id",
+                        "name": "entityId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-crm_CrmEntityValueObjectVo"
+                        }
+                    }
+                }
+            }
+        },
         "/system/auth/adminPwdLogin": {
             "post": {
                 "consumes": [
@@ -1202,8 +1242,50 @@ const docTemplate = `{
                 "isRequired": {
                     "type": "boolean"
                 },
+                "options": {
+                    "type": "string"
+                },
                 "sortOrder": {
                     "type": "integer"
+                }
+            }
+        },
+        "crm.CrmEntityValueObjectVo": {
+            "type": "object",
+            "properties": {
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "entity_value": {
+                    "$ref": "#/definitions/response.PageResult-crm_CrmEntityValueVo"
+                },
+                "field_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/crm.CrmEntityFieldVo"
+                    }
+                }
+            }
+        },
+        "crm.CrmEntityValueVo": {
+            "type": "object",
+            "properties": {
+                "create_time": {
+                    "type": "string"
+                },
+                "customer_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "string"
                 }
             }
         },
@@ -1410,6 +1492,22 @@ const docTemplate = `{
                 }
             }
         },
+        "response.ApiResult-crm_CrmEntityValueObjectVo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/crm.CrmEntityValueObjectVo"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
         "response.ApiResult-crm_CrmEntityVo": {
             "type": "object",
             "properties": {
@@ -1567,6 +1665,26 @@ const docTemplate = `{
                 "msg": {
                     "type": "string",
                     "example": "成功"
+                }
+            }
+        },
+        "response.PageResult-crm_CrmEntityValueVo": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/crm.CrmEntityValueVo"
+                    }
+                },
+                "pageNum": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },
