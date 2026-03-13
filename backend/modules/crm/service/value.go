@@ -1,14 +1,15 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
-
 	"github.com/jinzhu/copier"
 	"github.com/ts-gunner/forty-platform/common/entity"
 	"github.com/ts-gunner/forty-platform/common/global"
 	request "github.com/ts-gunner/forty-platform/common/request/crm"
 	"github.com/ts-gunner/forty-platform/common/response"
 	crmResponse "github.com/ts-gunner/forty-platform/common/response/crm"
+	"go.uber.org/zap"
 )
 
 type EntityValueService struct {
@@ -25,9 +26,6 @@ func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueLi
 	var entityValues []entity.CrmCustomerValues
 	var total int64
 	db := global.DB.Model(&entity.CrmCustomerValues{}).Where("entity_id = ? and is_delete = 0", req.EntityId)
-	if err := db.Count(&total).Error; err != nil {
-		return nil, errors.New("该实体没有任何数据!")
-	}
 	if req.PageNum <= 0 {
 		req.PageNum = 1
 	}
@@ -68,4 +66,30 @@ func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueLi
 			PageSize: req.PageSize,
 		},
 	}, nil
+}
+
+func (EntityValueService) InsertEntityValueData(req request.InsertCrmEntityValueRequest) error {
+	entityObject, err := entityModel.GetEntityById(req.EntityId)
+	if err != nil {
+		return err
+	}
+	if entityObject == nil {
+		return errors.New("该实体不存在")
+	}
+
+	// 找到他的字段
+	//fieldList, err := entityFieldModel.GetEntityFieldsByEntityId(global.DB, req.EntityId)
+	//if err != nil {
+	//	return err
+	//}
+
+	for _, data := range req.Data {
+		var dict map[string]interface{}
+		if err := json.Unmarshal([]byte(data.Values), &dict); err != nil {
+			return err
+		}
+		global.Logger.Info("dict数据:", zap.Any("dict", dict))
+	}
+
+	return nil
 }

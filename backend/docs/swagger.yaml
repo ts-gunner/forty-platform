@@ -44,6 +44,17 @@ definitions:
       sortOrder:
         type: integer
     type: object
+  crm.CrmEntityValueData:
+    properties:
+      customerName:
+        type: string
+      remark:
+        type: string
+      values:
+        type: string
+    required:
+    - customerName
+    type: object
   crm.CrmEntityValueObjectVo:
     properties:
       entity_value:
@@ -118,6 +129,19 @@ definitions:
       entityName:
         type: string
     required:
+    - entityId
+    type: object
+  crm.InsertCrmEntityValueRequest:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/crm.CrmEntityValueData'
+        type: array
+      entityId:
+        example: "0"
+        type: string
+    required:
+    - data
     - entityId
     type: object
   crm.UpsertCrmEntityFieldRequest:
@@ -843,6 +867,28 @@ paths:
       summary: 更新实体表所有字段
       tags:
       - CrmEntityFieldController
+  /crm/value/insert:
+    post:
+      consumes:
+      - application/json
+      operationId: insertEntityValue
+      parameters:
+      - description: 写入实体数据参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.InsertCrmEntityValueRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 插入实体数据
+      tags:
+      - CrmEntityValueController
   /crm/value/list:
     get:
       operationId: getEntityValueList
@@ -868,7 +914,7 @@ paths:
             $ref: '#/definitions/response.ApiResult-crm_CrmEntityValueObjectVo'
       summary: 获取对应的实体表数据
       tags:
-      - CrmEntityFieldController
+      - CrmEntityValueController
   /system/auth/adminPwdLogin:
     post:
       consumes:

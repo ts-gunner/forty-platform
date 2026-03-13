@@ -50,7 +50,7 @@ func (EntityService) GetCrmEntityList(req request.GetEntityListRequest) (*respon
 	}
 
 	offset := (req.PageNum - 1) * req.PageSize
-	if err := db.Order("create_time DESC").Offset(offset).Limit(req.PageSize).Find(&entities).Error; err != nil {
+	if err := db.Offset(offset).Limit(req.PageSize).Find(&entities).Error; err != nil {
 		return nil, err
 	}
 

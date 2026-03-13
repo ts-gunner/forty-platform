@@ -44,6 +44,12 @@ declare namespace API {
     msg?: string;
   };
 
+  type ApiResultCrmCrmEntityValueObjectVo = {
+    code?: number;
+    data?: CrmEntityValueObjectVo;
+    msg?: string;
+  };
+
   type ApiResultCrmCrmEntityVo = {
     code?: number;
     data?: CrmEntityVo;
@@ -121,7 +127,28 @@ declare namespace API {
     fieldName?: string;
     id?: string;
     isRequired?: boolean;
+    options?: string;
     sortOrder?: number;
+  };
+
+  type CrmEntityValueData = {
+    customerName: string;
+    remark?: string;
+    values?: string;
+  };
+
+  type CrmEntityValueObjectVo = {
+    entityId?: string;
+    entity_value?: PageResultCrmCrmEntityValueVo;
+    field_list?: CrmEntityFieldVo[];
+  };
+
+  type CrmEntityValueVo = {
+    create_time?: string;
+    customer_name?: string;
+    id?: string;
+    remark?: string;
+    values?: string;
   };
 
   type CrmEntityVo = {
@@ -164,6 +191,15 @@ declare namespace API {
     entityName?: string;
     /** 实体标识 */
     entityCode?: string;
+  };
+
+  type getEntityValueListParams = {
+    /** 页码 */
+    pageNum?: number;
+    /** 每页数量 */
+    pageSize?: number;
+    /** 实体表id */
+    entityId?: string;
   };
 
   type getFieldsByEntityIdParams = {
@@ -243,6 +279,18 @@ declare namespace API {
   type getUsersByRoleIdParams = {
     /** 角色ID */
     roleId: string;
+  };
+
+  type InsertCrmEntityValueRequest = {
+    data: CrmEntityValueData[];
+    entityId: string;
+  };
+
+  type PageResultCrmCrmEntityValueVo = {
+    list?: CrmEntityValueVo[];
+    pageNum?: number;
+    pageSize?: number;
+    total?: number;
   };
 
   type PageResultCrmCrmEntityVo = {

@@ -44,7 +44,7 @@ func getEntityList(c *gin.Context) {
 	result, err := entityService.GetCrmEntityList(req)
 	if err != nil {
 		global.Logger.Error("获取客户实体列表失败", zap.Error(err))
-		response.Fail(http.StatusInternalServerError, fmt.Sprintf("获取客户实体列表失败: %v", err), c)
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("获取客户实体列表失败: %v", err), c)
 		return
 	}
 

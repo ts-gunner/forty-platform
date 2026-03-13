@@ -254,13 +254,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/value/insert": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityValueController"
+                ],
+                "summary": "插入实体数据",
+                "operationId": "insertEntityValue",
+                "parameters": [
+                    {
+                        "description": "写入实体数据参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.InsertCrmEntityValueRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/value/list": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "CrmEntityFieldController"
+                    "CrmEntityValueController"
                 ],
                 "summary": "获取对应的实体表数据",
                 "operationId": "getEntityValueList",
@@ -1250,6 +1284,23 @@ const docTemplate = `{
                 }
             }
         },
+        "crm.CrmEntityValueData": {
+            "type": "object",
+            "required": [
+                "customerName"
+            ],
+            "properties": {
+                "customerName": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "string"
+                }
+            }
+        },
         "crm.CrmEntityValueObjectVo": {
             "type": "object",
             "properties": {
@@ -1361,6 +1412,25 @@ const docTemplate = `{
                 },
                 "entityName": {
                     "type": "string"
+                }
+            }
+        },
+        "crm.InsertCrmEntityValueRequest": {
+            "type": "object",
+            "required": [
+                "data",
+                "entityId"
+            ],
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/crm.CrmEntityValueData"
+                    }
+                },
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
