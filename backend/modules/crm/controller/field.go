@@ -2,6 +2,8 @@ package controller
 
 import (
 	"fmt"
+	"github.com/samber/lo"
+	"github.com/ts-gunner/forty-platform/common/constant"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -56,6 +58,24 @@ func upsertEntityField(c *gin.Context) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 		global.Logger.Error("参数校验异常："+err.Error(), zap.Any("request", req))
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+	reqFieldKeys := lo.Map(req.Fields, func(it request.CrmEntityField, idx int) string {
+		return it.FieldKey
+	})
+	if !lo.Contains(reqFieldKeys, constant.CRM_CUSTOMER_NAME) || !lo.Contains(reqFieldKeys, constant.CRM_CUSTOMER_REMARK) {
+		response.Fail(http.StatusBadRequest, "缺少关键字段【customer_name】和【remark】", c)
+		return
+	}
+
+	filterList := lo.Filter(req.Fields, func(it request.CrmEntityField, idx int) bool {
+		if it.FieldKey == constant.CRM_CUSTOMER_NAME || it.FieldKey == constant.CRM_CUSTOMER_REMARK {
+			return false
+		}
+		return it.SortOrder <= 0
+	})
+	if len(filterList) > 0 {
+		response.Fail(http.StatusBadRequest, "非关键字段的排列顺序必须大于0", c)
 		return
 	}
 	if err := entityFieldService.UpsertEntityField(c.Request.Context(), req); err != nil {

@@ -6,13 +6,7 @@ import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Button, Tabs } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import CreateEntityValueModal from "./CreateEntityValueModal";
-const INIT_FIELD: ProColumns = {
-  title: "客户名称",
-  dataIndex: "customer_name",
-  key: "customer_name",
-  align: "center",
-  width: 140,
-};
+
 export default function CrmValueManagementPage() {
   const [entityData, setEntityData] = useState<API.CrmEntityVo[]>([]);
   const [activeKey, setActiveKey] = useState<string | undefined>(undefined);
@@ -104,12 +98,11 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
           dataIndex: item.fieldKey,
           key: item.fieldKey,
           align: "center",
-          width: 140,
         };
       });
-      return [INIT_FIELD, ...fieldColumns];
+      return fieldColumns;
     }
-    return [INIT_FIELD];
+    return [];
   }, [entityObject]);
   return (
     <>
@@ -118,6 +111,9 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         actionRef={actionRef}
         columns={columns}
         key={"entityId"}
+        scroll={{
+          x: "auto"
+        }}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -143,8 +139,11 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         dataSource={entityObject?.entity_value?.list || []}
       ></ProTable>
 
-      <CreateEntityValueModal modalOpen={createModalOpen} handleModalOpen={handleCreateModalOpen} onSubmit={async () => {
-        
+      <CreateEntityValueModal
+       modalOpen={createModalOpen} handleModalOpen={handleCreateModalOpen} 
+       fieldList={entityObject?.field_list || []}
+       onSubmit={async () => {
+
       }} />
     </>
   );

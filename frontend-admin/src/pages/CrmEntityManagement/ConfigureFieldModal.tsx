@@ -11,14 +11,51 @@ type ModalProps = {
   value: API.CrmEntityVo | undefined;
   onSubmit: (fieldValues: API.UpsertCrmEntityFieldRequest) => Promise<void>;
 };
-const INIT_FIELD = {
-  id: 1,
-  fieldKey: "customer_name",
-  fieldName: "客户名称",
-  dataType: 1,
-  isRequired: true,
-  sortOrder: 0,
-};
+const INIT_FIELD = [
+  {
+    id: null,
+    fieldKey: "customer_name",
+    fieldName: "客户名称",
+    dataType: 1,
+    isRequired: true,
+    sortOrder: 0,
+  },
+  {
+    id: null,
+    fieldKey: "remark",
+    fieldName: "备注",
+    dataType: 1,
+    isRequired: false,
+    sortOrder: 0,
+  },
+];
+
+const DATA_TYPE_OPIONS = [
+  {
+    label: "文本",
+    value: 1,
+  },
+  {
+    label: "数字",
+    value: 2,
+  },
+  {
+    label: "布尔",
+    value: 3,
+  },
+  {
+    label: "选择器",
+    value: 4,
+  },
+  {
+    label: "日期",
+    value: 5,
+  },
+  {
+    label: "行政区划",
+    value: 6,
+  },
+];
 export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubmit, value }: ModalProps) {
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [fieldDataLoading, setFieldDataLoading] = useState<boolean>(false);
@@ -27,7 +64,11 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
   useEffect(() => {
     if (modalOpen && value) {
       refreshEntityValue().then((data) => {
-        formRef.setFieldsValue({ customers: [INIT_FIELD, ...data] });
+        if (data.length === 0) {
+          formRef.setFieldsValue({ customers: INIT_FIELD });
+        } else {
+          formRef.setFieldsValue({ customers: data });
+        }
       });
     } else if (!modalOpen) {
       formRef.resetFields();
@@ -55,7 +96,11 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
   };
   const resetEntityValue = async () => {
     const data = await refreshEntityValue();
-    formRef.setFieldsValue({ customers: [INIT_FIELD, ...data] });
+    if (data.length === 0) {
+      formRef.setFieldsValue({ customers: INIT_FIELD });
+    } else {
+      formRef.setFieldsValue({ customers: data });
+    }
   };
   return (
     <Modal
@@ -82,13 +127,13 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
           const data = await formRef.validateFields();
           await onSubmit({
             entityId: value?.entityId as string,
-            fields: data.customers.slice(1).map((it: any) => {
+            fields: data.customers.map((it: any) => {
               return {
                 ...it,
                 id: it.id || null,
                 options: it.options || "",
                 isRequired: Boolean(it.isRequired),
-                sortOrder: Number.parseInt(it.sortOrder)
+                sortOrder: Number.parseInt(it.sortOrder),
               };
             }),
           });
@@ -106,7 +151,7 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
             name="dynamic_form_nest_item"
             autoComplete="off"
             initialValues={{
-              customers: [INIT_FIELD],
+              customers: [...INIT_FIELD],
             }}
           >
             <Form.List name="customers">
@@ -129,42 +174,14 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                             <Input />
                           </Form.Item>
                           <Form.Item className="flex-1" name={[name, "fieldName"]} rules={[{ required: true, message: "缺少字段中文名" }]}>
-                            <Input placeholder="填写字段中文描述" disabled={name === 0} />
+                            <Input placeholder="填写字段中文描述" disabled={INIT_FIELD.map((_, idx) => idx).includes(name)} />
                           </Form.Item>
                           <Form.Item className="flex-1" name={[name, "fieldKey"]} rules={[{ required: true, message: "缺少字段key" }]}>
-                            <Input placeholder="填写字段key（仅限英文）" disabled={Boolean(fieldId)} />
+                            <Input placeholder="填写字段key（仅限英文）" disabled={INIT_FIELD.map((_, idx) => idx).includes(name) || Boolean(fieldId)} />
                           </Form.Item>
 
                           <Form.Item className="flex-1" name={[name, "dataType"]} initialValue={1} rules={[{ required: true, message: "数据类型" }]}>
-                            <Select
-                              disabled={Boolean(fieldId)}
-                              options={[
-                                {
-                                  label: "文本",
-                                  value: 1,
-                                },
-                                {
-                                  label: "数字",
-                                  value: 2,
-                                },
-                                {
-                                  label: "布尔",
-                                  value: 3,
-                                },
-                                {
-                                  label: "选择器",
-                                  value: 4,
-                                },
-                                 {
-                                  label: "日期",
-                                  value: 5,
-                                },
-                                {
-                                  label: "行政区划",
-                                  value: 6,
-                                }
-                              ]}
-                            />
+                            <Select disabled={INIT_FIELD.map((_, idx) => idx).includes(name) || Boolean(fieldId)} options={DATA_TYPE_OPIONS} />
                           </Form.Item>
                           <Form.Item
                             className="flex-1 h-0"
@@ -195,15 +212,15 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                                   value: false,
                                 },
                               ]}
-                              disabled={name === 0}
+                              disabled={INIT_FIELD.map((_, idx) => idx).includes(name)}
                             />
                           </Form.Item>
-                          <Form.Item className="flex-1" name={[name, "sortOrder"]} initialValue={name} rules={[{ required: true, message: "排列顺序" }]}>
-                            <Input type="number" disabled={name === 0} />
+                          <Form.Item className="flex-1" name={[name, "sortOrder"]} initialValue={name - 1} rules={[{ required: true, message: "排列顺序" }]}>
+                            <Input type="number" disabled={INIT_FIELD.map((_, idx) => idx).includes(name)}/>
                           </Form.Item>
                           <Form.Item>
                             <div className="w-5">
-                              {name !== 0 && (
+                              {!INIT_FIELD.map((_, idx) => idx).includes(name) && (
                                 <Popconfirm
                                   title="二次确认删除"
                                   description="是否删除该字段？"

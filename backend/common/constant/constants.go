@@ -27,7 +27,8 @@ const (
 	USER_KEY = "claims"
 )
 
-// Redis相关的键
+// crm默认字段
 const (
-	REDIS_ADMIN_USER_TOKEN = "admin:user:token:"
+	CRM_CUSTOMER_NAME   = "customer_name"
+	CRM_CUSTOMER_REMARK = "remark"
 )

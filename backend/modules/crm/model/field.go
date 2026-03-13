@@ -18,7 +18,7 @@ func (CrmEntityFieldModel) GetEntityFieldsByEntityId(tx *gorm.DB, entityId int64
 	if err := global.DB.Where(map[string]any{
 		"entity_id": entityId,
 		"is_delete": 0,
-	}).Find(&entityFields).Error; err != nil {
+	}).Order("sort_order ASC").Find(&entityFields).Error; err != nil {
 		return entityFields, err
 	}
 	return entityFields, nil
