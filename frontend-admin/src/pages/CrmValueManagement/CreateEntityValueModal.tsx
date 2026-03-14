@@ -8,7 +8,7 @@ type ModalProps = {
   onSubmit: (data: any) => Promise<void>;
   fieldList: API.CrmEntityFieldVo[];
 };
-export default function CreateEntityValueModal({ modalOpen, handleModalOpen, fieldList }: ModalProps) {
+export default function CreateEntityValueModal({ modalOpen, handleModalOpen, fieldList, onSubmit }: ModalProps) {
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const renderFieldItem = (field: API.CrmEntityFieldVo) => {
@@ -19,8 +19,7 @@ export default function CreateEntityValueModal({ modalOpen, handleModalOpen, fie
         return <InputNumber className="w-full" placeholder={`请输入${fieldName}`} />;
 
       case CrmDataTypeEnum.Picker:
-        // 假设 options 是 JSON 字符串或逗号分隔字符串
-        const selectOptions = options ? JSON.parse(options) : [];
+        const selectOptions = options ? options.split(","): []
         return (
           <Select
             placeholder={`请选择${fieldName}`}
@@ -45,7 +44,17 @@ export default function CreateEntityValueModal({ modalOpen, handleModalOpen, fie
       width={"70%"}
       confirmLoading={btnLoading}
       destroyOnHidden
-      onOk={() => {}}
+      onOk={async () => {
+        try {
+          setBtnLoading(true);
+          const data = await form.validateFields();
+          await onSubmit(data);
+        } finally {
+          setBtnLoading(false);
+
+        }
+
+      }}
     >
       <Form
         form={form}

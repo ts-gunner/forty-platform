@@ -1296,25 +1296,15 @@
         "crm.CrmEntityValueObjectVo": {
             "type": "object",
             "properties": {
-                "entityId": {
-                    "type": "string",
-                    "example": "0"
-                },
-                "entity_value": {
+                "entityValue": {
                     "$ref": "#/definitions/response.PageResult-crm_CrmEntityValueVo"
-                },
-                "field_list": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/crm.CrmEntityFieldVo"
-                    }
                 }
             }
         },
         "crm.CrmEntityValueVo": {
             "type": "object",
             "properties": {
-                "create_time": {
+                "createTime": {
                     "type": "string"
                 },
                 "customer_name": {

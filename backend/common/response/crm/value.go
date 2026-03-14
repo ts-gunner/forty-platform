@@ -11,11 +11,9 @@ type CrmEntityValueVo struct {
 	CustomerName string    `json:"customer_name"`
 	Remark       string    `json:"remark"`
 	Values       string    `json:"values"`
-	CreateTime   time.Time `json:"create_time"`
+	CreateTime   time.Time `json:"createTime"`
 }
 
 type CrmEntityValueObjectVo struct {
-	EntityId    int64                                 `json:"entityId,string"`
-	FieldList   []CrmEntityFieldVo                    `json:"field_list"`
-	EntityValue response.PageResult[CrmEntityValueVo] `json:"entity_value"`
+	EntityValue response.PageResult[CrmEntityValueVo] `json:"entityValue"`
 }

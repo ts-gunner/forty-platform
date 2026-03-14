@@ -1,11 +1,13 @@
 import { getEntityList } from "@/services/steins-admin/crmEntityController";
-import { getEntityValueList } from "@/services/steins-admin/crmEntityValueController";
+import { getEntityValueList, insertEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
-import { Button, Tabs } from "antd";
+import { Button, Popconfirm, Tabs } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import CreateEntityValueModal from "./CreateEntityValueModal";
+import { getFieldsByEntityId } from "@/services/steins-admin/crmEntityFieldController";
+import UpdateEntityValueModal from "./UpdateEntityValueModal";
 
 export default function CrmValueManagementPage() {
   const [entityData, setEntityData] = useState<API.CrmEntityVo[]>([]);
@@ -55,44 +57,40 @@ export default function CrmValueManagementPage() {
 
 const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | undefined }> = ({ entity, activeKey }) => {
   const actionRef = useRef<ActionType>();
-  const [page, setPage] = useState({
-    current: 1,
-    size: 20,
-  });
+  const [pageSize, setPageSize] = useState(20);
   const [createModalOpen, handleCreateModalOpen] = useState<boolean>(false);
-  const [dataLoading, setDataLoading] = useState<boolean>(false);
-  const [entityObject, setEntityObject] = useState<API.CrmEntityValueObjectVo>();
+  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [currentValue, handleCurrentValue] = useState<any>({});
+  const [pageLoading, setPageLoading] = useState<boolean>(false)
+  const [entityFields, setEntityFields] = useState<API.CrmEntityFieldVo[]>([])
   useEffect(() => {
     if (activeKey === entity.entityId) {
-      getEntityInfo();
+      getEntityFields();
     }
   }, [activeKey]);
 
-  const getEntityInfo = async () => {
-    setDataLoading(true);
-    const resp = await getEntityValueList({
-      pageNum: page.current,
-      pageSize: page.size,
+  const getEntityFields = async () => {
+    setPageLoading(true);
+    const resp = await getFieldsByEntityId({
       entityId: entity.entityId,
     });
     handleResponse({
       resp,
       onSuccess: (data) => {
-        setEntityObject(data);
+        setEntityFields(data);
       },
       onError: () => {
-        Notify.fail("获取实体表数据失败:" + resp.msg);
+        Notify.fail("获取实体表字段失败:" + resp.msg);
       },
       onFinish: () => {
-        setDataLoading(false);
+        setPageLoading(false);
       },
     });
   };
   const columns: ProColumns[] = useMemo(() => {
-    console.log("entityObject", entityObject);
-
-    if (entityObject && Array.isArray(entityObject.field_list)) {
-      const fieldColumns = entityObject.field_list.map((item): ProColumns => {
+    let columns: ProColumns[] = []
+    if (entityFields) {
+      const fieldColumns = entityFields.map((item): ProColumns => {
         return {
           title: item.fieldName,
           dataIndex: item.fieldKey,
@@ -100,17 +98,43 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
           align: "center",
         };
       });
-      return fieldColumns;
+      columns = fieldColumns;
     }
-    return [];
-  }, [entityObject]);
+
+    return [...columns,
+    {
+      title: "操作",
+      dataIndex: "action",
+      key: "action",
+      align: "center",
+      render: (_, record: any) => {
+        return (
+          <div className="flex justify-center items-center gap-3">
+            <a onClick={() => {
+              handleCurrentValue(record)
+              handleUpdateModalOpen(true)
+            }}>更新</a>
+            <Popconfirm
+              title="确认删除"
+              onConfirm={() => {
+
+              }}
+            >
+              <a>删除</a>
+
+            </Popconfirm>
+          </div>
+        )
+      }
+    }
+    ];
+  }, [entityFields]);
   return (
     <>
       <ProTable
-        loading={dataLoading}
         actionRef={actionRef}
         columns={columns}
-        key={"entityId"}
+        key={"id"}
         scroll={{
           x: "auto"
         }}
@@ -125,26 +149,104 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
             <PlusOutlined /> 新建
           </Button>,
         ]}
+        request={async (params) => {
+          const resp = await getEntityValueList({
+            pageNum: params.current,
+            pageSize: params.pageSize,
+            entityId: entity.entityId,
+          });
+          let tableData: any[] = []
+          let total = 0
+          handleResponse({
+            resp,
+            onSuccess: (data) => {
+              tableData = data.entityValue?.list || []
+              total = data.entityValue?.total || 0
+            },
+            onError: () => {
+              Notify.fail("获取实体表数据失败:" + resp.msg);
+            },
+            onFinish: () => {
+            },
+          });
+
+          return {
+            data: tableData.map(it => {
+              return {
+                ...it,
+                ...(JSON.parse(it.values) || {})
+              }
+            }),
+            total: total,
+            success: true,
+          }
+        }}
         pagination={{
-          pageSize: page.size,
+          pageSize: pageSize,
           pageSizeOptions: ["10", "20", "50", "100"],
           showSizeChanger: true,
           onShowSizeChange: (current, size) => {
-            setPage((prev) => ({
-              ...prev,
-              size,
-            }));
+            setPageSize(size);
           },
         }}
-        dataSource={entityObject?.entity_value?.list || []}
       ></ProTable>
 
       <CreateEntityValueModal
-       modalOpen={createModalOpen} handleModalOpen={handleCreateModalOpen} 
-       fieldList={entityObject?.field_list || []}
-       onSubmit={async () => {
+        modalOpen={createModalOpen} handleModalOpen={handleCreateModalOpen}
+        fieldList={entityFields}
+        onSubmit={async (data) => {
 
-      }} />
+          const resp = await insertEntityValue({
+            entityId: entity?.entityId as string,
+            data: [
+              {
+                customerName: data?.customer_name || "",
+                remark: data?.remark || "",
+                values: JSON.stringify(data)
+              }
+            ]
+          })
+          handleResponse({
+            resp,
+            onSuccess: () => {
+              Notify.ok("新增成功")
+              handleCreateModalOpen(false)
+              actionRef?.current?.reload()
+            },
+            onError: () => {
+              Notify.fail("新增失败：" + resp.msg)
+            }
+          })
+        }} />
+      <UpdateEntityValueModal
+        modalOpen={updateModalOpen} handleModalOpen={handleUpdateModalOpen}
+        fieldList={entityFields}
+        value={currentValue}
+        onSubmit={async (data) => {
+
+          const resp = await insertEntityValue({
+            entityId: entity?.entityId as string,
+            data: [
+              {
+                customerName: data?.customer_name || "",
+                remark: data?.remark || "",
+                values: JSON.stringify(data)
+              }
+            ]
+          })
+          handleResponse({
+            resp,
+            onSuccess: () => {
+              Notify.ok("更新成功")
+              handleCreateModalOpen(false)
+              actionRef?.current?.reload()
+            },
+            onError: () => {
+              Notify.fail("更新失败：" + resp.msg)
+            }
+          })
+        }}
+      />
     </>
   );
 };

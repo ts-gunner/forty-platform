@@ -138,13 +138,11 @@ declare namespace API {
   };
 
   type CrmEntityValueObjectVo = {
-    entityId?: string;
-    entity_value?: PageResultCrmCrmEntityValueVo;
-    field_list?: CrmEntityFieldVo[];
+    entityValue?: PageResultCrmCrmEntityValueVo;
   };
 
   type CrmEntityValueVo = {
-    create_time?: string;
+    createTime?: string;
     customer_name?: string;
     id?: string;
     remark?: string;

@@ -26,10 +26,14 @@ export default function CreateEntityModal({ modalOpen, handleModalOpen, onSubmit
       confirmLoading={btnLoading}
       onCancel={() => handleModalOpen(false)}
       onOk={async () => {
-        setBtnLoading(true);
-        const data = await formRef.validateFields();
-        await onSubmit(data);
-        setBtnLoading(false);
+        try {
+          setBtnLoading(true);
+          const data = await formRef.validateFields();
+          await onSubmit(data);
+        }
+        finally {
+          setBtnLoading(false);
+        }
       }}
     >
       <div className="p-3">

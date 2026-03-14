@@ -57,19 +57,12 @@ definitions:
     type: object
   crm.CrmEntityValueObjectVo:
     properties:
-      entity_value:
+      entityValue:
         $ref: '#/definitions/response.PageResult-crm_CrmEntityValueVo'
-      entityId:
-        example: "0"
-        type: string
-      field_list:
-        items:
-          $ref: '#/definitions/crm.CrmEntityFieldVo'
-        type: array
     type: object
   crm.CrmEntityValueVo:
     properties:
-      create_time:
+      createTime:
         type: string
       customer_name:
         type: string

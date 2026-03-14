@@ -21,8 +21,6 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 
 }
 
-// todo:待测试
-
 // @Tags CrmEntityValueController
 // @ID getEntityValueList
 // @Router /crm/value/list [get]
@@ -35,7 +33,7 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 func getEntityValueList(c *gin.Context) {
 	var req request.GetCrmEntityValueListRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
-		global.Logger.Error("参数校验异常", zap.Any("request", req))
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return
 	}
@@ -60,13 +58,13 @@ func getEntityValueList(c *gin.Context) {
 // @Success 200 {object} response.ApiResult[any]
 func insertEntityValue(c *gin.Context) {
 	var req request.InsertCrmEntityValueRequest
-	if err := c.ShouldBindQuery(&req); err != nil {
-		global.Logger.Error("参数校验异常", zap.Any("request", req))
+	if err := c.ShouldBindJSON(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return
 	}
 
-	err := entityValueService.InsertEntityValueData(req)
+	err := entityValueService.InsertEntityValueData(c.Request.Context(), req)
 	if err != nil {
 		global.Logger.Error("写入客户实体表数据失败", zap.Error(err))
 		response.Fail(http.StatusBadRequest, fmt.Sprintf("写入客户实体表数据失败: %v", err), c)
