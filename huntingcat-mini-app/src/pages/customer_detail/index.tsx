@@ -17,7 +17,6 @@ function CustomerDetailPage() {
       CUSTOMER_INFO_LIST.find((item) => item.key === id) ||
       CUSTOMER_INFO_LIST[0];
     setInfo(data);
-    Taro.setNavigationBarTitle({ title: data?.companyName || "客户详情" });
   }, [id]);
 
   if (!info) return null;
@@ -54,7 +53,7 @@ function CustomerDetailPage() {
                   {info.tag}
                 </AtTag>
                 <AtTag size="small" circle>
-                  {info.projectInfo?.customerCategory || "常规客户"}
+                  常规客户
                 </AtTag>
               </View>
             </View>
@@ -89,24 +88,24 @@ function CustomerDetailPage() {
           <DetailSection title="项目基本信息" iconColor="bg-blue-400">
             <InfoRow
               label="主营项目"
-              value={info.projectInfo?.projectName || "暂无"}
+              value={"暂无"}
             />
             <InfoRow
               label="区域地址"
-              value={info.projectInfo?.region?.join(" / ") || info.addr}
+              value={info.addr}
             />
             <InfoRow
               label="详细地址"
-              value={info.projectInfo?.detailAddr || info.addr}
+              value={info.addr}
             />
             <InfoRow
               label="合作类型"
-              value={info.projectInfo?.cooperationType}
+              value={info.cooperationType}
             />
-            <InfoRow label="客户类型" value={info.projectInfo?.customerType} />
+            <InfoRow label="客户类型" value={info.customerType} />
             <InfoRow
               label="客户来源"
-              value={info.projectInfo?.customerSource}
+              value={info.customerSource}
               border={false}
             />
           </DetailSection>

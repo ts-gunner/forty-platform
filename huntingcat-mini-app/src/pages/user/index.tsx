@@ -1,7 +1,5 @@
-import Taro, { login, useDidShow } from "@tarojs/taro";
+import Taro from "@tarojs/taro";
 import { Image, Text, View } from "@tarojs/components";
-import { useDispatch, useSelector } from "react-redux";
-import { Dispatch, RootState } from "../../store";
 import { useNavbar } from "../../context/NavbarContext";
 import { ICON_MAP, IMAGE_MAP, THEME_CONFIG } from "../../constant/global";
 import { cn } from "../../utils/common";
@@ -9,22 +7,7 @@ import { ROUTERS } from "../../constant/menus";
 import { withGlobalLayout } from "../../components/AppLayout";
 
 function UserPage() {
-  const dispatch = useDispatch<Dispatch>();
   const { navBarHeight } = useNavbar();
-  const isAuth = useSelector((state: RootState) => state.authModel.isAuth);
-  const authLoading = useSelector(
-    (state: RootState) => state.authModel.authLoading,
-  );
-  const userInfo = useSelector((state: RootState) => state.authModel.userInfo);
-  const userLogin = () => {
-    login({
-      success: (res: any) => {
-        if (res.code) {
-          dispatch.authModel.userLogin(res.code);
-        }
-      },
-    });
-  };
 
   return (
     <View className="mesh-gradient relative bg-gray-100/50 min-h-screen">

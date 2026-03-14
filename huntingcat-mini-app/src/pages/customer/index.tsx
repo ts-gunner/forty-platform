@@ -3,23 +3,20 @@ import "./index.scss";
 import { MockData } from "@/typing";
 import { COOPERATION_TYPE_LIST, CUSTOMER_CATEGORY_LIST, CUSTOMER_INFO_LIST, CUSTOMER_SOURCE_LIST, CUSTOMER_TYPE_LIST } from "../../constant/mock";
 import { useNavbar } from "../../context/NavbarContext";
-import { act, useCallback, useEffect, useMemo, useState } from "react";
-import Taro, { useDidShow, useReachBottom } from "@tarojs/taro";
-import { AtDrawer, AtIcon, AtToast } from "taro-ui";
+import {  useEffect,useState } from "react";
+import Taro, { useReachBottom } from "@tarojs/taro";
+import { AtIcon, } from "taro-ui";
 import { withGlobalLayout } from "../../components/AppLayout";
 import { THEME_CONFIG } from "../../constant/global";
 import { ROUTERS } from "../../constant/menus";
-const PAGE_SIZE = 10; // 每页显示条数
 
 enum FilterMenuType {
   FILTER = "filter",
   CUSTOMER_TYPE = "customer_type",
 }
 function AllCustomerPage() {
-  const { navBarHeight } = useNavbar();
   const [currentPage, setCurrentPage] = useState(1);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
-  const [loadingText, setLoadingText] = useState<string>("加载数据中");
   const [customerData, setCustomerData] = useState<MockData.CustomerDataType[]>([]);
   useEffect(() => {
     refresh();
@@ -41,12 +38,7 @@ function AllCustomerPage() {
 
   return (
     <View className="mesh-gradient min-h-screen pb-16">
-      <AtToast
-        isOpened={dataLoading}
-        text={loadingText}
-        status="loading"
-      ></AtToast>
-
+ 
       <FilterHeader />
 
       <View
@@ -63,6 +55,8 @@ function AllCustomerPage() {
     </View>
   );
 }
+
+// deprecated
 const FilterHeader: React.FC<{}> = () => {
   const { navBarHeight } = useNavbar();
   const [keyword, setKeyword] = useState("");

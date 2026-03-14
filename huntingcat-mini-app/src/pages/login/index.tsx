@@ -1,12 +1,19 @@
 import { useDispatch } from "react-redux";
 import { ICON_MAP } from "../../constant/global";
 import { Button, View, Image, Text } from "@tarojs/components";
+import Taro, { login } from "@tarojs/taro";
 import { Dispatch } from "@/store";
-export default function LoginPage() {
-    const dispatch = useDispatch<Dispatch>()
-    const doLogin = () => {
-        dispatch.authModel.userLogin("")
-    }
+function LoginPage() {
+  const dispatch = useDispatch<Dispatch>();
+  const doLogin = () => {
+    login({
+      success: (res: any) => {
+        if (res.code) {
+          dispatch.authModel.userLogin(res.code);
+        }
+      },
+    });
+  };
   return (
     <View className="h-screen flex flex-col justify-center items-center gap-14">
       <View className="flex justify-center items-center">
@@ -35,8 +42,10 @@ export default function LoginPage() {
           管理你的客户资源，掌控业务全局
         </Text>
       </View>
-      <Button className="w-[90%] text-white font-bold text-center rounded-full bg-active"
-      onClick={doLogin}>
+      <Button
+        className="w-[90%] text-white font-bold text-center rounded-full bg-active"
+        onClick={doLogin}
+      >
         一键登录
       </Button>
       <View className="flex flex-row justify-center items-center mt-4">
@@ -52,3 +61,4 @@ export default function LoginPage() {
     </View>
   );
 }
+export default LoginPage;

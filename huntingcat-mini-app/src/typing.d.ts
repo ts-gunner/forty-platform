@@ -8,6 +8,12 @@ declare namespace ReduxModel {
 
     type CrmModelType = {
     }
+
+    type GlobalModelType = {
+        notifyOpen: boolean
+        notifyText: string
+
+    }
 }
 
 
