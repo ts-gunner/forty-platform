@@ -6,8 +6,7 @@ import { useNavbar } from "../../context/NavbarContext";
 import { ICON_MAP, IMAGE_MAP, THEME_CONFIG } from "../../constant/global";
 import { cn } from "../../utils/common";
 import { ROUTERS } from "../../constant/menus";
-import { withGlobalLayout } from "../../utils/withGlobalLayout";
-import { useMemo } from "react";
+import { withGlobalLayout } from "../../components/AppLayout";
 
 function UserPage() {
   const dispatch = useDispatch<Dispatch>();

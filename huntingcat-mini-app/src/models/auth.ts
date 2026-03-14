@@ -1,5 +1,7 @@
 import { createModel } from "@rematch/core";
 import type { RootModel } from '../models'
+import Taro from "@tarojs/taro";
+import { ROUTERS } from "../constant/menus";
 
 type UserInfoType = {
     nickname: string
@@ -55,8 +57,13 @@ export const authModel = createModel<RootModel>()({
                 dispatch.authModel.setIsAuth(true)
 
                 dispatch.authModel.setAuthLoading(false)
+                Taro.switchTab({url: ROUTERS.mine})
             }, 3000)
            
+        },
+        doLogout: () => {
+            dispatch.authModel.setIsAuth(false)
+            Taro.navigateTo({url: ROUTERS.login})
         }
     })
 })

@@ -5,6 +5,7 @@ import storage from '../utils/storage';
 
 const persist_plugin = persistPlugin<RootModel, RootModel>({
   whitelist: [
+    "authModel"
     ],
     key: "store",
     storage,

@@ -1,0 +1,52 @@
+import { useNavbar } from "../../context/NavbarContext";
+import { Button, ScrollView, Text, View } from "@tarojs/components";
+import Taro from "@tarojs/taro";
+import React from "react";
+import { AtIcon } from "taro-ui";
+/**
+上中下布局
+ */
+export default function HeaderBodyFooterLayout({
+  headerRender,
+  FooterRender,
+  children,
+}: {
+  headerRender?: React.ReactNode;
+  FooterRender?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const { navBarHeight, headerHeight } = useNavbar();
+  return (
+    <View className="flex flex-col h-screen">
+      {/* 头部 */}
+      <View
+        className="flex items-end z-[50] w-full shrink-0"
+        style={{
+          height: `${navBarHeight}px`,
+        }}
+      >
+        <View
+          className="flex items-center"
+          style={{
+            height: `${headerHeight}px`,
+          }}
+        >
+          {headerRender ? (
+            headerRender
+          ) : (
+            <View onClick={() => Taro.navigateBack()}>
+              <AtIcon value="chevron-left" size="24" />
+              <Text className="font-bold">返回</Text>
+            </View>
+          )}
+        </View>
+      </View>
+      {/* 主体内容 */}
+      <ScrollView scrollY className="flex-1 overflow-y-auto">
+        {children}
+      </ScrollView>
+      {/* 底部 */}
+      <View className="w-full shrink-0">{FooterRender}</View>
+    </View>
+  );
+}

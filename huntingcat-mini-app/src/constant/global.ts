@@ -7,7 +7,7 @@ export const IMAGE_MAP = {
 
 // 图标素材
 export const ICON_MAP = {
-
+    loginLogo: "https://pic1.imgdb.cn/item/69b57d120ee6511f188d3ae7.png",
     defaultAvatar: "https://pic1.imgdb.cn/item/69a988e449a76f9266b107ba.png",
     settingIcon: "https://pic1.imgdb.cn/item/699e859d86daecd63652ecd0.png",
     plusIcon: "https://pic1.imgdb.cn/item/69a84153d42b5a8b853284b7.png",

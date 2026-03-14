@@ -9,6 +9,8 @@ export const ROUTERS = {
     mine: "/pages/user/index",
     settings: "/pages/settings/index",
     customerDetail: "/pages/customer_detail/index",
+    createCustomer: "/pages/create_customer/index",
+    login: "/pages/login/index",
 }
 
 export default [

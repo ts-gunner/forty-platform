@@ -7,7 +7,6 @@ declare namespace ReduxModel {
     }
 
     type CrmModelType = {
-        addCustomerModalOpen: boolean
     }
 }
 

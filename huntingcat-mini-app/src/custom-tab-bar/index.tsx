@@ -4,6 +4,7 @@ import Taro, { TabBarItem } from '@tarojs/taro'
 import { useDispatch, useSelector } from 'react-redux'
 import "./index.scss"
 import { ICON_MAP, THEME_CONFIG } from '../constant/global'
+import { ROUTERS } from '../constant/menus'
 function CustomTabBar() {
   const dispatch = useDispatch<Dispatch>()
  
@@ -34,7 +35,7 @@ function CustomTabBar() {
                   height: '100%'        // 确保高度充满以对齐
                 }}
               onClick={() => {
-                dispatch.crmModel.setAddCustomerModalOpen(true)
+                Taro.navigateTo({url: ROUTERS.createCustomer})
               }}
               >
                 <View style={{

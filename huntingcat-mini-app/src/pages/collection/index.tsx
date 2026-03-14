@@ -2,7 +2,7 @@ import { View, Text, Input } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import { CUSTOMER_INFO_LIST } from "../../constant/mock";
 import { useNavbar } from "../../context/NavbarContext";
-import { withGlobalLayout } from "../../utils/withGlobalLayout";
+import { withGlobalLayout } from "../../components/AppLayout";
 import { MockData } from "@/typing";
 import { AtIcon, AtToast } from "taro-ui";
 import Taro from "@tarojs/taro";

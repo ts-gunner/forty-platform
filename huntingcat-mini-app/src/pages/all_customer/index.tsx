@@ -1,16 +1,18 @@
 import { View, Text, Input, Button, ScrollView } from "@tarojs/components";
 import "./index.scss";
 import { MockData } from "@/typing";
-import { COOPERATION_TYPE_LIST, CUSTOMER_CATEGORY_LIST, CUSTOMER_INFO_LIST, CUSTOMER_SOURCE_LIST, CUSTOMER_TYPE_LIST } from "../../constant/mock";
+import {
+  COOPERATION_TYPE_LIST,
+  CUSTOMER_CATEGORY_LIST,
+  CUSTOMER_INFO_LIST,
+  CUSTOMER_SOURCE_LIST,
+  CUSTOMER_TYPE_LIST,
+} from "../../constant/mock";
 import { useNavbar } from "../../context/NavbarContext";
-import { act, useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Taro, { useDidShow, useReachBottom } from "@tarojs/taro";
 import { AtDrawer, AtIcon, AtToast } from "taro-ui";
-import { withGlobalLayout } from "../../utils/withGlobalLayout";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import { THEME_CONFIG } from "../../constant/global";
-const PAGE_SIZE = 10; // 每页显示条数
+import { withGlobalLayout } from "../../components/AppLayout";
 
 enum FilterMenuType {
   FILTER = "filter",
@@ -21,7 +23,9 @@ function AllCustomerPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [loadingText, setLoadingText] = useState<string>("加载数据中");
-  const [customerData, setCustomerData] = useState<MockData.CustomerDataType[]>([]);
+  const [customerData, setCustomerData] = useState<MockData.CustomerDataType[]>(
+    [],
+  );
   useEffect(() => {
     refresh();
   }, []);
@@ -32,7 +36,6 @@ function AllCustomerPage() {
     setDataLoading(false);
     return CUSTOMER_INFO_LIST;
   };
-
 
   // 4. 触底加载更多
   useReachBottom(() => {
@@ -50,13 +53,10 @@ function AllCustomerPage() {
 
       <FilterHeader />
 
-      <View
-        className="p-3 flex flex-col gap-2"
-      >
+      <View className="p-3 flex flex-col gap-2">
         {customerData.map((it, idx) => (
           <CustomerCard key={idx} data={it} />
         ))}
-
       </View>
     </View>
   );
@@ -66,8 +66,10 @@ const FilterHeader: React.FC<{}> = () => {
   const [keyword, setKeyword] = useState("");
   const [activeMenu, setActiveMenu] = useState<FilterMenuType | null>(null); // 控制哪个菜单展开
   // 小菜单的筛选结果
-  const [filterParams, setFilterParams] = useState<Record<string, string | null>>({
-    [FilterMenuType.CUSTOMER_TYPE]: null
+  const [filterParams, setFilterParams] = useState<
+    Record<string, string | null>
+  >({
+    [FilterMenuType.CUSTOMER_TYPE]: null,
   });
   // 切换菜单展开/收起
   const toggleMenu = (menuName: FilterMenuType) => {
@@ -76,13 +78,16 @@ const FilterHeader: React.FC<{}> = () => {
 
   // 选择筛选项
   const handleSelect = (type: FilterMenuType, value: string) => {
-    setFilterParams(prev => ({ ...prev, [type]: value }));
+    setFilterParams((prev) => ({ ...prev, [type]: value }));
     setActiveMenu(null);
     // 这里触发刷新数据逻辑...
     console.log("执行筛选:", value);
   };
   return (
-    <View className="sticky top-0 z-50 bg-white/80 backdrop-blur-md" style={{ paddingTop: `${navBarHeight}px` }}>
+    <View
+      className="sticky top-0 z-50 bg-white/80 backdrop-blur-md"
+      style={{ paddingTop: `${navBarHeight}px` }}
+    >
       {/* 搜索框 */}
       <View className="p-3">
         <SearchComponent value={keyword} onInput={setKeyword} />
@@ -96,8 +101,14 @@ const FilterHeader: React.FC<{}> = () => {
           onClick={() => toggleMenu(FilterMenuType.CUSTOMER_TYPE)}
         />
         <FilterTab
-          icon={<AtIcon value='filter' size='15' className={`${activeMenu === FilterMenuType.FILTER ? "text-active" : "text-gray-500"}`} />}
-          label='筛选'
+          icon={
+            <AtIcon
+              value="filter"
+              size="15"
+              className={`${activeMenu === FilterMenuType.FILTER ? "text-active" : "text-gray-500"}`}
+            />
+          }
+          label="筛选"
           active={activeMenu === FilterMenuType.FILTER}
           onClick={() => toggleMenu(FilterMenuType.FILTER)}
         />
@@ -113,35 +124,34 @@ const FilterHeader: React.FC<{}> = () => {
           />
           {/* 选项列表 */}
           <View className="relative bg-white animate-fade-in-down shadow-xl rounded-b-xl overflow-hidden">
-            {
-              activeMenu === FilterMenuType.CUSTOMER_TYPE && <CustomerFilterMenu
+            {activeMenu === FilterMenuType.CUSTOMER_TYPE && (
+              <CustomerFilterMenu
                 handleSelect={handleSelect}
                 activeMenu={activeMenu}
-                filterParams={filterParams} />
-            }
-            {
-              activeMenu === FilterMenuType.FILTER && <AllFilterMenu />
-            }
+                filterParams={filterParams}
+              />
+            )}
+            {activeMenu === FilterMenuType.FILTER && <AllFilterMenu />}
           </View>
-
-        </View >
+        </View>
       )}
-    </View >
-  )
-}
+    </View>
+  );
+};
 
 const CustomerFilterMenu = ({
-  activeMenu, handleSelect, filterParams
+  activeMenu,
+  handleSelect,
+  filterParams,
 }: {
-  activeMenu: FilterMenuType, handleSelect: (activeKey: FilterMenuType, val: string | null) => void;
-  filterParams: Record<string, string | null>
+  activeMenu: FilterMenuType;
+  handleSelect: (activeKey: FilterMenuType, val: string | null) => void;
+  filterParams: Record<string, string | null>;
 }) => {
-
   return (
-
     <View>
       <View className="p-2 flex flex-col">
-        {CUSTOMER_TYPE_LIST.map(opt => (
+        {CUSTOMER_TYPE_LIST.map((opt) => (
           <View
             key={opt}
             onClick={() => handleSelect(activeMenu, opt)}
@@ -149,117 +159,139 @@ const CustomerFilterMenu = ({
             }`}
           >
             <Text className="text-sm font-medium">{opt}</Text>
-            {
-              opt === filterParams[activeMenu] && <AtIcon value='check' size='16' className="text-active" />
-            }
-
+            {opt === filterParams[activeMenu] && (
+              <AtIcon value="check" size="16" className="text-active" />
+            )}
           </View>
         ))}
-
-
       </View>
-      <Button className="w-full text-red-600 text-md" onClick={() => handleSelect(activeMenu, null)}>
+      <Button
+        className="w-full text-red-600 text-md"
+        onClick={() => handleSelect(activeMenu, null)}
+      >
         清空
       </Button>
     </View>
-
-  )
-}
+  );
+};
 const filterSiderMenu = [
   {
     label: "客户类型",
     key: "customer_type",
-    options: CUSTOMER_TYPE_LIST
+    options: CUSTOMER_TYPE_LIST,
   },
   {
     label: "客户分类",
     key: "customer_category",
-    options: CUSTOMER_CATEGORY_LIST
+    options: CUSTOMER_CATEGORY_LIST,
   },
   {
     label: "合作类型",
     key: "cooperate_type",
-    options: COOPERATION_TYPE_LIST
+    options: COOPERATION_TYPE_LIST,
   },
   {
     label: "客户来源",
     key: "customer_source",
-    options: CUSTOMER_SOURCE_LIST
+    options: CUSTOMER_SOURCE_LIST,
   },
   {
     label: "客户类型2",
     key: "customer_type2",
-    options: CUSTOMER_TYPE_LIST
+    options: CUSTOMER_TYPE_LIST,
   },
-]
+];
 const AllFilterMenu = () => {
-  const [selectedSider, setSelectedSider] = useState(filterSiderMenu[0].key)
+  const [selectedSider, setSelectedSider] = useState(filterSiderMenu[0].key);
   return (
     <View className="">
       <View className="h-[45vh] flex">
-        <View
+        <View className="flex-[3] w-[30px] bg-gray-200 h-full flex flex-col gap-2">
+          {filterSiderMenu.map((it) => (
+            <View
+              className={`flex ${it.key === selectedSider && "bg-white"}`}
+              key={it.key}
+              onClick={() => setSelectedSider(it.key)}
+            >
+              {it.key === selectedSider && (
+                <View className="h-full bg-active w-1"></View>
+              )}
 
-          className="flex-[3] w-[30px] bg-gray-200 h-full flex flex-col gap-2">
-          {
-            filterSiderMenu.map(it => (
-              <View className={`flex ${it.key === selectedSider && "bg-white"}`} key={it.key} onClick={() => setSelectedSider(it.key)}>
-                {it.key === selectedSider && <View className="h-full bg-active w-1"></View>}
-
-                <Text className={`text-sm  py-3 flex justify-center flex-1 ${it.key === selectedSider && "font-bold"}`}>{it.label}</Text>
-              </View>
-            ))
-          }
+              <Text
+                className={`text-sm  py-3 flex justify-center flex-1 ${it.key === selectedSider && "font-bold"}`}
+              >
+                {it.label}
+              </Text>
+            </View>
+          ))}
         </View>
         <ScrollView
           scrollY
           scrollWithAnimation
           scrollIntoView={`filter-option-${selectedSider}`}
           enhanced
-          className="flex-[9] h-full p-2">
-          {
-            filterSiderMenu.map(it => (
-              <View className="mt-2" key={it.key}
-                id={`filter-option-${it.key}`}
-              >
-
-                <Text className="text-sm font-bold">{it.label}</Text>
-                <View className="grid grid-cols-3 gap-2 mt-2">
-                  {
-                    it.options.map(opt => (
-                      <View className="text-sm bg-gray-100 flex justify-center items-center py-2 rounded-lg">{opt}</View>
-                    ))
-                  }
-                </View>
-
+          className="flex-[9] h-full p-2"
+        >
+          {filterSiderMenu.map((it) => (
+            <View className="mt-2" key={it.key} id={`filter-option-${it.key}`}>
+              <Text className="text-sm font-bold">{it.label}</Text>
+              <View className="grid grid-cols-3 gap-2 mt-2">
+                {it.options.map((opt) => (
+                  <View className="text-sm bg-gray-100 flex justify-center items-center py-2 rounded-lg">
+                    {opt}
+                  </View>
+                ))}
               </View>
-            ))
-          }
-
+            </View>
+          ))}
         </ScrollView>
       </View>
       <View className="flex py-2 items-center gap-3 px-4">
-        <View className="flex-[3] text-sm font-bold flex justify-center items-center">重置</View>
-        <Button className="flex-[9] text-sm py-2 font-bold bg-active/50 rounded-full">查看全部</Button>
+        <View className="flex-[3] text-sm font-bold flex justify-center items-center">
+          重置
+        </View>
+        <Button className="flex-[9] text-sm py-2 font-bold bg-active/50 rounded-full">
+          查看全部
+        </Button>
       </View>
     </View>
-  )
-}
+  );
+};
 /**
  * 筛选标签组件
  */
-const FilterTab = ({ icon, label, active, onClick }: { icon?: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
+const FilterTab = ({
+  icon,
+  label,
+  active,
+  onClick,
+}: {
+  icon?: React.ReactNode;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) => (
   <View
     onClick={onClick}
     className="flex-1 flex items-center justify-center py-3 transition-colors active:bg-gray-50"
   >
     <View className="flex items-center gap-2">
       {icon}
-      <Text className={`text-xs mr-1 ${active ? 'text-active font-bold' : 'text-gray-500'}`}
-      >{label}</Text>
+      <Text
+        className={`text-xs mr-1 ${active ? "text-active font-bold" : "text-gray-500"}`}
+      >
+        {label}
+      </Text>
     </View>
 
-    <View className={`transition-transform duration-300 ${active ? 'rotate-180' : ''}`}>
-      <AtIcon value='chevron-down' size='14' className={`${active ? 'text-active' : 'text-gray-500'}`} />
+    <View
+      className={`transition-transform duration-300 ${active ? "rotate-180" : ""}`}
+    >
+      <AtIcon
+        value="chevron-down"
+        size="14"
+        className={`${active ? "text-active" : "text-gray-500"}`}
+      />
     </View>
   </View>
 );
@@ -290,7 +322,6 @@ const SearchComponent: React.FC<{
     </View>
   );
 };
-
 
 const CustomerCard: React.FC<{ data: MockData.CustomerDataType }> = ({
   data,
@@ -330,6 +361,5 @@ const InfoItem = ({ label, value }: { label: string; value: string }) => (
     <Text className="text-gray-600 font-medium">{value}</Text>
   </View>
 );
-
 
 export default withGlobalLayout(AllCustomerPage);

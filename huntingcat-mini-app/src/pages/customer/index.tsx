@@ -6,9 +6,7 @@ import { useNavbar } from "../../context/NavbarContext";
 import { act, useCallback, useEffect, useMemo, useState } from "react";
 import Taro, { useDidShow, useReachBottom } from "@tarojs/taro";
 import { AtDrawer, AtIcon, AtToast } from "taro-ui";
-import { withGlobalLayout } from "../../utils/withGlobalLayout";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { withGlobalLayout } from "../../components/AppLayout";
 import { THEME_CONFIG } from "../../constant/global";
 import { ROUTERS } from "../../constant/menus";
 const PAGE_SIZE = 10; // 每页显示条数
