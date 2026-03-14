@@ -63,6 +63,12 @@ npm run build
 4. 将所有镜像导出: `docker save <image_name>:<image_version> > <image_name>.tar`
 5. 镜像导入: `docker load < <image_name>.tar`
 
+
+
+## 待优化项
+
+1. 前后端需要根据dataType给不同的输入框以及校验
+
 ## Q&A
 
 ### 前端项目安装依赖慢

@@ -90,6 +90,14 @@ definitions:
       updateTime:
         type: string
     type: object
+  crm.DeleteCrmEntityValueRequest:
+    properties:
+      id:
+        example: "0"
+        type: string
+    required:
+    - id
+    type: object
   crm.EntityCreateRequest:
     properties:
       description:
@@ -136,6 +144,21 @@ definitions:
     required:
     - data
     - entityId
+    type: object
+  crm.UpdateCrmEntityValueRequest:
+    properties:
+      customerName:
+        type: string
+      id:
+        example: "0"
+        type: string
+      remark:
+        type: string
+      values:
+        type: string
+    required:
+    - customerName
+    - id
     type: object
   crm.UpsertCrmEntityFieldRequest:
     properties:
@@ -860,6 +883,28 @@ paths:
       summary: 更新实体表所有字段
       tags:
       - CrmEntityFieldController
+  /crm/value/delete:
+    post:
+      consumes:
+      - application/json
+      operationId: deleteEntityValue
+      parameters:
+      - description: 删除实体数据参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.DeleteCrmEntityValueRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 删除实体数据
+      tags:
+      - CrmEntityValueController
   /crm/value/insert:
     post:
       consumes:
@@ -906,6 +951,28 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-crm_CrmEntityValueObjectVo'
       summary: 获取对应的实体表数据
+      tags:
+      - CrmEntityValueController
+  /crm/value/update:
+    post:
+      consumes:
+      - application/json
+      operationId: updateEntityValue
+      parameters:
+      - description: 更新实体数据参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.UpdateCrmEntityValueRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 更新实体数据
       tags:
       - CrmEntityValueController
   /system/auth/adminPwdLogin:

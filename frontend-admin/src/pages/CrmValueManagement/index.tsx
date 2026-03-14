@@ -1,5 +1,5 @@
 import { getEntityList } from "@/services/steins-admin/crmEntityController";
-import { getEntityValueList, insertEntityValue } from "@/services/steins-admin/crmEntityValueController";
+import { getEntityValueList, insertEntityValue, updateEntityValue, deleteEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
@@ -116,8 +116,20 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
             }}>更新</a>
             <Popconfirm
               title="确认删除"
-              onConfirm={() => {
-
+              onConfirm={async () => {
+                const resp = await deleteEntityValue({
+                  id: record.id
+                })
+                handleResponse({
+                  resp,
+                  onSuccess: () => {
+                    Notify.ok("删除成功")
+                    actionRef?.current?.reload()
+                  },
+                  onError: () => {
+                    Notify.fail("删除失败：" + resp.msg)
+                  }
+                })
               }}
             >
               <a>删除</a>
@@ -224,21 +236,17 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         value={currentValue}
         onSubmit={async (data) => {
 
-          const resp = await insertEntityValue({
-            entityId: entity?.entityId as string,
-            data: [
-              {
-                customerName: data?.customer_name || "",
-                remark: data?.remark || "",
-                values: JSON.stringify(data)
-              }
-            ]
+          const resp = await updateEntityValue({
+            id: currentValue.id,
+            customerName: data?.customer_name || "",
+            remark: data?.remark || "",
+            values: JSON.stringify(data)
           })
           handleResponse({
             resp,
             onSuccess: () => {
               Notify.ok("更新成功")
-              handleCreateModalOpen(false)
+              handleUpdateModalOpen(false)
               actionRef?.current?.reload()
             },
             onError: () => {

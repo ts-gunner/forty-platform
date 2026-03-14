@@ -16,3 +16,14 @@ type CrmEntityValueData struct {
 	Remark       string `json:"remark"`
 	Values       string `json:"values"`
 }
+
+type UpdateCrmEntityValueRequest struct {
+	Id           int64  `json:"id,string" binding:"required"`
+	CustomerName string `json:"customerName" binding:"required"`
+	Remark       string `json:"remark"`
+	Values       string `json:"values"`
+}
+
+type DeleteCrmEntityValueRequest struct {
+	Id int64 `json:"id,string" binding:"required"`
+}

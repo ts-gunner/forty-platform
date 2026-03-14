@@ -2,6 +2,21 @@
 /* eslint-disable */
 import request from "@/utils/admin_request";
 
+/** 删除实体数据 POST /crm/value/delete */
+export async function deleteEntityValue(
+  body: API.DeleteCrmEntityValueRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultAny>("/crm/value/delete", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 插入实体数据 POST /crm/value/insert */
 export async function insertEntityValue(
   body: API.InsertCrmEntityValueRequest,
@@ -28,6 +43,21 @@ export async function getEntityValueList(
     params: {
       ...params,
     },
+    ...(options || {}),
+  });
+}
+
+/** 更新实体数据 POST /crm/value/update */
+export async function updateEntityValue(
+  body: API.UpdateCrmEntityValueRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultAny>("/crm/value/update", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
     ...(options || {}),
   });
 }

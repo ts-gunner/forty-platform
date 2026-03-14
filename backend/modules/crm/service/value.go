@@ -72,7 +72,58 @@ func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueLi
 		},
 	}, nil
 }
+func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues string) (map[string]interface{}, error) {
+	result := make(map[string]interface{})
 
+	// 解析 values
+	var dict map[string]interface{}
+	if err := json.Unmarshal([]byte(entityValues), &dict); err != nil {
+		return nil, err
+	}
+
+	for _, field := range fieldList {
+		switch enums.CrmFieldDataType(field.DataType) {
+		case enums.CrmDataTypeText:
+			val := lo.ValueOr(dict, field.FieldKey, "").(string)
+			if field.IsRequired && val == "" {
+				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			}
+			result[field.FieldKey] = val
+		case enums.CrmDataTypeNumber:
+			val := lo.ValueOr(dict, field.FieldKey, -1).(int)
+			if field.IsRequired && val == -1 {
+				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			}
+			result[field.FieldKey] = val
+		case enums.CrmDataTypeBoolean:
+			val := lo.ValueOr(dict, field.FieldKey, false).(bool)
+			if field.IsRequired && &val == nil {
+				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			}
+		case enums.CrmDataTypeDate:
+			val := lo.ValueOr(dict, field.FieldKey, "").(string)
+			if field.IsRequired && val == "" {
+				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			}
+			result[field.FieldKey] = val
+		case enums.CrmDataTypeRegion:
+			val := lo.ValueOr(dict, field.FieldKey, "").(string)
+			if field.IsRequired && val == "" {
+				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			}
+			result[field.FieldKey] = val
+		case enums.CrmDataTypePicker:
+			val := lo.ValueOr(dict, field.FieldKey, "").(string)
+			if field.IsRequired && val == "" {
+				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			}
+			result[field.FieldKey] = val
+		default:
+		}
+
+	}
+	return result, nil
+}
 func (EntityValueService) InsertEntityValueData(ctx context.Context, req request.InsertCrmEntityValueRequest) error {
 	entityObject, err := entityModel.GetEntityById(req.EntityId)
 	if err != nil {
@@ -93,48 +144,9 @@ func (EntityValueService) InsertEntityValueData(ctx context.Context, req request
 		if err := json.Unmarshal([]byte(data.Values), &dict); err != nil {
 			return err
 		}
-		var values []entity.CrmCustomerValues
-		result := make(map[string]interface{})
-		for _, field := range fieldList {
-			switch enums.CrmFieldDataType(field.DataType) {
-			case enums.CrmDataTypeText:
-				val := lo.ValueOr(dict, field.FieldKey, "").(string)
-				if field.IsRequired && val == "" {
-					return errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-				}
-				result[field.FieldKey] = val
-			case enums.CrmDataTypeNumber:
-				val := lo.ValueOr(dict, field.FieldKey, -1).(int)
-				if field.IsRequired && val == -1 {
-					return errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-				}
-				result[field.FieldKey] = val
-			case enums.CrmDataTypeBoolean:
-				val := lo.ValueOr(dict, field.FieldKey, false).(bool)
-				if field.IsRequired && &val == nil {
-					return errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-				}
-			case enums.CrmDataTypeDate:
-				val := lo.ValueOr(dict, field.FieldKey, "").(string)
-				if field.IsRequired && val == "" {
-					return errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-				}
-				result[field.FieldKey] = val
-			case enums.CrmDataTypeRegion:
-				val := lo.ValueOr(dict, field.FieldKey, "").(string)
-				if field.IsRequired && val == "" {
-					return errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-				}
-				result[field.FieldKey] = val
-			case enums.CrmDataTypePicker:
-				val := lo.ValueOr(dict, field.FieldKey, "").(string)
-				if field.IsRequired && val == "" {
-					return errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-				}
-				result[field.FieldKey] = val
-			default:
-			}
-
+		result, err := handleValueByFieldList(fieldList, data.Values)
+		if err != nil {
+			return err
 		}
 		customerName := lo.ValueOr(dict, constant.CRM_CUSTOMER_NAME, "").(string)
 		remark := lo.ValueOr(dict, constant.CRM_CUSTOMER_REMARK, "").(string)
@@ -142,6 +154,7 @@ func (EntityValueService) InsertEntityValueData(ctx context.Context, req request
 		if err != nil {
 			return err
 		}
+		var values []entity.CrmCustomerValues
 
 		values = append(values, entity.CrmCustomerValues{
 			EntityId:     req.EntityId,
@@ -154,6 +167,49 @@ func (EntityValueService) InsertEntityValueData(ctx context.Context, req request
 		})
 
 		global.DB.CreateInBatches(values, 10)
+	}
+
+	return nil
+}
+
+func (EntityValueService) UpdateEntityValueData(ctx context.Context, req request.UpdateCrmEntityValueRequest) error {
+	// 查找要更新的记录
+	var entityValue entity.CrmCustomerValues
+	if err := global.DB.First(&entityValue, req.Id).Error; err != nil {
+		return errors.New("该记录不存在")
+	}
+
+	// 找到实体的字段
+	fieldList, err := entityFieldModel.GetEntityFieldsByEntityId(global.DB, entityValue.EntityId)
+	if err != nil {
+		return err
+	}
+	result, err := handleValueByFieldList(fieldList, req.Values)
+	// 序列化结果
+	resultBytes, err := json.Marshal(result)
+	if err != nil {
+		return err
+	}
+
+	// 更新记录
+	updates := map[string]interface{}{
+		"customer_name": req.CustomerName,
+		"remark":        req.Remark,
+		"values":        datatypes.JSON(resultBytes),
+		"updater_id":    utils.GetLoginUserId(ctx),
+	}
+
+	if err := global.DB.Model(&entityValue).Updates(updates).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (EntityValueService) DeleteEntityValueData(ctx context.Context, id int64) error {
+	// 软删除记录
+	if err := global.DB.Model(&entity.CrmCustomerValues{}).Where("id = ?", id).Update("is_delete", 1).Error; err != nil {
+		return err
 	}
 
 	return nil

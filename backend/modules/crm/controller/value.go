@@ -18,6 +18,8 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 	routerGroup := router.Group(fmt.Sprintf("/%s/value", moduleName))
 	routerGroup.GET("/list", getEntityValueList)
 	routerGroup.POST("/insert", insertEntityValue)
+	routerGroup.POST("/update", updateEntityValue)
+	routerGroup.POST("/delete", deleteEntityValue)
 
 }
 
@@ -68,6 +70,58 @@ func insertEntityValue(c *gin.Context) {
 	if err != nil {
 		global.Logger.Error("写入客户实体表数据失败", zap.Error(err))
 		response.Fail(http.StatusBadRequest, fmt.Sprintf("写入客户实体表数据失败: %v", err), c)
+		return
+	}
+
+	response.Ok(c)
+}
+
+// @Tags CrmEntityValueController
+// @ID updateEntityValue
+// @Router /crm/value/update [post]
+// @Summary 更新实体数据
+// @Accept json
+// @Produce json
+// @Param request body request.UpdateCrmEntityValueRequest true "更新实体数据参数"
+// @Success 200 {object} response.ApiResult[any]
+func updateEntityValue(c *gin.Context) {
+	var req request.UpdateCrmEntityValueRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	err := entityValueService.UpdateEntityValueData(c.Request.Context(), req)
+	if err != nil {
+		global.Logger.Error("更新客户实体表数据失败", zap.Error(err))
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("更新客户实体表数据失败: %v", err), c)
+		return
+	}
+
+	response.Ok(c)
+}
+
+// @Tags CrmEntityValueController
+// @ID deleteEntityValue
+// @Router /crm/value/delete [post]
+// @Summary 删除实体数据
+// @Accept json
+// @Produce json
+// @Param request body request.DeleteCrmEntityValueRequest true "删除实体数据参数"
+// @Success 200 {object} response.ApiResult[any]
+func deleteEntityValue(c *gin.Context) {
+	var req request.DeleteCrmEntityValueRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	err := entityValueService.DeleteEntityValueData(c.Request.Context(), req.Id)
+	if err != nil {
+		global.Logger.Error("删除客户实体表数据失败", zap.Error(err))
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("删除客户实体表数据失败: %v", err), c)
 		return
 	}
 

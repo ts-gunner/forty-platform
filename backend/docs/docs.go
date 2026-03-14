@@ -254,6 +254,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/value/delete": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityValueController"
+                ],
+                "summary": "删除实体数据",
+                "operationId": "deleteEntityValue",
+                "parameters": [
+                    {
+                        "description": "删除实体数据参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.DeleteCrmEntityValueRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/value/insert": {
             "post": {
                 "consumes": [
@@ -323,6 +357,40 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.ApiResult-crm_CrmEntityValueObjectVo"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/value/update": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityValueController"
+                ],
+                "summary": "更新实体数据",
+                "operationId": "updateEntityValue",
+                "parameters": [
+                    {
+                        "description": "更新实体数据参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.UpdateCrmEntityValueRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
                         }
                     }
                 }
@@ -1354,6 +1422,18 @@ const docTemplate = `{
                 }
             }
         },
+        "crm.DeleteCrmEntityValueRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "0"
+                }
+            }
+        },
         "crm.EntityCreateRequest": {
             "type": "object",
             "required": [
@@ -1421,6 +1501,28 @@ const docTemplate = `{
                 "entityId": {
                     "type": "string",
                     "example": "0"
+                }
+            }
+        },
+        "crm.UpdateCrmEntityValueRequest": {
+            "type": "object",
+            "required": [
+                "customerName",
+                "id"
+            ],
+            "properties": {
+                "customerName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "string"
                 }
             }
         },

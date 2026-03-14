@@ -158,6 +158,10 @@ declare namespace API {
     updateTime?: string;
   };
 
+  type DeleteCrmEntityValueRequest = {
+    id: string;
+  };
+
   type EntityCreateRequest = {
     description?: string;
     entityCode: string;
@@ -394,6 +398,13 @@ declare namespace API {
     roleId?: string;
     roleKey?: string;
     roleName?: string;
+  };
+
+  type UpdateCrmEntityValueRequest = {
+    customerName: string;
+    id: string;
+    remark?: string;
+    values?: string;
   };
 
   type UpsertCrmEntityFieldRequest = {
