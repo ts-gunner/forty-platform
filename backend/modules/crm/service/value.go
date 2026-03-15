@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/jinzhu/copier"
 	"github.com/samber/lo"
@@ -105,6 +106,10 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 			if field.IsRequired && val == "" {
 				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
 			}
+			_, err := time.Parse(time.DateOnly, val)
+			if err != nil {
+				return nil, errors.New(fmt.Sprintf("[%s]日期格式不正确，应为 YYYY-MM-DD", field.FieldName))
+			}
 			result[field.FieldKey] = val
 		case enums.CrmDataTypeRegion:
 			val := lo.ValueOr(dict, field.FieldKey, "").(string)
@@ -185,6 +190,9 @@ func (EntityValueService) UpdateEntityValueData(ctx context.Context, req request
 		return err
 	}
 	result, err := handleValueByFieldList(fieldList, req.Values)
+	if err != nil {
+		return err
+	}
 	// 序列化结果
 	resultBytes, err := json.Marshal(result)
 	if err != nil {

@@ -1,5 +1,5 @@
-import { CrmDataTypeEnum } from "@/constants/enums";
-import { DatePicker, Form, Input, InputNumber, Modal, Select } from "antd";
+import ValueBoxGenerator from "@/components/crm/ValueBoxGenerator";
+import { Form, Modal } from "antd";
 import { useState } from "react";
 
 type ModalProps = {
@@ -11,30 +11,7 @@ type ModalProps = {
 export default function CreateEntityValueModal({ modalOpen, handleModalOpen, fieldList, onSubmit }: ModalProps) {
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const renderFieldItem = (field: API.CrmEntityFieldVo) => {
-    const { dataType, fieldName, options } = field;
-
-    switch (dataType) {
-      case CrmDataTypeEnum.Number:
-        return <InputNumber className="w-full" placeholder={`请输入${fieldName}`} />;
-
-      case CrmDataTypeEnum.Picker:
-        const selectOptions = options ? options.split(","): []
-        return (
-          <Select
-            placeholder={`请选择${fieldName}`}
-            options={selectOptions.map((opt: any) => ({
-              label: opt,
-              value: opt,
-            }))}
-          ></Select>
-        );
-      case CrmDataTypeEnum.Date:
-        return <DatePicker className="w-full" />;
-      default:
-        return <Input placeholder={`请输入${fieldName}`} />;
-    }
-  };
+  
   return (
     <Modal
       title="添加客户数据"
@@ -72,7 +49,7 @@ export default function CreateEntityValueModal({ modalOpen, handleModalOpen, fie
                 rules={[{ required: field.isRequired, message: `${field.fieldName}是必填项` }]}
                 className="col-span-1"
               >
-                {renderFieldItem(field)}
+                <ValueBoxGenerator field={field}/>
               </Form.Item>
             ))}
         </div>
