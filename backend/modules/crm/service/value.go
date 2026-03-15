@@ -17,6 +17,7 @@ import (
 	"github.com/ts-gunner/forty-platform/common/response"
 	crmResponse "github.com/ts-gunner/forty-platform/common/response/crm"
 	"github.com/ts-gunner/forty-platform/common/utils"
+	"go.uber.org/zap"
 	"gorm.io/datatypes"
 )
 
@@ -122,6 +123,16 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 			if field.IsRequired && val == "" {
 				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
 			}
+			var options []string
+			if err := json.Unmarshal(*field.Options, &options); err != nil {
+				errorMsg := fmt.Sprintf("[%s]该字段的值反序列化异常", field.FieldName)
+				global.Logger.Error(errorMsg, zap.Any("field options", field.Options))
+				return nil, errors.New(errorMsg)
+			}
+			if !lo.Contains(options, val) {
+				return nil, errors.New(fmt.Sprintf("【%s】 不在[%s]该字段的选择范围内", val, field.FieldName))
+			}
+
 			result[field.FieldKey] = val
 		default:
 		}
