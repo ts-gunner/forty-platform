@@ -105,7 +105,11 @@ const serviceData = [
     title: "附近企业",
     icon: <Image src={ICON_MAP.rangCompanyIcon} lazyLoad className="h-6 w-6" />,
   },
-  
+    {
+    key: "4",
+    title: "物品流向",
+    icon: <Image src={ICON_MAP.goodFlowIcon} lazyLoad className="h-6 w-6" />,
+  },
 ];
 // 我的服务
 const MyServiceComponent = () => {

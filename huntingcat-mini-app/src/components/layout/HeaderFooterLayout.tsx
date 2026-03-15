@@ -1,3 +1,4 @@
+import { cn } from "../../utils/common";
 import { useNavbar } from "../../context/NavbarContext";
 import { Button, ScrollView, Text, View } from "@tarojs/components";
 import Taro from "@tarojs/taro";
@@ -5,19 +6,22 @@ import React from "react";
 import { AtIcon } from "taro-ui";
 /**
 上中下布局
+头部是常规的微信navbar高度
  */
 export default function HeaderBodyFooterLayout({
   headerRender,
   FooterRender,
   children,
+  className,
 }: {
   headerRender?: React.ReactNode;
   FooterRender?: React.ReactNode;
   children: React.ReactNode;
+  className?: string
 }) {
   const { navBarHeight, headerHeight } = useNavbar();
   return (
-    <View className="flex flex-col h-screen">
+    <View className={cn("flex flex-col h-screen", className)}>
       {/* 头部 */}
       <View
         className="flex items-end z-[50] w-full shrink-0"

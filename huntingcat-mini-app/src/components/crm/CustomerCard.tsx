@@ -1,0 +1,96 @@
+import { MockData } from "@/typing";
+import { Text, View } from "@tarojs/components";
+
+
+export const MyCustomerCard: React.FC<{ data: MockData.CustomerDataType, onClick: (key: string) => void }> = ({
+  data, onClick
+}) => {
+  return (
+    <View
+      onClick={() => onClick(data.key)}
+      className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/60 p-3 shadow-xl backdrop-blur-md">
+      {/* 顶部：标题与标签 */}
+      <View className="flex justify-between items-start mb-2">
+        <View className="flex-1">
+          <Text className="text-xs text-gray-500 block">企业名称</Text>
+          <Text className="font-bold text-gray-800 leading-tight">
+            {data.companyName}
+          </Text>
+        </View>
+        {/* 标签化处理 */}
+        <View className="px-3 py-1  shadow rounded-full flex justify-center items-center bg-active">
+          <Text className="text-xs font-medium text-white">{data.tag}</Text>
+        </View>
+      </View>
+
+      <View className="h-[1px] w-full bg-gray-200/50 mb-2" />
+
+      {/* 底部：详细信息网格排版 */}
+      <View className="grid grid-cols-1 gap-2">
+        <InfoItem label="联系人" value={data.contractName} />
+        <InfoItem label="联系电话" value={data.contractPhone} />
+        <InfoItem label="地址" value={data.addr} />
+      </View>
+    </View>
+  );
+};
+export const AllCustomerCard: React.FC<{ data: MockData.CustomerDataType, onClick: (key: string) => void }> = ({
+  data, onClick
+}) => {
+  return (
+    <View
+      onClick={() => onClick(data.key)}
+      className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/70 p-4 shadow-xl backdrop-blur-md mb-3"
+    >
+      {/* 顶部：公司名与状态标签 */}
+      <View className="flex flex-row justify-between items-start mb-3">
+        <View className="flex-1">
+          <Text className="text-[20rpx] text-gray-400 block mb-0.5">企业名称</Text>
+          <Text className="text-[32rpx] font-bold text-gray-800 leading-tight">
+            {data.companyName}
+          </Text>
+        </View>
+        <View className="px-3 py-1 rounded-full bg-active shadow-sm text-center">
+          <Text className="text-[22rpx] font-medium text-white">{data.tag}</Text>
+        </View>
+      </View>
+
+      {/* 客户基本信息 */}
+      <View className="space-y-2 mb-3">
+        <InfoItem label="联系人" value={data.contractName} />
+        <InfoItem label="联系电话" value={data.contractPhone} />
+        <InfoItem label="地址" value={data.addr} />
+      </View>
+
+      {/* 分隔虚线或细线 */}
+      <View className="h-[1px] w-full border-t border-dashed border-gray-200 mb-3" />
+
+      {/* 底部：归属业务员信息 */}
+      <View className="flex flex-row items-center justify-between">
+        <View className="flex flex-row items-center">
+          {/* 业务员头像占位/图标 */}
+          <View className="w-6 h-6 rounded-full bg-active flex items-center justify-center mr-2">
+            <Text className="text-[18rpx] text-white font-bold">责</Text>
+          </View>
+          <View>
+            <Text className="text-[20rpx] text-gray-400">负责业务员:</Text>
+            <Text className="text-[24rpx] font-semibold text-gray-700">
+              {"王翔"}
+            </Text>
+          </View>
+        </View>
+        
+  
+          <View className="bg-gray-100 px-2 py-0.5 rounded">
+            <Text className="text-[20rpx] text-gray-500">{"广州分部"}</Text>
+          </View>
+      </View>
+    </View>
+  );
+};
+const InfoItem = ({ label, value }: { label: string; value: string }) => (
+  <View className="flex text-sm">
+    <Text className="text-gray-400 w-16 flex-shrink-0">{label}</Text>
+    <Text className="text-gray-600 font-medium">{value}</Text>
+  </View>
+);
