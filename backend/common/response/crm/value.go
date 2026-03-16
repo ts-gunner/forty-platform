@@ -8,7 +8,8 @@ import (
 
 type CrmEntityValueVo struct {
 	Id           int64     `json:"id,string"`
-	CustomerName string    `json:"customer_name"`
+	EntityId     int64     `json:"entityId,string"`
+	CustomerName string    `json:"customerName"`
 	Remark       string    `json:"remark"`
 	Values       string    `json:"values"`
 	CreateTime   time.Time `json:"createTime"`

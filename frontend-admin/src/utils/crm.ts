@@ -3,7 +3,7 @@ import { ProColumns } from "@ant-design/pro-table";
 
 export const generateCrmValueColumns = (entityFields: API.CrmEntityFieldVo[]): ProColumns[] => {
   // 临时只展示5个字段
-  return entityFields.slice(0,5).map((it) => handleCrmValueColumn(it));
+  return entityFields.slice(0, 5).map((it) => handleCrmValueColumn(it));
 };
 
 const handleCrmValueColumn = (field: API.CrmEntityFieldVo): ProColumns => {
@@ -26,7 +26,7 @@ const handleCrmValueColumn = (field: API.CrmEntityFieldVo): ProColumns => {
           }
         },
       };
-  
+
     default:
       return {
         title: fieldName,
@@ -36,3 +36,16 @@ const handleCrmValueColumn = (field: API.CrmEntityFieldVo): ProColumns => {
       };
   }
 };
+
+
+export const handleCrmValueByField = (field: API.CrmEntityFieldVo, data: any) => {
+  if (!field.fieldKey) {
+    return "-"
+  }
+  switch (field.dataType) {
+    case CrmDataTypeEnum.Boolean:
+      return data?.[field.fieldKey] === true ? "是" : "否"
+    default:
+      return data?.[field.fieldKey]
+  }
+} 

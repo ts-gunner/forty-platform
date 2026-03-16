@@ -64,7 +64,10 @@ definitions:
     properties:
       createTime:
         type: string
-      customer_name:
+      customerName:
+        type: string
+      entityId:
+        example: "0"
         type: string
       id:
         example: "0"
@@ -144,6 +147,14 @@ definitions:
     required:
     - data
     - entityId
+    type: object
+  crm.RestoreCrmEntityFieldRequest:
+    properties:
+      fieldId:
+        example: "0"
+        type: string
+    required:
+    - fieldId
     type: object
   crm.UpdateCrmEntityValueRequest:
     properties:
@@ -854,6 +865,24 @@ paths:
       summary: 更新客户实体
       tags:
       - CrmEntityController
+  /crm/field/getDeletedFieldsByEntityId:
+    get:
+      operationId: getDeletedFieldsByEntityId
+      parameters:
+      - description: 实体表id
+        in: query
+        name: entityId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-array_crm_CrmEntityFieldVo'
+      summary: 获取已删除的实体表字段
+      tags:
+      - CrmEntityFieldController
   /crm/field/getFieldsByEntityId:
     get:
       operationId: getFieldsByEntityId
@@ -870,6 +899,28 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-array_crm_CrmEntityFieldVo'
       summary: 根据实体表id获取实体表字段
+      tags:
+      - CrmEntityFieldController
+  /crm/field/restoreField:
+    post:
+      consumes:
+      - application/json
+      operationId: restoreField
+      parameters:
+      - description: 恢复实体表字段
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.RestoreCrmEntityFieldRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 恢复已删除的实体表字段
       tags:
       - CrmEntityFieldController
   /crm/field/upsertEntityField:
@@ -923,6 +974,7 @@ paths:
       - description: 实体数据id
         in: query
         name: entityValueId
+        required: true
         type: string
       produces:
       - application/json

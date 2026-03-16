@@ -56,7 +56,7 @@ func getEntityValueList(c *gin.Context) {
 // @Router /crm/value/detail [get]
 // @Summary 获取对应的实体数据明细
 // @Produce json
-// @Param entityValueId query string false "实体数据id" in:query
+// @Param entityValueId query string true "实体数据id" in:query
 // @Success 200 {object} response.ApiResult[crmResponse.CrmEntityValueVo]
 func getEntityValueDetail(c *gin.Context) {
 	var req request.GetCrmEntityValueDetailRequest

@@ -50,20 +50,12 @@ func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueLi
 	for _, e := range entityValues {
 		list = append(list, crmResponse.CrmEntityValueVo{
 			Id:           e.Id,
+			EntityId:     e.EntityId,
 			CustomerName: e.CustomerName,
 			Remark:       e.Remark,
 			Values:       e.Values.String(),
 			CreateTime:   e.UpdateTime,
 		})
-	}
-
-	fieldList, err := entityFieldModel.GetEntityFieldsByEntityId(global.DB, req.EntityId)
-	if err != nil {
-		return nil, err
-	}
-	var fieldVos []crmResponse.CrmEntityFieldVo
-	if err = copier.Copy(&fieldVos, fieldList); err != nil {
-		return nil, err
 	}
 	return &crmResponse.CrmEntityValueObjectVo{
 		EntityValue: response.PageResult[crmResponse.CrmEntityValueVo]{
@@ -77,7 +69,7 @@ func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueLi
 
 func (EntityValueService) GetEntityValueDetail(entityValueId int64) (*crmResponse.CrmEntityValueVo, error) {
 	var value entity.CrmCustomerValues
-	if err := global.DB.Model(&entity.CrmCustomerValues{}).Where("entity_id = ? and is_delete = 0", entityValueId).First(&value).Error; err != nil {
+	if err := global.DB.Model(&entity.CrmCustomerValues{}).Where("id = ? and is_delete = 0", entityValueId).First(&value).Error; err != nil {
 		return nil, err
 	}
 	var vo crmResponse.CrmEntityValueVo

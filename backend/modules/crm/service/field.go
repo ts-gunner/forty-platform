@@ -62,6 +62,68 @@ func (EntityFieldService) GetFieldsByEntityId(entityId int64) ([]response.CrmEnt
 	return result, nil
 }
 
+func (EntityFieldService) GetDeletedFieldsByEntityId(entityId int64) ([]response.CrmEntityFieldVo, error) {
+	_, err := entityModel.GetEntityById(entityId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("实体不存在")
+		}
+		return nil, err
+	}
+
+	var entityFields []*entity.CrmCustomerFields
+	if err := global.DB.Where("entity_id = ? and is_delete = 1", entityId).Order("delete_time DESC").Find(&entityFields).Error; err != nil {
+		return nil, err
+	}
+
+	result := lo.Map(entityFields, func(it *entity.CrmCustomerFields, idx int) response.CrmEntityFieldVo {
+		var opt = make([]string, 0)
+		if it.Options != nil {
+			_ = json.Unmarshal(*it.Options, &opt)
+		}
+
+		var vo response.CrmEntityFieldVo
+		_ = copier.Copy(&vo, it)
+		vo.Options = strings.Join(opt, ",")
+		return vo
+	})
+
+	return result, nil
+}
+
+func (EntityFieldService) RestoreField(ctx context.Context, fieldId int64) error {
+	userId := utils.GetLoginUserId(ctx)
+
+	// 检查字段是否存在且已删除
+	var field entity.CrmCustomerFields
+	if err := global.DB.Where("id = ? and is_delete = 1", fieldId).First(&field).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("字段不存在或未被删除")
+		}
+		return err
+	}
+
+	// 检查是否有相同 fieldKey 的字段已存在
+	var existingField entity.CrmCustomerFields
+	if err := global.DB.Where("entity_id = ? and field_key = ? and is_delete = 0", field.EntityId, field.FieldKey).First(&existingField).Error; err == nil {
+		return errors.New("相同字段Key的字段已存在，无法恢复")
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+
+	// 恢复字段
+	if err := global.DB.Model(&field).Updates(map[string]interface{}{
+		"is_delete":   0,
+		"updater_id":  userId,
+		"delete_time": nil,
+		"deleter_id":  nil,
+	}).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 /*
 *
 差分更新 (Upsert / Soft Update)

@@ -11,7 +11,7 @@ export default function ValueBoxGenerator({ field, value, onChange }: { field: A
     case CrmDataTypeEnum.Boolean:
       return (
         <Select
-          value={value || "无"}
+          value={value || "未选择"}
           allowClear
           onChange={onChange}
           placeholder={`请选择${fieldName}`}
@@ -31,7 +31,7 @@ export default function ValueBoxGenerator({ field, value, onChange }: { field: A
       const selectOptions = options ? options.split(",") : []
       return (
         <Select
-          value={value || "无"}
+          value={value || "未选择"}
           allowClear
           onChange={onChange}
           placeholder={`请选择${fieldName}`}

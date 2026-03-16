@@ -1,8 +1,8 @@
-import { getFieldsByEntityId } from "@/services/steins-admin/crmEntityFieldController";
+import { getDeletedFieldsByEntityId, getFieldsByEntityId, restoreField } from "@/services/steins-admin/crmEntityFieldController";
 import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Popconfirm, Select } from "antd";
-import { RefreshCw, Trash2 } from "lucide-react";
+import { Button, Form, Input, Modal, Popconfirm, Select, Table, Tag } from "antd";
+import { RefreshCw, Trash2, RotateCw } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type ModalProps = {
@@ -59,6 +59,9 @@ const DATA_TYPE_OPIONS = [
 export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubmit, value }: ModalProps) {
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [fieldDataLoading, setFieldDataLoading] = useState<boolean>(false);
+  const [recycleBinOpen, setRecycleBinOpen] = useState<boolean>(false);
+  const [deletedFields, setDeletedFields] = useState<API.CrmEntityFieldVo[]>([]);
+  const [recycleBinLoading, setRecycleBinLoading] = useState<boolean>(false);
 
   const [formRef] = Form.useForm();
   useEffect(() => {
@@ -102,6 +105,44 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
       formRef.setFieldsValue({ customers: data });
     }
   };
+
+  const getDeletedFields = async () => {
+    setRecycleBinLoading(true);
+    const resp = await getDeletedFieldsByEntityId({
+      entityId: value?.entityId,
+    });
+    handleResponse({
+      resp,
+      onSuccess: (data) => {
+        setDeletedFields(data);
+      },
+      onError: () => {
+        Notify.fail("获取已删除字段失败:" + resp.msg);
+      },
+      onFinish: () => {
+        setRecycleBinLoading(false);
+      },
+    });
+  };
+
+  const handleRestoreField = async (fieldId: string) => {
+    const resp = await restoreField({
+      fieldId: fieldId,
+    });
+    handleResponse({
+      resp,
+      onSuccess: () => {
+        Notify.ok("字段恢复成功");
+        // 刷新已删除字段列表
+        getDeletedFields();
+        // 刷新当前字段列表
+        resetEntityValue();
+      },
+      onError: () => {
+        Notify.fail("字段恢复失败:" + resp.msg);
+      },
+    });
+  };
   return (
     <Modal
       title={
@@ -144,7 +185,14 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
       }}
     >
       <div>
-        <Button onClick={() => Notify.fail("功能暂未开发")}>回收站</Button>
+        <Button 
+          onClick={() => {
+            setRecycleBinOpen(true);
+            getDeletedFields();
+          }}
+        >
+          回收站
+        </Button>
         <div className="w-full h-[70vh] overflow-y-auto custom-scrollbar p-1">
           <Form
             form={formRef}
@@ -248,6 +296,87 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
           </Form>
         </div>
       </div>
+
+      {/* 回收站弹窗 */}
+      <Modal
+        title="字段回收站"
+        open={recycleBinOpen}
+        onCancel={() => setRecycleBinOpen(false)}
+        width={800}
+        footer={[
+          <Button key="close" onClick={() => setRecycleBinOpen(false)}>
+            关闭
+          </Button>,
+        ]}
+      >
+        <Table
+          loading={recycleBinLoading}
+          dataSource={deletedFields}
+          rowKey="id"
+          columns={[
+            {
+              title: "字段名称",
+              dataIndex: "fieldName",
+              key: "fieldName",
+            },
+            {
+              title: "字段Key",
+              dataIndex: "fieldKey",
+              key: "fieldKey",
+            },
+            {
+              title: "数据类型",
+              dataIndex: "dataType",
+              key: "dataType",
+              render: (dataType: number) => {
+                const typeMap:Record<number, string> = {
+                  1: "文本",
+                  2: "数字",
+                  3: "布尔",
+                  4: "选择器",
+                  5: "日期",
+                  6: "行政区划",
+                };
+                return typeMap[dataType] || "未知";
+              },
+            },
+            {
+              title: "是否必填",
+              dataIndex: "isRequired",
+              key: "isRequired",
+              render: (isRequired: boolean) => {
+                return isRequired ? (
+                  <Tag color="green">是</Tag>
+                ) : (
+                  <Tag color="gray">否</Tag>
+                );
+              },
+            },
+            {
+              title: "排列顺序",
+              dataIndex: "sortOrder",
+              key: "sortOrder",
+            },
+            {
+              title: "操作",
+              key: "action",
+              render: (_, record: API.CrmEntityFieldVo) => (
+                <Button
+                  type="primary"
+                  size="small"
+                  icon={<RotateCw className="h-4 w-4" />}
+                  onClick={() => handleRestoreField(record.id as string)}
+                >
+                  恢复
+                </Button>
+              ),
+            },
+          ]}
+          pagination={{
+            pageSize: 10,
+          }}
+        />
+      </Modal>
     </Modal>
   );
 }

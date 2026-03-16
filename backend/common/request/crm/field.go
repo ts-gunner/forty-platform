@@ -17,3 +17,7 @@ type CrmEntityField struct {
 	IsRequired bool   `json:"isRequired" binding:"required"`
 	SortOrder  int    `json:"sortOrder" binding:"required"`
 }
+
+type RestoreCrmEntityFieldRequest struct {
+	FieldId int64 `json:"fieldId,string" binding:"required"`
+}

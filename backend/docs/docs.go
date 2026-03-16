@@ -192,6 +192,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/field/getDeletedFieldsByEntityId": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityFieldController"
+                ],
+                "summary": "获取已删除的实体表字段",
+                "operationId": "getDeletedFieldsByEntityId",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "实体表id",
+                        "name": "entityId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-array_crm_CrmEntityFieldVo"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/field/getFieldsByEntityId": {
             "get": {
                 "produces": [
@@ -215,6 +243,40 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.ApiResult-array_crm_CrmEntityFieldVo"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/field/restoreField": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityFieldController"
+                ],
+                "summary": "恢复已删除的实体表字段",
+                "operationId": "restoreField",
+                "parameters": [
+                    {
+                        "description": "恢复实体表字段",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.RestoreCrmEntityFieldRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
                         }
                     }
                 }
@@ -303,7 +365,8 @@ const docTemplate = `{
                         "type": "string",
                         "description": "实体数据id",
                         "name": "entityValueId",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1411,8 +1474,12 @@ const docTemplate = `{
                 "createTime": {
                     "type": "string"
                 },
-                "customer_name": {
+                "customerName": {
                     "type": "string"
+                },
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
                 },
                 "id": {
                     "type": "string",
@@ -1527,6 +1594,18 @@ const docTemplate = `{
                     }
                 },
                 "entityId": {
+                    "type": "string",
+                    "example": "0"
+                }
+            }
+        },
+        "crm.RestoreCrmEntityFieldRequest": {
+            "type": "object",
+            "required": [
+                "fieldId"
+            ],
+            "properties": {
+                "fieldId": {
                     "type": "string",
                     "example": "0"
                 }

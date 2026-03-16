@@ -6,7 +6,7 @@ type GetCrmEntityValueListRequest struct {
 	EntityId int64 `form:"entityId" json:"entityId" binding:"required"`
 }
 type GetCrmEntityValueDetailRequest struct {
-	EntityValueId int64 `form:"entityId" json:"entityId" binding:"required"`
+	EntityValueId int64 `form:"entityValueId" json:"entityValueId" binding:"required"`
 }
 
 type InsertCrmEntityValueRequest struct {

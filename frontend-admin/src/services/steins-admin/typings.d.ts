@@ -149,7 +149,8 @@ declare namespace API {
 
   type CrmEntityValueVo = {
     createTime?: string;
-    customer_name?: string;
+    customerName?: string;
+    entityId?: string;
     id?: string;
     remark?: string;
     values?: string;
@@ -185,6 +186,11 @@ declare namespace API {
     entityName?: string;
   };
 
+  type getDeletedFieldsByEntityIdParams = {
+    /** 实体表id */
+    entityId?: string;
+  };
+
   type getEntityDetailParams = {
     /** 实体ID */
     entityId: number;
@@ -203,7 +209,7 @@ declare namespace API {
 
   type getEntityValueDetailParams = {
     /** 实体数据id */
-    entityValueId?: string;
+    entityValueId: string;
   };
 
   type getEntityValueListParams = {
@@ -363,6 +369,10 @@ declare namespace API {
   type PwdLoginRequest = {
     password?: string;
     username?: string;
+  };
+
+  type RestoreCrmEntityFieldRequest = {
+    fieldId: string;
   };
 
   type RoleCreateRequest = {
