@@ -3,18 +3,12 @@ import { Link, useLocation } from "umi";
 
 // Assume these icons are imported from an icon library
 import config, { ICONS_MAP } from "@/constants/config";
-import { useSidebar } from "../context/SidebarContext";
-import {
-  ChevronDownIcon,
-  HorizontaLDots,
-
-} from "../icons";
 import { useIntl } from "react-intl";
+import { useSidebar } from "../context/SidebarContext";
+import { ChevronDownIcon, HorizontaLDots } from "../icons";
 
-
-
-const AppSidebar: React.FC<{siderMenus: Record<string, Sider.NavItem[]>}> = ({siderMenus}) => {
-  const intl = useIntl()
+const AppSidebar: React.FC<{ siderMenus: Record<string, Sider.NavItem[]> }> = ({ siderMenus }) => {
+  const intl = useIntl();
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
 
@@ -41,10 +35,9 @@ const AppSidebar: React.FC<{siderMenus: Record<string, Sider.NavItem[]>}> = ({si
               submenuMatched = true;
             }
           });
-        } 
+        }
       });
     });
-
 
     if (!submenuMatched) {
       setOpenSubmenu(null);
@@ -90,7 +83,7 @@ const AppSidebar: React.FC<{siderMenus: Record<string, Sider.NavItem[]>}> = ({si
               >
                 {nav.icon}
               </span>
-              {(isExpanded || isHovered || isMobileOpen) && <span className="menu-item-text">{intl.formatMessage({id: `menu.${nav.name}`})}</span>}
+              {(isExpanded || isHovered || isMobileOpen) && <span className="menu-item-text">{intl.formatMessage({ id: `menu.${nav.name}` })}</span>}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
                   className={`ml-auto w-5 h-5 transition-transform duration-200 ${
@@ -103,7 +96,7 @@ const AppSidebar: React.FC<{siderMenus: Record<string, Sider.NavItem[]>}> = ({si
             nav.path && (
               <Link to={nav.path} className={`menu-item group ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"}`}>
                 <span className={`menu-item-icon-size ${isActive(nav.path) ? "menu-item-icon-active" : "menu-item-icon-inactive"}`}>{nav.icon}</span>
-                {(isExpanded || isHovered || isMobileOpen) && <span className="menu-item-text">{intl.formatMessage({id: `menu.${nav.name}`})}</span>}
+                {(isExpanded || isHovered || isMobileOpen) && <span className="menu-item-text">{intl.formatMessage({ id: `menu.${nav.name}` })}</span>}
               </Link>
             )
           )}
@@ -167,11 +160,11 @@ const AppSidebar: React.FC<{siderMenus: Record<string, Sider.NavItem[]>}> = ({si
             <>
               <img className="dark:hidden h-12 w-auto" src={ICONS_MAP.navbarLogo} alt="Logo" />
               <img className="hidden dark:block" src={ICONS_MAP.navbarLogoDark} alt="Logo" width={150} height={40} />
+              <span className="text-2xl font-bold">{config.title}</span>
             </>
           ) : (
             <img src={ICONS_MAP.logo} alt="Logo" width={32} height={32} />
           )}
-          <span className="text-2xl font-bold">{config.title}</span>
         </Link>
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">

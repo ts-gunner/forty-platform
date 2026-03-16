@@ -74,6 +74,19 @@ func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueLi
 		},
 	}, nil
 }
+
+func (EntityValueService) GetEntityValueDetail(entityValueId int64) (*crmResponse.CrmEntityValueVo, error) {
+	var value entity.CrmCustomerValues
+	if err := global.DB.Model(&entity.CrmCustomerValues{}).Where("entity_id = ? and is_delete = 0", entityValueId).First(&value).Error; err != nil {
+		return nil, err
+	}
+	var vo crmResponse.CrmEntityValueVo
+	if err := copier.Copy(&vo, &value); err != nil {
+		return nil, err
+	}
+	return &vo, nil
+
+}
 func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues string) (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 

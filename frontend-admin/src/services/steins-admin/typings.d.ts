@@ -50,6 +50,12 @@ declare namespace API {
     msg?: string;
   };
 
+  type ApiResultCrmCrmEntityValueVo = {
+    code?: number;
+    data?: CrmEntityValueVo;
+    msg?: string;
+  };
+
   type ApiResultCrmCrmEntityVo = {
     code?: number;
     data?: CrmEntityVo;
@@ -193,6 +199,11 @@ declare namespace API {
     entityName?: string;
     /** 实体标识 */
     entityCode?: string;
+  };
+
+  type getEntityValueDetailParams = {
+    /** 实体数据id */
+    entityValueId?: string;
   };
 
   type getEntityValueListParams = {

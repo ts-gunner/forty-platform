@@ -17,6 +17,7 @@ type EntityValueRouter struct{}
 func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup := router.Group(fmt.Sprintf("/%s/value", moduleName))
 	routerGroup.GET("/list", getEntityValueList)
+	routerGroup.GET("/detail", getEntityValueDetail)
 	routerGroup.POST("/insert", insertEntityValue)
 	routerGroup.POST("/update", updateEntityValue)
 	routerGroup.POST("/delete", deleteEntityValue)
@@ -48,6 +49,31 @@ func getEntityValueList(c *gin.Context) {
 	}
 
 	response.Data[crmResponse.CrmEntityValueObjectVo](*result, c)
+}
+
+// @Tags CrmEntityValueController
+// @ID getEntityValueDetail
+// @Router /crm/value/detail [get]
+// @Summary 获取对应的实体数据明细
+// @Produce json
+// @Param entityValueId query string false "实体数据id" in:query
+// @Success 200 {object} response.ApiResult[crmResponse.CrmEntityValueVo]
+func getEntityValueDetail(c *gin.Context) {
+	var req request.GetCrmEntityValueDetailRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	result, err := entityValueService.GetEntityValueDetail(req.EntityValueId)
+	if err != nil {
+		global.Logger.Error("获取客户数据明细失败", zap.Error(err))
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("获取客户数据明细失败: %v", err), c)
+		return
+	}
+
+	response.Data[crmResponse.CrmEntityValueVo](*result, c)
 }
 
 // @Tags CrmEntityValueController

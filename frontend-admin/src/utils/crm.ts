@@ -2,7 +2,8 @@ import { CrmDataTypeEnum } from "@/constants/enums";
 import { ProColumns } from "@ant-design/pro-table";
 
 export const generateCrmValueColumns = (entityFields: API.CrmEntityFieldVo[]): ProColumns[] => {
-  return entityFields.map((it) => handleCrmValueColumn(it));
+  // 临时只展示5个字段
+  return entityFields.slice(0,5).map((it) => handleCrmValueColumn(it));
 };
 
 const handleCrmValueColumn = (field: API.CrmEntityFieldVo): ProColumns => {

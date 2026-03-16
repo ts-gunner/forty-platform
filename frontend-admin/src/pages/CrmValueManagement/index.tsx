@@ -2,13 +2,14 @@ import { getEntityList } from "@/services/steins-admin/crmEntityController";
 import { getFieldsByEntityId } from "@/services/steins-admin/crmEntityFieldController";
 import { deleteEntityValue, getEntityValueList, insertEntityValue, updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
+import { generateCrmValueColumns } from "@/utils/crm";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Button, Popconfirm, Tabs } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import CreateEntityValueModal from "./CreateEntityValueModal";
 import UpdateEntityValueModal from "./UpdateEntityValueModal";
-import { generateCrmValueColumns } from "@/utils/crm";
+import { history } from "umi";
 
 export default function CrmValueManagementPage() {
   const [entityData, setEntityData] = useState<API.CrmEntityVo[]>([]);
@@ -91,7 +92,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
   const columns: ProColumns[] = useMemo(() => {
     let columns: ProColumns[] = [];
     if (entityFields) {
-      columns = generateCrmValueColumns(entityFields)
+      columns = generateCrmValueColumns(entityFields);
     }
 
     return [
@@ -104,6 +105,13 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         render: (_, record: any) => {
           return (
             <div className="flex justify-center items-center gap-3">
+              <a
+                onClick={() => {
+                 history.push(`/crm_value_detail/${record.id}`)
+                }}
+              >
+                查看
+              </a>
               <a
                 onClick={() => {
                   handleCurrentValue(record);
@@ -139,14 +147,12 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
     ];
   }, [entityFields]);
   return (
-    <>
+    <div style={{ width: "100%" }}>
       <ProTable
         actionRef={actionRef}
         columns={columns}
         key={"id"}
-        scroll={{
-          x: "auto",
-        }}
+     
         toolBarRender={() => [
           <Button
             type="primary"
@@ -252,6 +258,6 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
           });
         }}
       />
-    </>
+    </div>
   );
 };

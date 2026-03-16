@@ -45,7 +45,8 @@ export default function UpdateEntityValueModal({ modalOpen, handleModalOpen, fie
 
             }}
         >
-            <Form
+            <div className='h-[70vh] overflow-y-auto custom-scrollbar p-3'>
+  <Form
                 form={form}
                 layout="vertical"
                 className="mt-4"
@@ -66,6 +67,8 @@ export default function UpdateEntityValueModal({ modalOpen, handleModalOpen, fie
                         ))}
                 </div>
             </Form>
+            </div>
+          
         </Modal>
     );
 }

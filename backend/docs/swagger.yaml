@@ -259,6 +259,17 @@ definitions:
         example: 成功
         type: string
     type: object
+  response.ApiResult-crm_CrmEntityValueVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/crm.CrmEntityValueVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
   response.ApiResult-crm_CrmEntityVo:
     properties:
       code:
@@ -903,6 +914,24 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 删除实体数据
+      tags:
+      - CrmEntityValueController
+  /crm/value/detail:
+    get:
+      operationId: getEntityValueDetail
+      parameters:
+      - description: 实体数据id
+        in: query
+        name: entityValueId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-crm_CrmEntityValueVo'
+      summary: 获取对应的实体数据明细
       tags:
       - CrmEntityValueController
   /crm/value/insert:

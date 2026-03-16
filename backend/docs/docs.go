@@ -288,6 +288,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/value/detail": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityValueController"
+                ],
+                "summary": "获取对应的实体数据明细",
+                "operationId": "getEntityValueDetail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "实体数据id",
+                        "name": "entityValueId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-crm_CrmEntityValueVo"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/value/insert": {
             "post": {
                 "consumes": [
@@ -1663,6 +1691,22 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/crm.CrmEntityValueObjectVo"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "response.ApiResult-crm_CrmEntityValueVo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/crm.CrmEntityValueVo"
                 },
                 "msg": {
                     "type": "string",

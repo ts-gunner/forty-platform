@@ -5,6 +5,9 @@ type GetCrmEntityValueListRequest struct {
 	PageSize int   `form:"pageSize" json:"pageSize"`
 	EntityId int64 `form:"entityId" json:"entityId" binding:"required"`
 }
+type GetCrmEntityValueDetailRequest struct {
+	EntityValueId int64 `form:"entityId" json:"entityId" binding:"required"`
+}
 
 type InsertCrmEntityValueRequest struct {
 	EntityId int64                `json:"entityId,string" binding:"required"`
