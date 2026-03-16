@@ -8,12 +8,31 @@ export default function ValueBoxGenerator({ field, value, onChange }: { field: A
   switch (dataType) {
     case CrmDataTypeEnum.Number:
       return <InputNumber value={value}  onChange={onChange} className="w-full" placeholder={`请输入${fieldName}`} />;
-
+    case CrmDataTypeEnum.Boolean:
+      return (
+        <Select
+          value={value || "无"}
+          allowClear
+          onChange={onChange}
+          placeholder={`请选择${fieldName}`}
+          options={[
+            {
+              label: "是",
+            value: true
+            },
+            {
+              label: "否",
+              value: false
+            }
+          ]}
+        ></Select>
+      );
     case CrmDataTypeEnum.Picker:
       const selectOptions = options ? options.split(",") : []
       return (
         <Select
-          value={value}
+          value={value || "无"}
+          allowClear
           onChange={onChange}
           placeholder={`请选择${fieldName}`}
           options={selectOptions.map((opt: any) => ({

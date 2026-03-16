@@ -28,6 +28,7 @@
     "@tailwindcss/postcss": "^4.1.7",
     "antd": "^6.1.0",
     "apexcharts": "^5.3.6",
+    "china-division": "^2.7.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.19",
     "dotenv": "^16.5.0",

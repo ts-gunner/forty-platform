@@ -1,13 +1,14 @@
 import { getEntityList } from "@/services/steins-admin/crmEntityController";
-import { getEntityValueList, insertEntityValue, updateEntityValue, deleteEntityValue } from "@/services/steins-admin/crmEntityValueController";
+import { getFieldsByEntityId } from "@/services/steins-admin/crmEntityFieldController";
+import { deleteEntityValue, getEntityValueList, insertEntityValue, updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Button, Popconfirm, Tabs } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import CreateEntityValueModal from "./CreateEntityValueModal";
-import { getFieldsByEntityId } from "@/services/steins-admin/crmEntityFieldController";
 import UpdateEntityValueModal from "./UpdateEntityValueModal";
+import { generateCrmValueColumns } from "@/utils/crm";
 
 export default function CrmValueManagementPage() {
   const [entityData, setEntityData] = useState<API.CrmEntityVo[]>([]);
@@ -61,8 +62,8 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
   const [createModalOpen, handleCreateModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [currentValue, handleCurrentValue] = useState<any>({});
-  const [pageLoading, setPageLoading] = useState<boolean>(false)
-  const [entityFields, setEntityFields] = useState<API.CrmEntityFieldVo[]>([])
+  const [pageLoading, setPageLoading] = useState<boolean>(false);
+  const [entityFields, setEntityFields] = useState<API.CrmEntityFieldVo[]>([]);
   useEffect(() => {
     if (activeKey === entity.entityId) {
       getEntityFields();
@@ -88,57 +89,53 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
     });
   };
   const columns: ProColumns[] = useMemo(() => {
-    let columns: ProColumns[] = []
+    let columns: ProColumns[] = [];
     if (entityFields) {
-      const fieldColumns = entityFields.map((item): ProColumns => {
-        return {
-          title: item.fieldName,
-          dataIndex: item.fieldKey,
-          key: item.fieldKey,
-          align: "center",
-        };
-      });
-      columns = fieldColumns;
+      columns = generateCrmValueColumns(entityFields)
     }
 
-    return [...columns,
-    {
-      title: "操作",
-      dataIndex: "action",
-      key: "action",
-      align: "center",
-      render: (_, record: any) => {
-        return (
-          <div className="flex justify-center items-center gap-3">
-            <a onClick={() => {
-              handleCurrentValue(record)
-              handleUpdateModalOpen(true)
-            }}>更新</a>
-            <Popconfirm
-              title="确认删除"
-              onConfirm={async () => {
-                const resp = await deleteEntityValue({
-                  id: record.id
-                })
-                handleResponse({
-                  resp,
-                  onSuccess: () => {
-                    Notify.ok("删除成功")
-                    actionRef?.current?.reload()
-                  },
-                  onError: () => {
-                    Notify.fail("删除失败：" + resp.msg)
-                  }
-                })
-              }}
-            >
-              <a>删除</a>
-
-            </Popconfirm>
-          </div>
-        )
-      }
-    }
+    return [
+      ...columns,
+      {
+        title: "操作",
+        dataIndex: "action",
+        key: "action",
+        align: "center",
+        render: (_, record: any) => {
+          return (
+            <div className="flex justify-center items-center gap-3">
+              <a
+                onClick={() => {
+                  handleCurrentValue(record);
+                  handleUpdateModalOpen(true);
+                }}
+              >
+                更新
+              </a>
+              <Popconfirm
+                title="确认删除"
+                onConfirm={async () => {
+                  const resp = await deleteEntityValue({
+                    id: record.id,
+                  });
+                  handleResponse({
+                    resp,
+                    onSuccess: () => {
+                      Notify.ok("删除成功");
+                      actionRef?.current?.reload();
+                    },
+                    onError: () => {
+                      Notify.fail("删除失败：" + resp.msg);
+                    },
+                  });
+                }}
+              >
+                <a>删除</a>
+              </Popconfirm>
+            </div>
+          );
+        },
+      },
     ];
   }, [entityFields]);
   return (
@@ -148,7 +145,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         columns={columns}
         key={"id"}
         scroll={{
-          x: "auto"
+          x: "auto",
         }}
         toolBarRender={() => [
           <Button
@@ -167,31 +164,30 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
             pageSize: params.pageSize,
             entityId: entity.entityId,
           });
-          let tableData: any[] = []
-          let total = 0
+          let tableData: any[] = [];
+          let total = 0;
           handleResponse({
             resp,
             onSuccess: (data) => {
-              tableData = data.entityValue?.list || []
-              total = data.entityValue?.total || 0
+              tableData = data.entityValue?.list || [];
+              total = data.entityValue?.total || 0;
             },
             onError: () => {
               Notify.fail("获取实体表数据失败:" + resp.msg);
             },
-            onFinish: () => {
-            },
+            onFinish: () => {},
           });
 
           return {
-            data: tableData.map(it => {
+            data: tableData.map((it) => {
               return {
                 ...it,
-                ...(JSON.parse(it.values) || {})
-              }
+                ...(JSON.parse(it.values) || {}),
+              };
             }),
             total: total,
             success: true,
-          }
+          };
         }}
         pagination={{
           pageSize: pageSize,
@@ -204,55 +200,56 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
       ></ProTable>
 
       <CreateEntityValueModal
-        modalOpen={createModalOpen} handleModalOpen={handleCreateModalOpen}
+        modalOpen={createModalOpen}
+        handleModalOpen={handleCreateModalOpen}
         fieldList={entityFields}
         onSubmit={async (data) => {
-
           const resp = await insertEntityValue({
             entityId: entity?.entityId as string,
             data: [
               {
                 customerName: data?.customer_name || "",
                 remark: data?.remark || "",
-                values: JSON.stringify(data)
-              }
-            ]
-          })
+                values: JSON.stringify(data),
+              },
+            ],
+          });
           handleResponse({
             resp,
             onSuccess: () => {
-              Notify.ok("新增成功")
-              handleCreateModalOpen(false)
-              actionRef?.current?.reload()
+              Notify.ok("新增成功");
+              handleCreateModalOpen(false);
+              actionRef?.current?.reload();
             },
             onError: () => {
-              Notify.fail("新增失败：" + resp.msg)
-            }
-          })
-        }} />
+              Notify.fail("新增失败：" + resp.msg);
+            },
+          });
+        }}
+      />
       <UpdateEntityValueModal
-        modalOpen={updateModalOpen} handleModalOpen={handleUpdateModalOpen}
+        modalOpen={updateModalOpen}
+        handleModalOpen={handleUpdateModalOpen}
         fieldList={entityFields}
         value={currentValue}
         onSubmit={async (data) => {
-
           const resp = await updateEntityValue({
             id: currentValue.id,
             customerName: data?.customer_name || "",
             remark: data?.remark || "",
-            values: JSON.stringify(data)
-          })
+            values: JSON.stringify(data),
+          });
           handleResponse({
             resp,
             onSuccess: () => {
-              Notify.ok("更新成功")
-              handleUpdateModalOpen(false)
-              actionRef?.current?.reload()
+              Notify.ok("更新成功");
+              handleUpdateModalOpen(false);
+              actionRef?.current?.reload();
             },
             onError: () => {
-              Notify.fail("更新失败：" + resp.msg)
-            }
-          })
+              Notify.fail("更新失败：" + resp.msg);
+            },
+          });
         }}
       />
     </>

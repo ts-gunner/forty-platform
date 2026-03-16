@@ -99,18 +99,19 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 			result[field.FieldKey] = val
 		case enums.CrmDataTypeBoolean:
 			val := lo.ValueOr(dict, field.FieldKey, false).(bool)
-			if field.IsRequired && &val == nil {
-				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-			}
+			result[field.FieldKey] = val
 		case enums.CrmDataTypeDate:
 			val := lo.ValueOr(dict, field.FieldKey, "").(string)
 			if field.IsRequired && val == "" {
 				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
 			}
-			_, err := time.Parse(time.DateOnly, val)
-			if err != nil {
-				return nil, errors.New(fmt.Sprintf("[%s]日期格式不正确，应为 YYYY-MM-DD", field.FieldName))
+			if val != "" {
+				_, err := time.Parse(time.DateOnly, val)
+				if err != nil {
+					return nil, errors.New(fmt.Sprintf("[%s]日期格式不正确，应为 YYYY-MM-DD", field.FieldName))
+				}
 			}
+
 			result[field.FieldKey] = val
 		case enums.CrmDataTypeRegion:
 			val := lo.ValueOr(dict, field.FieldKey, "").(string)
@@ -129,7 +130,7 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 				global.Logger.Error(errorMsg, zap.Any("field options", field.Options))
 				return nil, errors.New(errorMsg)
 			}
-			if !lo.Contains(options, val) {
+			if val != "" && !lo.Contains(options, val) {
 				return nil, errors.New(fmt.Sprintf("【%s】 不在[%s]该字段的选择范围内", val, field.FieldName))
 			}
 
