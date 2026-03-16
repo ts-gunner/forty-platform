@@ -1,7 +1,6 @@
 import React from "react";
 import GridShape from "../../components/common/GridShape";
 import { Link } from "umi";
-import ThemeTogglerTwo from "../../components/common/ThemeTogglerTwo";
 import { ICONS_MAP } from "@/constants/config";
 
 export default function AuthLayout({
@@ -32,9 +31,7 @@ export default function AuthLayout({
             </div>
           </div>
         </div>
-        <div className="fixed z-50 hidden bottom-6 right-6 sm:block">
-          <ThemeTogglerTwo />
-        </div>
+    
       </div>
     </div>
   );

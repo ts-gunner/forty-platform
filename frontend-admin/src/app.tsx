@@ -11,7 +11,6 @@ import { PersistGate } from "redux-persist/lib/integration/react";
 import { AppWrapper } from "./components/common/PageMeta";
 import Toaster, { ToasterRef } from "./components/ui/toast/message";
 import { LocaleLang } from "./constants/enums";
-import { ThemeProvider } from "./context/ThemeContext";
 
 function getAntdLocale(locale: LocaleLang) {
   if (locale === LocaleLang.ZH_CN) {
@@ -31,15 +30,13 @@ function getDayjsLocale(locale: LocaleLang) {
 const persistor = getPersistor();
 export function rootContainer(container: React.ReactNode) {
   return (
-    <ThemeProvider>
-      <AppWrapper>
-        <PersistGate persistor={persistor}>
-          <Provider store={store}>
-            <App container={container} />
-          </Provider>
-        </PersistGate>
-      </AppWrapper>
-    </ThemeProvider>
+    <AppWrapper>
+      <PersistGate persistor={persistor}>
+        <Provider store={store}>
+          <App container={container} />
+        </Provider>
+      </PersistGate>
+    </AppWrapper>
   );
 }
 
@@ -56,7 +53,7 @@ const App = ({ container }: { container: React.ReactNode }) => {
     return () => {
       dispatch.globalModel.setToastRef(null);
     };
-  }, [dispatch,ref]);
+  }, [dispatch, ref]);
   return (
     // @ts-ignore
     <IntlProvider locale={locale} messages={appLocales[locale]}>
