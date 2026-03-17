@@ -34,7 +34,7 @@ func (EntityFieldService) GetFieldById(fieldId int64) (*entity.CrmCustomerFields
 }
 
 func (EntityFieldService) GetFieldsByEntityId(entityId int64) ([]response.CrmEntityFieldVo, error) {
-	_, err := entityModel.GetEntityById(entityId)
+	_, err := entityMapper.GetEntityById(entityId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("实体不存在")
@@ -63,7 +63,7 @@ func (EntityFieldService) GetFieldsByEntityId(entityId int64) ([]response.CrmEnt
 }
 
 func (EntityFieldService) GetDeletedFieldsByEntityId(entityId int64) ([]response.CrmEntityFieldVo, error) {
-	_, err := entityModel.GetEntityById(entityId)
+	_, err := entityMapper.GetEntityById(entityId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("实体不存在")
@@ -148,7 +148,7 @@ func (EntityFieldService) RestoreField(ctx context.Context, fieldId int64) error
 field_key是用来查询客户数据时跟customer_values表的json数据做映射，因此一旦设置，就不允许修改。
 */
 func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.UpsertCrmEntityFieldRequest) error {
-	_, err := entityModel.GetEntityById(req.EntityId)
+	_, err := entityMapper.GetEntityById(req.EntityId)
 	userId := utils.GetLoginUserId(ctx)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -158,7 +158,7 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 	}
 	return global.DB.Transaction(func(tx *gorm.DB) error {
 		// 找出所有跟entityId相关的字段(包含逻辑删除)
-		entityFields := entityFieldModel.GetEntityFieldsByEntityIdWithDeleted(tx, req.EntityId)
+		entityFields := entityFieldMapper.GetEntityFieldsByEntityIdWithDeleted(tx, req.EntityId)
 		existsFieldKeys := lo.Map(entityFields, func(it entity.CrmCustomerFields, index int) string {
 			return it.FieldKey
 		})

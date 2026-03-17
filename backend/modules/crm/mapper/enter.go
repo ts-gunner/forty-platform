@@ -1,8 +1,8 @@
-package model
+package mapper
 
 var CrmModel = new(CrmModelGroup)
 
 type CrmModelGroup struct {
-	CrmEntityModel
-	CrmEntityFieldModel
+	CrmEntityMapper
+	CrmEntityFieldMapper
 }

@@ -2287,9 +2287,6 @@ const docTemplate = `{
                     "type": "string",
                     "example": "0"
                 },
-                "roleKey": {
-                    "type": "string"
-                },
                 "roleName": {
                     "type": "string"
                 }
@@ -2486,7 +2483,14 @@ const docTemplate = `{
                 "nickName": {
                     "type": "string"
                 },
+                "openId": {
+                    "type": "string"
+                },
                 "phone": {
+                    "type": "string"
+                },
+                "roleNames": {
+                    "description": "角色列表， 逗号相隔",
                     "type": "string"
                 },
                 "status": {

@@ -14,6 +14,7 @@ type AdminUserClaim struct {
 	Avatar   string `json:"avatar"`
 	Phone    string `json:"phone"`
 	Email    string `json:"email"`
+	RoleIds  string `json:"roleIds"`
 	jwt.RegisteredClaims
 }
 
@@ -24,6 +25,7 @@ type WechatUserClaim struct {
 	NickName string `json:"nickName"`
 	Avatar   string `json:"avatar"`
 	Phone    string `json:"phone"`
+	RoleIds  string `json:"roleIds"`
 	jwt.RegisteredClaims
 }
 

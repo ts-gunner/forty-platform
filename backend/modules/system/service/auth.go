@@ -2,8 +2,11 @@ package service
 
 import (
 	"errors"
+	"strings"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jinzhu/copier"
+	"github.com/samber/lo"
 	"github.com/ts-gunner/forty-platform/common/constant"
 	"github.com/ts-gunner/forty-platform/common/entity"
 	"github.com/ts-gunner/forty-platform/common/global"
@@ -15,7 +18,7 @@ import (
 type AuthService struct {
 }
 
-func (s *AuthService) CreateToken(claim *systemResponse.AdminUserClaim, key string) string {
+func (s *AuthService) CreateToken(claim jwt.Claims, key string) string {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	signString, _ := token.SignedString([]byte(key))
@@ -27,6 +30,14 @@ func (s *AuthService) AdminLogin(user *entity.SysUser) (string, error) {
 	if err := copier.Copy(&claim, user); err != nil {
 		return "", err
 	}
+	roleList, err := roleMapper.GetRoleListByUserId(global.DB, claim.UserId)
+	if err != nil {
+		return "", err
+	}
+	roleKeys := lo.Map(roleList, func(item entity.SysRole, idx int) string {
+		return item.RoleKey
+	})
+	claim.RoleIds = strings.Join(roleKeys, ",")
 	token := s.CreateToken(claim, constant.SALT)
 	return token, nil
 }
@@ -40,9 +51,8 @@ func (s *AuthService) WechatMiniProgramLogin(openId string) (string, error) {
 	}).First(&sysUser).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return "", err
 	}
-	claim := &systemResponse.AdminUserClaim{}
+	claim := &systemResponse.WechatUserClaim{}
 	if sysUser.UserId == 0 {
-		// 创建用户
 		userId, _ := global.IdCreator.NextID()
 		user := entity.SysUser{
 			UserId:   userId,
@@ -58,10 +68,32 @@ func (s *AuthService) WechatMiniProgramLogin(openId string) (string, error) {
 				CreatorId: 0,
 			},
 		}
-		if err := global.DB.Create(&user).Error; err != nil {
-			global.Logger.Error("微信小程序 - 用户创建失败：" + err.Error())
-			return "", errors.New("用户创建失败")
+		if err := global.DB.Transaction(func(tx *gorm.DB) error {
+			// 创建用户
+			if err := tx.Create(&user).Error; err != nil {
+				global.Logger.Error("微信小程序 - 用户创建失败：" + err.Error())
+				return errors.New("用户创建失败")
+			}
+
+			role, err := roleMapper.GetRoleByRoleKey(tx, constant.ROLE_WECHAT_MINI)
+			if err != nil {
+				return err
+			}
+			// 绑定用户跟微信小程序角色
+			rel := &entity.SysUserRoleRel{
+				UserId: userId,
+				RoleId: role.RoleId,
+			}
+			if err := tx.Create(rel).Error; err != nil {
+				global.Logger.Error("微信小程序 - 用户角色绑定失败：" + err.Error())
+				return errors.New("用户角色绑失败")
+			}
+			return nil
+
+		}); err != nil {
+			return "", err
 		}
+
 		if err := copier.Copy(&claim, user); err != nil {
 			return "", err
 		}
@@ -74,7 +106,14 @@ func (s *AuthService) WechatMiniProgramLogin(openId string) (string, error) {
 			return "", err
 		}
 	}
-
+	roleList, err := roleMapper.GetRoleListByUserId(global.DB, claim.UserId)
+	if err != nil {
+		return "", err
+	}
+	roleKeys := lo.Map(roleList, func(item entity.SysRole, idx int) string {
+		return item.RoleKey
+	})
+	claim.RoleIds = strings.Join(roleKeys, ",")
 	token := s.CreateToken(claim, constant.SALT)
 	return token, nil
 }

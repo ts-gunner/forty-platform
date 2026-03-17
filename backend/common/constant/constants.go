@@ -33,3 +33,10 @@ const (
 	CRM_CUSTOMER_NAME   = "customer_name"
 	CRM_CUSTOMER_REMARK = "remark"
 )
+
+// 初始角色
+const (
+	ROLE_ADMIN       = "admin"               // 运营端角色
+	ROLE_WECHAT_MINI = "wechat_mini_program" // 微信小程序用户角色
+
+)

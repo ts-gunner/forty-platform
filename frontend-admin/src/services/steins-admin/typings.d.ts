@@ -403,7 +403,6 @@ declare namespace API {
 
   type RoleUpdateRequest = {
     roleId: string;
-    roleKey?: string;
     roleName?: string;
   };
 
@@ -483,7 +482,10 @@ declare namespace API {
     createTime?: string;
     email?: string;
     nickName?: string;
+    openId?: string;
     phone?: string;
+    /** 角色列表， 逗号相隔 */
+    roleNames?: string;
     status?: number;
     updateTime?: string;
     userId?: string;
@@ -493,5 +495,9 @@ declare namespace API {
     account?: string;
     nickName?: string;
     userId?: string;
+  };
+
+  type WechatCodeLoginRequest = {
+    code?: string;
   };
 }

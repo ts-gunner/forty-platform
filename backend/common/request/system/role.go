@@ -15,7 +15,6 @@ type RoleCreateRequest struct {
 type RoleUpdateRequest struct {
 	RoleId   int64  `json:"roleId,string" binding:"required"`
 	RoleName string `json:"roleName"`
-	RoleKey  string `json:"roleKey"`
 }
 
 type RoleDeleteRequest struct {

@@ -25,7 +25,7 @@ type EntityValueService struct {
 }
 
 func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueListRequest) (*crmResponse.CrmEntityValueObjectVo, error) {
-	entityObject, err := entityModel.GetEntityById(req.EntityId)
+	entityObject, err := entityMapper.GetEntityById(req.EntityId)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 	return result, nil
 }
 func (EntityValueService) InsertEntityValueData(ctx context.Context, req request.InsertCrmEntityValueRequest) error {
-	entityObject, err := entityModel.GetEntityById(req.EntityId)
+	entityObject, err := entityMapper.GetEntityById(req.EntityId)
 	if err != nil {
 		return err
 	}
@@ -156,7 +156,7 @@ func (EntityValueService) InsertEntityValueData(ctx context.Context, req request
 	}
 
 	// 找到他的字段
-	fieldList, err := entityFieldModel.GetEntityFieldsByEntityId(global.DB, req.EntityId)
+	fieldList, err := entityFieldMapper.GetEntityFieldsByEntityId(global.DB, req.EntityId)
 	if err != nil {
 		return err
 	}
@@ -202,7 +202,7 @@ func (EntityValueService) UpdateEntityValueData(ctx context.Context, req request
 	}
 
 	// 找到实体的字段
-	fieldList, err := entityFieldModel.GetEntityFieldsByEntityId(global.DB, entityValue.EntityId)
+	fieldList, err := entityFieldMapper.GetEntityFieldsByEntityId(global.DB, entityValue.EntityId)
 	if err != nil {
 		return err
 	}

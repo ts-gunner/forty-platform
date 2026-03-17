@@ -2,7 +2,7 @@ import { createUser, deleteUser, getUserList, updatePassword, updateUser } from 
 import { handleResponse, Notify } from "@/utils/common";
 import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
-import { Button } from "antd";
+import { Button, Tag } from "antd";
 import { useRef, useState } from "react";
 import CreateUserModal from "./CreateUserModal";
 import UpdateUserModal from "./UpdateUserModal";
@@ -37,6 +37,27 @@ export default function UserTablePage() {
       align: "center",
       hideInSearch: true,
       width: 140,
+    },
+     {
+      title: "角色列表",
+      dataIndex: "roleNames",
+      key: "roleNames",
+      align: "center",
+      hideInSearch: true,
+      width: 180,
+      render: (_,record) => {
+        
+        return (
+          <div className="flex items-center gap-2 flex-wrap">
+
+            {
+              record.roleNames?.split(",").map(it => (
+                <Tag>{it.trim()}</Tag>
+              ))
+            }
+          </div>
+        )
+      }
     },
     {
       title: "状态",

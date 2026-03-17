@@ -1,4 +1,4 @@
-package model
+package mapper
 
 import (
 	"github.com/ts-gunner/forty-platform/common/entity"
@@ -6,14 +6,14 @@ import (
 	"gorm.io/gorm"
 )
 
-type CrmEntityFieldModel struct{}
+type CrmEntityFieldMapper struct{}
 
-func (CrmEntityFieldModel) GetEntityFieldsByEntityIdWithDeleted(tx *gorm.DB, entityId int64) []entity.CrmCustomerFields {
+func (CrmEntityFieldMapper) GetEntityFieldsByEntityIdWithDeleted(tx *gorm.DB, entityId int64) []entity.CrmCustomerFields {
 	var entityFields []entity.CrmCustomerFields
 	tx.Where("entity_id = ?", entityId).Find(&entityFields)
 	return entityFields
 }
-func (CrmEntityFieldModel) GetEntityFieldsByEntityId(tx *gorm.DB, entityId int64) ([]entity.CrmCustomerFields, error) {
+func (CrmEntityFieldMapper) GetEntityFieldsByEntityId(tx *gorm.DB, entityId int64) ([]entity.CrmCustomerFields, error) {
 	var entityFields = make([]entity.CrmCustomerFields, 0)
 	if err := global.DB.Where(map[string]any{
 		"entity_id": entityId,

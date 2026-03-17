@@ -38,9 +38,6 @@ export default function UpdateRoleModal({ modalOpen, handleModalOpen, value, onS
           <Form.Item label="角色名称" name="roleName">
             <Input />
           </Form.Item>
-          <Form.Item label="角色标识" name="roleKey">
-            <Input />
-          </Form.Item>
         </Form>
       </div>
     </Modal>

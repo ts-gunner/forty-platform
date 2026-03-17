@@ -3,6 +3,9 @@ package service
 import (
 	"context"
 	"errors"
+	"strconv"
+	"time"
+
 	"github.com/ts-gunner/forty-platform/common/entity"
 	"github.com/ts-gunner/forty-platform/common/global"
 	request "github.com/ts-gunner/forty-platform/common/request/system"
@@ -10,8 +13,6 @@ import (
 	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
 	"github.com/ts-gunner/forty-platform/common/utils"
 	"gorm.io/gorm"
-	"strconv"
-	"time"
 )
 
 type UserService struct{}
@@ -40,9 +41,10 @@ func (UserService) GetSysUserById(userId int64) (*entity.SysUser, error) {
 }
 
 func (UserService) GetUserList(req request.UserListRequest) (*response.PageResult[systemResponse.UserVo], error) {
-	var users []entity.SysUser
+	var list []systemResponse.UserVo
 	var total int64
-	db := global.DB.Model(&entity.SysUser{}).Where("is_delete = ?", 0)
+
+	db := global.DB.Table("sys_user u").Where("u.is_delete = ?", 0)
 
 	if req.Account != "" {
 		db = db.Where("account LIKE ?", "%"+req.Account+"%")
@@ -67,25 +69,27 @@ func (UserService) GetUserList(req request.UserListRequest) (*response.PageResul
 	if req.PageSize <= 0 {
 		req.PageSize = 10
 	}
-
+	selectQuery := `
+	u.user_id AS user_id,
+	u.nickname AS nick_name,
+	u.account AS account,
+	u.openid AS open_id,
+	u.nickname AS nick_name,
+	u.phone AS phone,
+	u.email AS email,
+	u.avatar_id AS avatar_id,
+	u.status AS status,
+	u.create_time AS create_time,
+	u.update_time AS update_time,
+	(
+        SELECT GROUP_CONCAT(sr.role_name SEPARATOR ',') 
+        FROM sys_user_role_rel surr
+        LEFT JOIN sys_role sr ON sr.role_id = surr.role_id AND sr.is_delete = 0
+        WHERE surr.user_id = u.user_id
+    ) AS role_names`
 	offset := (req.PageNum - 1) * req.PageSize
-	if err := db.Order("create_time DESC").Offset(offset).Limit(req.PageSize).Find(&users).Error; err != nil {
+	if err := db.Select(selectQuery).Order("create_time DESC").Offset(offset).Limit(req.PageSize).Find(&list).Error; err != nil {
 		return nil, err
-	}
-
-	list := make([]systemResponse.UserVo, 0, len(users))
-	for _, user := range users {
-		list = append(list, systemResponse.UserVo{
-			UserId:     user.UserId,
-			Account:    user.Account,
-			NickName:   user.NickName,
-			Phone:      user.Phone,
-			Email:      user.Email,
-			AvatarId:   user.AvatarId,
-			Status:     user.Status,
-			CreateTime: user.CreateTime,
-			UpdateTime: user.UpdateTime,
-		})
 	}
 
 	return &response.PageResult[systemResponse.UserVo]{

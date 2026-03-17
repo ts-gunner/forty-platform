@@ -588,8 +588,6 @@ definitions:
       roleId:
         example: "0"
         type: string
-      roleKey:
-        type: string
       roleName:
         type: string
     required:
@@ -724,7 +722,12 @@ definitions:
         type: string
       nickName:
         type: string
+      openId:
+        type: string
       phone:
+        type: string
+      roleNames:
+        description: 角色列表， 逗号相隔
         type: string
       status:
         type: integer

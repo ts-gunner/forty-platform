@@ -27,3 +27,18 @@ export async function getCurrentUser(options?: { [key: string]: any }) {
     }
   );
 }
+
+/** 微信小程序一键登录 POST /system/auth/wechatMiniProgramLogin */
+export async function wechatMiniProgramLogin(
+  body: API.WechatCodeLoginRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultString>("/system/auth/wechatMiniProgramLogin", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
+    ...(options || {}),
+  });
+}

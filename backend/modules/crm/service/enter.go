@@ -1,6 +1,6 @@
 package service
 
-import "github.com/ts-gunner/forty-platform/modules/crm/model"
+import "github.com/ts-gunner/forty-platform/modules/crm/mapper"
 
 var CrmService = new(ServiceGroup)
 
@@ -11,6 +11,6 @@ type ServiceGroup struct {
 }
 
 var (
-	entityModel      = model.CrmModel.CrmEntityModel
-	entityFieldModel = model.CrmModel.CrmEntityFieldModel
+	entityMapper      = mapper.CrmModel.CrmEntityMapper
+	entityFieldMapper = mapper.CrmModel.CrmEntityFieldMapper
 )

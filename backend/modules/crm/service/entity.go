@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+
 	"github.com/ts-gunner/forty-platform/common/entity"
 	"github.com/ts-gunner/forty-platform/common/global"
 	request "github.com/ts-gunner/forty-platform/common/request/crm"
@@ -93,7 +94,7 @@ func (s EntityService) CreateEntity(ctx context.Context, req request.EntityCreat
 }
 
 func (s EntityService) UpdateEntity(ctx context.Context, req request.EntityUpdateRequest) error {
-	entityObj, err := entityModel.GetEntityById(req.EntityId)
+	entityObj, err := entityMapper.GetEntityById(req.EntityId)
 	if err != nil {
 		return errors.New("实体不存在")
 	}
@@ -124,7 +125,7 @@ func (s EntityService) UpdateEntity(ctx context.Context, req request.EntityUpdat
 }
 
 func (s EntityService) DeleteEntity(ctx context.Context, entityId int64) error {
-	entityObj, err := entityModel.GetEntityById(entityId)
+	entityObj, err := entityMapper.GetEntityById(entityId)
 	if err != nil {
 		return errors.New("实体不存在")
 	}
@@ -137,7 +138,7 @@ func (s EntityService) DeleteEntity(ctx context.Context, entityId int64) error {
 }
 
 func (s EntityService) GetEntityDetail(entityId int64) (*crmResponse.CrmEntityVo, error) {
-	entityObj, err := entityModel.GetEntityById(entityId)
+	entityObj, err := entityMapper.GetEntityById(entityId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("实体不存在")

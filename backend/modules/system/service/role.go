@@ -26,17 +26,6 @@ func (RoleService) GetRoleById(roleId int64) (*entity.SysRole, error) {
 	return &role, nil
 }
 
-func (RoleService) GetRoleByKey(roleKey string) (*entity.SysRole, error) {
-	var role entity.SysRole
-	if err := global.DB.Where(map[string]any{
-		"role_key":  roleKey,
-		"is_delete": 0,
-	}).First(&role).Error; err != nil {
-		return nil, err
-	}
-	return &role, nil
-}
-
 func (RoleService) GetRoleList(req request.RoleListRequest) (*response.PageResult[systemResponse.RoleVo], error) {
 	var roles []entity.SysRole
 	var total int64
@@ -86,7 +75,7 @@ func (RoleService) GetRoleList(req request.RoleListRequest) (*response.PageResul
 }
 
 func (s RoleService) CreateRole(ctx context.Context, req request.RoleCreateRequest) error {
-	existRole, _ := s.GetRoleByKey(req.RoleKey)
+	existRole, _ := roleMapper.GetRoleByRoleKey(global.DB, req.RoleKey)
 	if existRole != nil {
 		return errors.New("角色标识已存在")
 	}
@@ -112,13 +101,6 @@ func (s RoleService) UpdateRole(ctx context.Context, req request.RoleUpdateReque
 	updates := map[string]any{}
 	if req.RoleName != "" {
 		updates["role_name"] = req.RoleName
-	}
-	if req.RoleKey != "" {
-		existRole, _ := s.GetRoleByKey(req.RoleKey)
-		if existRole != nil && existRole.RoleId != req.RoleId {
-			return errors.New("角色标识已存在")
-		}
-		updates["role_key"] = req.RoleKey
 	}
 
 	if len(updates) == 0 {
