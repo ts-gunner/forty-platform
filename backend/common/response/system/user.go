@@ -10,6 +10,7 @@ type UserVo struct {
 	Email      string    `json:"email"`
 	AvatarId   string    `json:"avatarId"`
 	Status     int       `json:"status"`
+	RoleList   []RoleVo  `json:"roleList"`
 	CreateTime time.Time `json:"createTime"`
 	UpdateTime time.Time `json:"updateTime"`
 }

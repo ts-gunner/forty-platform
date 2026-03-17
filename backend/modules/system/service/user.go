@@ -42,7 +42,6 @@ func (UserService) GetSysUserById(userId int64) (*entity.SysUser, error) {
 func (UserService) GetUserList(req request.UserListRequest) (*response.PageResult[systemResponse.UserVo], error) {
 	var users []entity.SysUser
 	var total int64
-
 	db := global.DB.Model(&entity.SysUser{}).Where("is_delete = ?", 0)
 
 	if req.Account != "" {
@@ -80,8 +79,8 @@ func (UserService) GetUserList(req request.UserListRequest) (*response.PageResul
 			UserId:     user.UserId,
 			Account:    user.Account,
 			NickName:   user.NickName,
-			Phone:      *user.Phone,
-			Email:      *user.Email,
+			Phone:      user.Phone,
+			Email:      user.Email,
 			AvatarId:   user.AvatarId,
 			Status:     user.Status,
 			CreateTime: user.CreateTime,
@@ -108,8 +107,8 @@ func (s UserService) CreateUser(ctx context.Context, req request.UserCreateReque
 		Account:  req.Account,
 		Password: utils.EncryptBySM3(req.Password),
 		NickName: req.NickName,
-		Phone:    &req.Phone,
-		Email:    &req.Email,
+		Phone:    req.Phone,
+		Email:    req.Email,
 		AvatarId: req.AvatarId,
 		Status:   req.Status,
 		BaseRecordField: entity.BaseRecordField{
@@ -201,8 +200,8 @@ func (s UserService) GetUserDetail(userId int64) (*systemResponse.UserVo, error)
 		UserId:     user.UserId,
 		Account:    user.Account,
 		NickName:   user.NickName,
-		Phone:      *user.Phone,
-		Email:      *user.Email,
+		Phone:      user.Phone,
+		Email:      user.Email,
 		AvatarId:   user.AvatarId,
 		Status:     user.Status,
 		CreateTime: user.CreateTime,

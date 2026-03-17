@@ -25,6 +25,7 @@ func initRouter() *gin.Engine {
 		handler.IdentityVerification(&handler.AuthorizationConfig{
 			ExcludePaths: []string{
 				"/auth/adminPwdLogin",
+				"/auth/wechatMiniProgramLogin",
 			},
 		}),
 	)

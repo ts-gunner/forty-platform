@@ -21,6 +21,7 @@ const (
 `
 	CONFIG_FILEPATH = "config.yaml"
 	SALT            = "forty-platform"
+	INIT_PASSWORD   = "ht1234!"
 )
 
 const (

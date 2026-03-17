@@ -17,6 +17,16 @@ type AdminUserClaim struct {
 	jwt.RegisteredClaims
 }
 
+type WechatUserClaim struct {
+	UserId   int64  `json:"userId,string"`
+	OpenId   string `json:"openId"`
+	Account  string `json:"account"`
+	NickName string `json:"nickName"`
+	Avatar   string `json:"avatar"`
+	Phone    string `json:"phone"`
+	jwt.RegisteredClaims
+}
+
 type AdminLoginUserVo struct {
 	UserId   int64  `json:"userId,string"`
 	Account  string `json:"account"`

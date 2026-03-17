@@ -744,6 +744,11 @@ definitions:
         example: "0"
         type: string
     type: object
+  system.WechatCodeLoginRequest:
+    properties:
+      code:
+        type: string
+    type: object
 info:
   contact: {}
   description: 使用go语言搭建的管理后端
@@ -1089,6 +1094,28 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-system_AdminLoginUserVo'
       summary: 运营端获取当前用户
+      tags:
+      - SystemAuthController
+  /system/auth/wechatMiniProgramLogin:
+    post:
+      consumes:
+      - application/json
+      operationId: wechatMiniProgramLogin
+      parameters:
+      - description: 微信小程序一键登录登录参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.WechatCodeLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-string'
+      summary: 微信小程序一键登录
       tags:
       - SystemAuthController
   /system/permission/create:

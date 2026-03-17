@@ -533,6 +533,40 @@
                 }
             }
         },
+        "/system/auth/wechatMiniProgramLogin": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SystemAuthController"
+                ],
+                "summary": "微信小程序一键登录",
+                "operationId": "wechatMiniProgramLogin",
+                "parameters": [
+                    {
+                        "description": "微信小程序一键登录登录参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.WechatCodeLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-string"
+                        }
+                    }
+                }
+            }
+        },
         "/system/permission/create": {
             "post": {
                 "consumes": [
@@ -2471,6 +2505,14 @@
                 "userId": {
                     "type": "string",
                     "example": "0"
+                }
+            }
+        },
+        "system.WechatCodeLoginRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
                 }
             }
         }
