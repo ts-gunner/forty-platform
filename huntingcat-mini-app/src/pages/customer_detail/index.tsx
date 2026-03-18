@@ -2,9 +2,9 @@ import { View, Text, ScrollView } from "@tarojs/components";
 import Taro, { useRouter } from "@tarojs/taro";
 import { useState, useEffect } from "react";
 import { AtIcon, AtTag } from "taro-ui";
-import { CUSTOMER_INFO_LIST } from "../../constant/mock";
-import { THEME_CONFIG } from "../../constant/global";
-import HeaderBodyFooterLayout from "../../components/layout/HeaderFooterLayout";
+import { CUSTOMER_INFO_LIST } from "@/constant/mock";
+import { THEME_CONFIG } from "@/constant/global";
+import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 
 function CustomerDetailPage() {
   const router = useRouter();
