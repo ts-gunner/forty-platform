@@ -1,5 +1,5 @@
-import { useNavbar } from '../../context/NavbarContext'
-import { cn } from '../../utils/common'
+import { useNavbar } from '@/context/NavbarContext'
+import { cn } from '@/utils/common'
 import { View } from '@tarojs/components'
 import React from 'react'
 /**

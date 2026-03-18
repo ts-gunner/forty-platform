@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AtIcon } from "taro-ui";
 import BusinessLogo from "../logo/BusinessLogo";
 import { FilterComponent } from "./FilterBox";
-import { APP_CONFIG } from "../../constant/global";
+import { APP_CONFIG } from "@/constant/global";
 export const SearchHeader: React.FC<{mode: "mine"| "all"}> = ({mode}) => {
   const [keyword, setKeyword] = useState("");
   return (

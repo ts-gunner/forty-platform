@@ -1,4 +1,4 @@
-import { useNavbar } from "../../context/NavbarContext";
+import { useNavbar } from "@/context/NavbarContext";
 import { View, Text } from "@tarojs/components";
 
 

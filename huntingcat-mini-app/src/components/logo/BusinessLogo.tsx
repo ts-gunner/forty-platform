@@ -1,5 +1,5 @@
-import { cn } from '../../utils/common'
-import { ICON_MAP } from '../../constant/global'
+import { cn } from '@/utils/common'
+import { ICON_MAP } from '@/constant/global'
 import { Image, Text, View } from '@tarojs/components'
 import React from 'react'
 type BusinessLogoProps = { title: string; className?: string; textClassName?: string }

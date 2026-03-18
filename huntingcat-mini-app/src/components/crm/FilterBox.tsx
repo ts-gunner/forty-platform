@@ -1,7 +1,7 @@
 import { Button, ScrollView, Text, View } from "@tarojs/components";
 import { useState } from "react";
 import { AtIcon } from "taro-ui";
-import { COOPERATION_TYPE_LIST, CUSTOMER_CATEGORY_LIST, CUSTOMER_INFO_LIST, CUSTOMER_SOURCE_LIST, CUSTOMER_TYPE_LIST } from "../../constant/mock";
+import { COOPERATION_TYPE_LIST, CUSTOMER_CATEGORY_LIST, CUSTOMER_INFO_LIST, CUSTOMER_SOURCE_LIST, CUSTOMER_TYPE_LIST } from "@/constant/mock";
 
 
 enum FilterMenuType {

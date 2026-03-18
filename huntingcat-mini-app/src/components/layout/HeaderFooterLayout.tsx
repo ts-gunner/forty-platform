@@ -1,5 +1,5 @@
-import { cn } from "../../utils/common";
-import { useNavbar } from "../../context/NavbarContext";
+import { cn } from "@/utils/common";
+import { useNavbar } from "@/context/NavbarContext";
 import { Button, ScrollView, Text, View } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React from "react";
