@@ -1,14 +1,14 @@
 import { View } from "@tarojs/components";
 import "./index.scss";
 import { MockData } from "@/typing";
-import {  CUSTOMER_INFO_LIST} from "../../constant/mock";
+import {  CUSTOMER_INFO_LIST} from "@/constant/mock";
 import { useEffect, useState } from "react";
 import Taro, { useReachBottom } from "@tarojs/taro";
-import { withGlobalLayout } from "../../components/AppLayout";
-import { ROUTERS } from "../../constant/menus";
-import HeaderBodyLayout from "../../components/layout/HeaderBodyLayout";
-import { AllCustomerCard } from "../../components/crm/CustomerCard";
-import { SearchHeader } from "../../components/crm/SearchBox";
+import { withGlobalLayout } from "@/components/AppLayout";
+import { ROUTERS } from "@/constant/menus";
+import HeaderBodyLayout from "@/components/layout/HeaderBodyLayout";
+import { AllCustomerCard } from "@/components/crm/CustomerCard";
+import { SearchHeader } from "@/components/crm/SearchBox";
 
 function AllCustomerPage() {
   const [currentPage, setCurrentPage] = useState(1);

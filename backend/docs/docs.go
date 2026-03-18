@@ -541,7 +541,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/system/auth/wechatMiniProgramLogin": {
+        "/system/auth/wechatCrmLogin": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -552,8 +552,8 @@ const docTemplate = `{
                 "tags": [
                     "SystemAuthController"
                 ],
-                "summary": "微信小程序一键登录",
-                "operationId": "wechatMiniProgramLogin",
+                "summary": "微信小程序客户系统一键登录",
+                "operationId": "wechatCrmLogin",
                 "parameters": [
                     {
                         "description": "微信小程序一键登录登录参数",

@@ -1,10 +1,10 @@
 import Taro from "@tarojs/taro";
 import { Image, Text, View } from "@tarojs/components";
-import { useNavbar } from "../../context/NavbarContext";
-import { ICON_MAP, IMAGE_MAP, THEME_CONFIG } from "../../constant/global";
-import { cn } from "../../utils/common";
-import { ROUTERS } from "../../constant/menus";
-import { withGlobalLayout } from "../../components/AppLayout";
+import { useNavbar } from "@/context/NavbarContext";
+import { ICON_MAP, IMAGE_MAP, THEME_CONFIG } from "@/constant/global";
+import { cn } from "@/utils/common";
+import { ROUTERS } from "@/constant/menus";
+import { withGlobalLayout } from "@/components/AppLayout";
 
 function UserPage() {
   const { navBarHeight } = useNavbar();

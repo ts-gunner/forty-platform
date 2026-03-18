@@ -2,6 +2,8 @@ import { createModel } from "@rematch/core";
 import type { RootModel } from "../models";
 import Taro from "@tarojs/taro";
 import { ROUTERS } from "../constant/menus";
+import { wechatCrmLogin } from "@/services/steins-admin/systemAuthController";
+import { handleResponse } from "@/utils/common";
 
 type UserInfoType = {
   nickname: string;
@@ -43,16 +45,24 @@ export const authModel = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    userLogin: (code: string) => {
+    userLogin: async (code: string) => {
       dispatch.authModel.setAuthLoading(true);
-      console.log("code", code);
-      dispatch.authModel.setUserInfo({
-        nickname: "大聪明",
-      });
-      dispatch.authModel.setIsAuth(true);
 
-      dispatch.authModel.setAuthLoading(false);
-      Taro.switchTab({ url: ROUTERS.mine });
+      const resp = await wechatCrmLogin({
+        code,
+      });
+      handleResponse({
+        resp,
+        onSuccess: () => {
+          dispatch.authModel.setUserInfo({
+            nickname: "大聪明",
+          });
+          Taro.switchTab({ url: ROUTERS.mine });
+        },
+        onFinish: () => {
+          dispatch.authModel.setAuthLoading(false);
+        },
+      });
     },
     doLogout: () => {
       dispatch.authModel.setIsAuth(false);

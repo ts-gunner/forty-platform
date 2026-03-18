@@ -3,8 +3,8 @@ import {
   CUSTOMER_CATEGORY_LIST,
   CUSTOMER_SOURCE_LIST,
   CUSTOMER_TYPE_LIST,
-} from "../../constant/mock";
-import { THEME_CONFIG } from "../../constant/global";
+} from "@/constant/mock";
+import { THEME_CONFIG } from "@/constant/global";
 import {
   Button,
   Input,
@@ -25,9 +25,9 @@ import {
   AtTextarea,
 } from "taro-ui";
 import "./index.scss";
-import { useNavbar } from "../../context/NavbarContext";
+import { useNavbar } from "@/context/NavbarContext";
 import Taro from "@tarojs/taro";
-import HeaderBodyFooterLayout from "../../components/layout/HeaderFooterLayout";
+import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 
 export default function CreateCustomerPage() {
   const { navBarHeight, headerHeight } = useNavbar();

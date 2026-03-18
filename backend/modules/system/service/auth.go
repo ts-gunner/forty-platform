@@ -42,7 +42,7 @@ func (s *AuthService) AdminLogin(user *entity.SysUser) (string, error) {
 	return token, nil
 }
 
-func (s *AuthService) WechatMiniProgramLogin(openId string) (string, error) {
+func (s *AuthService) WechatCrmLogin(openId string) (string, error) {
 
 	var sysUser entity.SysUser
 	if err := global.DB.Where(map[string]any{
@@ -75,7 +75,7 @@ func (s *AuthService) WechatMiniProgramLogin(openId string) (string, error) {
 				return errors.New("用户创建失败")
 			}
 
-			role, err := roleMapper.GetRoleByRoleKey(tx, constant.ROLE_WECHAT_MINI)
+			role, err := roleMapper.GetRoleByRoleKey(tx, constant.ROLE_WECHAT_CRM)
 			if err != nil {
 				return err
 			}

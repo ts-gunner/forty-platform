@@ -36,7 +36,7 @@ const (
 
 // 初始角色
 const (
-	ROLE_ADMIN       = "admin"               // 运营端角色
-	ROLE_WECHAT_MINI = "wechat_mini_program" // 微信小程序用户角色
+	ROLE_ADMIN      = "admin"           // 运营端角色
+	ROLE_WECHAT_CRM = "wechat_crm_user" // 微信CRM用户角色
 
 )

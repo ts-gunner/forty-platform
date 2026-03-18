@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { ICON_MAP } from "../../constant/global";
+import { ICON_MAP } from "@/constant/global";
 import { Button, View, Image, Text } from "@tarojs/components";
 import Taro, { login } from "@tarojs/taro";
 import { Dispatch } from "@/store";

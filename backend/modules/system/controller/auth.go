@@ -21,7 +21,7 @@ func (AuthRouter) InitAuthRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup := router.Group(fmt.Sprintf("/%s/auth", moduleName))
 	routerGroup.POST("/adminPwdLogin", adminPwdLogin)
 	routerGroup.GET("/getCurrentUser", getCurrentUser)
-	routerGroup.POST("/wechatMiniProgramLogin", wechatMiniProgramLogin)
+	routerGroup.POST("/wechatCrmLogin", wechatCrmLogin)
 }
 
 // @Tags SystemAuthController
@@ -63,14 +63,14 @@ func adminPwdLogin(c *gin.Context) {
 }
 
 // @Tags SystemAuthController
-// @ID wechatMiniProgramLogin
-// @Router /system/auth/wechatMiniProgramLogin [post]
-// @Summary 微信小程序一键登录
+// @ID wechatCrmLogin
+// @Router /system/auth/wechatCrmLogin [post]
+// @Summary 微信小程序客户系统一键登录
 // @Accept json
 // @Produce json
 // @Param request body request.WechatCodeLoginRequest true "微信小程序一键登录登录参数"
 // @Success 200 {object} response.ApiResult[string]
-func wechatMiniProgramLogin(c *gin.Context) {
+func wechatCrmLogin(c *gin.Context) {
 	var req request.WechatCodeLoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		global.Logger.Error("参数校验异常", zap.Any("request", req))
@@ -78,7 +78,7 @@ func wechatMiniProgramLogin(c *gin.Context) {
 		return
 	}
 
-	token, err := authService.WechatMiniProgramLogin(req.Code)
+	token, err := authService.WechatCrmLogin(req.Code)
 	if err != nil {
 		response.Fail(http.StatusBadRequest, "账号异常:"+err.Error(), c)
 		return

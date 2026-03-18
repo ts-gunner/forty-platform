@@ -1099,11 +1099,11 @@ paths:
       summary: 运营端获取当前用户
       tags:
       - SystemAuthController
-  /system/auth/wechatMiniProgramLogin:
+  /system/auth/wechatCrmLogin:
     post:
       consumes:
       - application/json
-      operationId: wechatMiniProgramLogin
+      operationId: wechatCrmLogin
       parameters:
       - description: 微信小程序一键登录登录参数
         in: body
@@ -1118,7 +1118,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.ApiResult-string'
-      summary: 微信小程序一键登录
+      summary: 微信小程序客户系统一键登录
       tags:
       - SystemAuthController
   /system/permission/create:

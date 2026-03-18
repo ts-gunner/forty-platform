@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, Switch, Image } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import { THEME_CONFIG } from "../../constant/global";
-import HeaderBodyFooterLayout from "../../components/layout/HeaderFooterLayout";
+import { THEME_CONFIG } from "@/constant/global";
+import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "@/store";
 
