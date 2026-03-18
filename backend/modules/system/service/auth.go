@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jinzhu/copier"
@@ -19,14 +20,17 @@ type AuthService struct {
 }
 
 func (s *AuthService) CreateToken(claim jwt.Claims, key string) string {
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	signString, _ := token.SignedString([]byte(key))
 	return signString
 }
 
 func (s *AuthService) AdminLogin(user *entity.SysUser) (string, error) {
-	claim := &systemResponse.AdminUserClaim{}
+	claim := &systemResponse.AdminUserClaim{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		},
+	}
 	if err := copier.Copy(&claim, user); err != nil {
 		return "", err
 	}
@@ -60,7 +64,11 @@ func (s *AuthService) WechatCrmLogin(code string) (string, error) {
 	}).First(&sysUser).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return "", err
 	}
-	claim := &systemResponse.WechatUserClaim{}
+	claim := &systemResponse.WechatUserClaim{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		},
+	}
 	if sysUser.UserId == 0 {
 		userId, _ := global.IdCreator.NextID()
 		user := entity.SysUser{
