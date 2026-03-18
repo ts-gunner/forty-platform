@@ -11,14 +11,33 @@
 @import "~taro-ui/dist/style/components/list.scss";
 @import "~taro-ui/dist/style/components/textarea.scss";
 @import "~taro-ui/dist/style/components/drawer.scss";
-
+@import "~taro-ui/dist/style/components/message.scss";
 
 .mesh-gradient {
   background-color: #fcfafb;
-  background-image: 
-    radial-gradient(at 10% 20%, rgba(244, 63, 94, 0.08) 0px, transparent 40%), /* 玫瑰红 */
-    radial-gradient(at 90% 10%, rgba(168, 85, 247, 0.08) 0px, transparent 40%), /* 淡紫平衡 */
+  background-image:
+    radial-gradient(at 10% 20%, rgba(244, 63, 94, 0.08) 0px, transparent 40%),
+    /* 玫瑰红 */
+    radial-gradient(at 90% 10%, rgba(168, 85, 247, 0.08) 0px, transparent 40%),
+    /* 淡紫平衡 */
     radial-gradient(at 80% 90%, rgba(251, 113, 133, 0.1) 0px, transparent 40%),
     radial-gradient(at 20% 80%, rgba(254, 205, 211, 0.15) 0px, transparent 40%);
+}
+
+.at-message--success {
+  background: #10B981;
+  color: #fff;
+}
+
+.at-message--error {
+  background: #EF4444;
+  color: #991B1B;
+}
+
+.at-message {
+  top: 100px;
+  display: flex;
+  justify-content: center;
+  border-radius: 999px;
 }
 

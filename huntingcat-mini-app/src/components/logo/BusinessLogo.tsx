@@ -2,6 +2,7 @@ import { cn } from '@/utils/common'
 import { ICON_MAP } from '@/constant/global'
 import { Image, Text, View } from '@tarojs/components'
 import React from 'react'
+import Taro from '@tarojs/taro'
 type BusinessLogoProps = { title: string; className?: string; textClassName?: string }
 export default function BusinessLogo({ title, className, textClassName }: BusinessLogoProps) {
     return (

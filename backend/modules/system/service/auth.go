@@ -42,8 +42,17 @@ func (s *AuthService) AdminLogin(user *entity.SysUser) (string, error) {
 	return token, nil
 }
 
-func (s *AuthService) WechatCrmLogin(openId string) (string, error) {
+func (s *AuthService) WechatCrmLogin(code string) (string, error) {
+	// 调用官方地址拿取openid
+	openId, err := utils.GetWechatOpenidByCode(
+		global.Config.Wechat.Appid,
+		global.Config.Wechat.Appsecret,
+		code,
+	)
 
+	if err != nil {
+		return "", err
+	}
 	var sysUser entity.SysUser
 	if err := global.DB.Where(map[string]any{
 		"openid":    openId,
@@ -56,7 +65,7 @@ func (s *AuthService) WechatCrmLogin(openId string) (string, error) {
 		userId, _ := global.IdCreator.NextID()
 		user := entity.SysUser{
 			UserId:   userId,
-			Account:  "openid_" + openId,
+			Account:  "openid_" + lo.RandomString(5, lo.LettersCharset),
 			Password: utils.EncryptBySM3(constant.INIT_PASSWORD),
 			NickName: "微信用户",
 			OpenId:   openId,

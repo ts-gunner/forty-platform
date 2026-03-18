@@ -26,29 +26,9 @@ interface RequestOptions {
   errorHandler?: (error: ResponseError) => void;
   [key: string]: any;
 }
-type RequestInterceptor = (
-  url: string,
-  options: RequestOptions,
-) => {
-  url?: string;
-  options?: RequestOptions;
-};
-type ResponseInterceptor = (
-  response: Response,
-  options: RequestOptions,
-) => Promise<Response>;
-
 
 interface RequestFunc {
   <T = any>(url: string, options: RequestOptions): Promise<T>;
- interceptors: {
-    request: {
-      use: (handler: RequestInterceptor) => void;
-    };
-    response: {
-      use: (handler: ResponseInterceptor) => void;
-    };
-  };
 }
 
 interface Extend {
@@ -61,24 +41,30 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
       ...initialOptions,
       ...options,
     };
+    let requestMethod = finalOptions?.method || "GET"
+    let requestBody = {}
+    if (requestMethod === "GET") {
+      requestBody = finalOptions?.params
+    }else if (requestMethod === "POST") {
+      requestBody = finalOptions?.data
+    }
     let response = await Taro.request({
       url: (finalOptions?.prefix || "") + url,
-      method: finalOptions?.method || "GET",
+      method: requestMethod,
       header: finalOptions?.headers,
-      data: finalOptions?.data,
+      data: requestBody,
       enableHttp2: true,
     })
-    console.log("api response:",response)
-    return response as T;
+    return response.data as T;
   };
 
   let requestFunc = request as RequestFunc
-  requestFunc.interceptors.request.use = (handler) => {
+  // requestFunc.interceptors.request.use = (handler) => {
 
-  }
-  requestFunc.interceptors.response.use = (handler) => {
+  // }
+  // requestFunc.interceptors.response.use = (handler) => {
     
-  }
+  // }
 
   return requestFunc
 };

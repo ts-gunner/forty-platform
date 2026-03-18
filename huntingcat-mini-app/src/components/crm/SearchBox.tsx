@@ -4,11 +4,11 @@ import { AtIcon } from "taro-ui";
 import BusinessLogo from "../logo/BusinessLogo";
 import { FilterComponent } from "./FilterBox";
 import { APP_CONFIG } from "@/constant/global";
+import { Notify } from "@/utils/common";
 export const SearchHeader: React.FC<{mode: "mine"| "all"}> = ({mode}) => {
   const [keyword, setKeyword] = useState("");
   return (
     <View className="w-full flex flex-col h-full justify-between items-center">
-      <View></View>
       <View className="w-full flex flex-col justify-center items-center gap-3 pt-20">
         <BusinessLogo title={APP_CONFIG.title} textClassName="text-white text-2xl font-mono"/>
         <View className="w-[90%]">

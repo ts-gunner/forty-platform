@@ -3,7 +3,8 @@ import type { RootModel } from "../models";
 import Taro from "@tarojs/taro";
 import { ROUTERS } from "../constant/menus";
 import { wechatCrmLogin } from "@/services/steins-admin/systemAuthController";
-import { handleResponse } from "@/utils/common";
+import { handleResponse, Notify } from "@/utils/common";
+import storage from "@/utils/storage";
 
 type UserInfoType = {
   nickname: string;
@@ -46,18 +47,22 @@ export const authModel = createModel<RootModel>()({
   },
   effects: (dispatch) => ({
     userLogin: async (code: string) => {
+      Notify.loading("登录中...");
       dispatch.authModel.setAuthLoading(true);
-
+      
       const resp = await wechatCrmLogin({
         code,
       });
       handleResponse({
         resp,
-        onSuccess: () => {
-          dispatch.authModel.setUserInfo({
-            nickname: "大聪明",
-          });
+        onSuccess: (data) => {
+          storage.setItem("token", data)
+          dispatch.authModel.setIsAuth(true)
           Taro.switchTab({ url: ROUTERS.mine });
+          Notify.ok(resp.msg || "")
+        },
+        onError: () => {
+          Notify.fail(resp.msg || "")
         },
         onFinish: () => {
           dispatch.authModel.setAuthLoading(false);
@@ -66,6 +71,7 @@ export const authModel = createModel<RootModel>()({
     },
     doLogout: () => {
       dispatch.authModel.setIsAuth(false);
+      storage.removeItem("token")
       Taro.navigateTo({ url: ROUTERS.login });
     },
   }),

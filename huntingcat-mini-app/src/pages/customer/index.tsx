@@ -42,7 +42,6 @@ function MyCustomerPage() {
         <SearchHeader mode="mine"/>
       )}
     >
-
       <View
         className="p-3 flex flex-col gap-2"
       >

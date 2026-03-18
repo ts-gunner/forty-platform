@@ -26,3 +26,7 @@ zap:
     encode-level: ""
     show-line: false
     log-in-console: true
+
+wechat:
+  app-id: ${WECHAT_APP_ID}
+  app-secret: ${WECHAT_APP_SECRET}

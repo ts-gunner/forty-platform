@@ -1,6 +1,6 @@
 import { getPersistor } from "@rematch/persist";
 import { PersistGate } from "redux-persist/lib/integration/react";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import { useLaunch } from "@tarojs/taro";
 import { Provider } from "react-redux";
 import { store } from "./store";
@@ -19,7 +19,9 @@ function App({ children }: PropsWithChildren<any>) {
   return (
     <PersistGate persistor={persistor}>
       <Provider store={store}>
-        <NavbarProvider>{children}</NavbarProvider>
+        <NavbarProvider>
+          {children}
+        </NavbarProvider>
       </Provider>
     </PersistGate>
   );

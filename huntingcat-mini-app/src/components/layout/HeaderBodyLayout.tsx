@@ -17,6 +17,7 @@ export default function HeaderBodyLayout({ headerComponent, headerHeight, rootCl
     const { navBarHeight } = useNavbar();
     return (
         <View className={cn(rootClassName)}>
+
             {/* 头部组件 */}
             <View style={{
                 height: `${headerHeight || navBarHeight}px`

@@ -1,4 +1,5 @@
 
+import Taro from "@tarojs/taro";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -36,16 +37,33 @@ export function handleResponse<T>({
 }
 
 export class Notify {
-  static ok(message: string) {
-    // store.getState().globalModel.toastRef?.current?.show({
-    //   message: message,
-    //   variant: "success",
-    // });
+  // 显示加载中
+  static loading(message: string = '加载中...') {
+    Taro.showLoading({
+      title: message,
+      mask: true // 防止用户在加载时乱点
+    })
   }
+
+  static ok(message: string) {
+    Taro.hideLoading() // 关键：先关闭 Loading
+    setTimeout(() => { // 稍微延迟确保 Loading 彻底消失，Toast 弹出更稳健
+      Taro.showToast({
+        title: message,
+        icon: 'success',
+        duration: 2000
+      })
+    }, 50)
+  }
+
   static fail(message: string) {
-    // store.getState().globalModel.toastRef?.current?.show({
-    //   message: message,
-    //   variant: "error",
-    // });
+    Taro.hideLoading()
+    setTimeout(() => {
+      Taro.showToast({
+        title: message || '操作失败',
+        icon: 'error',
+        duration: 2000
+      })
+    }, 50)
   }
 }
