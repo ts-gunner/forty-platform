@@ -34,8 +34,7 @@ wechat:
 store:
     store-type: local
     super-bed:
-        access-prefix-url: 223
-        base-rel-path: C://
+        token: ${SUPER_BED_TOKEN}
     aliyun:
         access-key-id: ss
         access-key-secret: dd

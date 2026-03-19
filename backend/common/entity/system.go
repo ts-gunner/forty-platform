@@ -62,8 +62,9 @@ type SysResource struct {
 	ResourceId   int64  `json:"resourceId" gorm:"primaryKey;column:resource_id;type:bigint unsigned;comment:资源ID"`
 	ResourceType int    `json:"resourceType" gorm:"column:resource_type;type:int;not null;comment:资源类型，1-用户头像, 2-CRM"`
 	UserId       int64  `json:"userId" gorm:"column:user_id;type:bigint unsigned;comment:所属用户ID"`
-	StorageType  int    `json:"storageType" gorm:"column:storage_type;type:int;default:1;comment:存储类型: 1-本地, 2-OSS, 3-minio"`
+	StorageType  string `json:"storageType" gorm:"column:storage_type;type:varchar(20);comment:存储类型: superbed | local | aliyun | minio | tencent"`
 	RelPath      string `json:"relPath" gorm:"column:rel_path;type:varchar(2000);comment:存储相对路径"`
+	PreviewUrl   string `json:"PreviewUrl" gorm:"column:preview_url;type:varchar(2000);comment:预览地址"`
 	ResourceName string `json:"resourceName" gorm:"column:resource_name;type:varchar(255);comment:资源名称"`
 	MimeType     string `json:"mimeType" gorm:"column:mime_type;type:varchar(100);comment:MIME类型"`
 	Suffix       string `json:"suffix" gorm:"column:suffix;type:varchar(20);not null;comment:资源后缀名"`

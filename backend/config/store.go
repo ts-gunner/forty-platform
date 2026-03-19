@@ -11,7 +11,7 @@ type BaseCloudField struct {
 }
 
 type StoreConfig struct {
-	StoreType string         `mapstructure:"store-type" json:"store-type" yaml:"store-type"` // 默认存储类型， superbed | local | aliyun | minio
+	StoreType string         `mapstructure:"store-type" json:"store-type" yaml:"store-type"` // 默认存储类型， superbed | local | aliyun | minio | tencent
 	SuperBed  SuperBedConfig `mapstructure:"super-bed" json:"super-bed" yaml:"super-bed"`    // 聚合图床的存储
 	Aliyun    AliyunConfig   `mapstructure:"aliyun" json:"aliyun" yaml:"aliyun"`             // 阿里云存储
 	Tencent   TencentConfig  `mapstructure:"tencent" json:"tencent" yaml:"tencent"`          // 腾讯云存储
@@ -20,7 +20,7 @@ type StoreConfig struct {
 }
 
 type SuperBedConfig struct {
-	BaseStoreField `mapstructure:",squash" yaml:",inline"`
+	Token string `mapstructure:"token" json:"token" yaml:"token"`
 }
 
 type AliyunConfig struct {
