@@ -1,7 +1,7 @@
 import React from "react";
 import GridShape from "../../components/common/GridShape";
 import { Link } from "umi";
-import { ICONS_MAP } from "@/constants/config";
+import config, { ICONS_MAP } from "@/constants/config";
 
 export default function AuthLayout({
   children,
@@ -23,7 +23,7 @@ export default function AuthLayout({
                   src={ICONS_MAP.navbarLogoDark}
                   alt="Logo"
                 />
-                <span className="text-white font-bold text-3xl">大健康管理平台</span>
+                <span className="text-white font-bold text-3xl">{config.title}</span>
               </Link>
               <p className="text-center text-gray-400 dark:text-white/60">
               Do yourself.

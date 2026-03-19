@@ -1,4 +1,5 @@
 import Taro from "@tarojs/taro";
+import storage from "./storage";
 
 interface ResponseError<D = any> extends Error {
   name: string;
@@ -36,7 +37,8 @@ interface Extend {
 }
 
 export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
-    const request = async <T>(url: string, options: RequestOptions): Promise<T> => {
+
+  return async <T>(url: string, options: RequestOptions): Promise<T> => {
     let finalOptions = {
       ...initialOptions,
       ...options,
@@ -48,23 +50,18 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
     }else if (requestMethod === "POST") {
       requestBody = finalOptions?.data
     }
+    
+    let requestHeader = {
+      ...finalOptions?.headers,
+      Authorization: await storage.getItem("token"),
+    }
     let response = await Taro.request({
       url: (finalOptions?.prefix || "") + url,
       method: requestMethod,
-      header: finalOptions?.headers,
+      header: requestHeader,
       data: requestBody,
       enableHttp2: true,
     })
     return response.data as T;
   };
-
-  let requestFunc = request as RequestFunc
-  // requestFunc.interceptors.request.use = (handler) => {
-
-  // }
-  // requestFunc.interceptors.response.use = (handler) => {
-    
-  // }
-
-  return requestFunc
 };

@@ -17,9 +17,9 @@ export async function adminPwdLogin(
   });
 }
 
-/** 运营端获取当前用户 GET /system/auth/getCurrentUser */
+/** 获取当前登录用户 GET /system/auth/getCurrentUser */
 export async function getCurrentUser(options?: { [key: string]: any }) {
-  return request<API.ApiResultSystemAdminLoginUserVo>(
+  return request<API.ApiResultSystemLoginUserVo>(
     "/system/auth/getCurrentUser",
     {
       method: "GET",

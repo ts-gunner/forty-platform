@@ -19,14 +19,14 @@ import (
 type AuthService struct {
 }
 
-func (s *AuthService) CreateToken(claim jwt.Claims, key string) string {
+func (s *AuthService) CreateToken(claim *systemResponse.LoginUserClaim, key string) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	signString, _ := token.SignedString([]byte(key))
 	return signString
 }
 
 func (s *AuthService) AdminLogin(user *entity.SysUser) (string, error) {
-	claim := &systemResponse.AdminUserClaim{
+	claim := &systemResponse.LoginUserClaim{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 		},
@@ -64,7 +64,7 @@ func (s *AuthService) WechatCrmLogin(code string) (string, error) {
 	}).First(&sysUser).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return "", err
 	}
-	claim := &systemResponse.WechatUserClaim{
+	claim := &systemResponse.LoginUserClaim{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 		},

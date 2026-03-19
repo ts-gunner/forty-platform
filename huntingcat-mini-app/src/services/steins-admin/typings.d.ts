@@ -1,13 +1,4 @@
 declare namespace API {
-  type AdminLoginUserVo = {
-    account?: string;
-    avatar?: string;
-    email?: string;
-    nickName?: string;
-    phone?: string;
-    userId?: string;
-  };
-
   type ApiResultAny = {
     code?: number;
     data?: any;
@@ -92,9 +83,9 @@ declare namespace API {
     msg?: string;
   };
 
-  type ApiResultSystemAdminLoginUserVo = {
+  type ApiResultSystemLoginUserVo = {
     code?: number;
-    data?: AdminLoginUserVo;
+    data?: LoginUserVo;
     msg?: string;
   };
 
@@ -303,6 +294,15 @@ declare namespace API {
   type InsertCrmEntityValueRequest = {
     data: CrmEntityValueData[];
     entityId: string;
+  };
+
+  type LoginUserVo = {
+    account?: string;
+    avatar?: string;
+    email?: string;
+    nickName?: string;
+    phone?: string;
+    userId?: string;
   };
 
   type PageResultCrmCrmEntityValueVo = {

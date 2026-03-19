@@ -6,8 +6,8 @@ import (
 	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
 )
 
-func GetLoginUserInfo(ctx context.Context) *systemResponse.AdminUserClaim {
-	loginUser := ctx.Value(constant.USER_KEY).(*systemResponse.AdminUserClaim)
+func GetLoginUserInfo(ctx context.Context) *systemResponse.LoginUserClaim {
+	loginUser := ctx.Value(constant.USER_KEY).(*systemResponse.LoginUserClaim)
 	return loginUser
 }
 

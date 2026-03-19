@@ -90,14 +90,14 @@ func wechatCrmLogin(c *gin.Context) {
 // @Tags SystemAuthController
 // @ID getCurrentUser
 // @Router /system/auth/getCurrentUser [get]
-// @Summary 运营端获取当前用户
+// @Summary 获取当前登录用户
 // @Produce json
-// @Success 200 {object} response.ApiResult[systemResponse.AdminLoginUserVo]
+// @Success 200 {object} response.ApiResult[systemResponse.LoginUserVo]
 func getCurrentUser(c *gin.Context) {
 	claims := utils.GetLoginUserInfo(c.Request.Context())
-	vo := systemResponse.AdminLoginUserVo{}
+	vo := systemResponse.LoginUserVo{}
 	if err := copier.Copy(&vo, &claims); err != nil {
 		response.Fail(http.StatusBadRequest, "当前用户数据异常", c)
 	}
-	response.Data[systemResponse.AdminLoginUserVo](vo, c)
+	response.Data[systemResponse.LoginUserVo](vo, c)
 }

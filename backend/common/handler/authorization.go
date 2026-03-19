@@ -35,7 +35,7 @@ func IdentityVerification(config *AuthorizationConfig) gin.HandlerFunc {
 			response.Fail(http.StatusUnauthorized, "身份验证失败", c)
 			return
 		}
-		claims := &systemResponse.AdminUserClaim{}
+		claims := &systemResponse.LoginUserClaim{}
 		_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 			return []byte(constant.SALT), nil
 		})

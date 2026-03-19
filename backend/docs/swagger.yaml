@@ -347,13 +347,13 @@ definitions:
         example: 成功
         type: string
     type: object
-  response.ApiResult-system_AdminLoginUserVo:
+  response.ApiResult-system_LoginUserVo:
     properties:
       code:
         example: 200
         type: integer
       data:
-        $ref: '#/definitions/system.AdminLoginUserVo'
+        $ref: '#/definitions/system.LoginUserVo'
       msg:
         example: 成功
         type: string
@@ -456,7 +456,7 @@ definitions:
       total:
         type: integer
     type: object
-  system.AdminLoginUserVo:
+  system.LoginUserVo:
     properties:
       account:
         type: string
@@ -1095,8 +1095,8 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.ApiResult-system_AdminLoginUserVo'
-      summary: 运营端获取当前用户
+            $ref: '#/definitions/response.ApiResult-system_LoginUserVo'
+      summary: 获取当前登录用户
       tags:
       - SystemAuthController
   /system/auth/wechatCrmLogin:

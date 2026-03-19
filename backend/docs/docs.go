@@ -529,13 +529,13 @@ const docTemplate = `{
                 "tags": [
                     "SystemAuthController"
                 ],
-                "summary": "运营端获取当前用户",
+                "summary": "获取当前登录用户",
                 "operationId": "getCurrentUser",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.ApiResult-system_AdminLoginUserVo"
+                            "$ref": "#/definitions/response.ApiResult-system_LoginUserVo"
                         }
                     }
                 }
@@ -1923,7 +1923,7 @@ const docTemplate = `{
                 }
             }
         },
-        "response.ApiResult-system_AdminLoginUserVo": {
+        "response.ApiResult-system_LoginUserVo": {
             "type": "object",
             "properties": {
                 "code": {
@@ -1931,7 +1931,7 @@ const docTemplate = `{
                     "example": 200
                 },
                 "data": {
-                    "$ref": "#/definitions/system.AdminLoginUserVo"
+                    "$ref": "#/definitions/system.LoginUserVo"
                 },
                 "msg": {
                     "type": "string",
@@ -2087,7 +2087,7 @@ const docTemplate = `{
                 }
             }
         },
-        "system.AdminLoginUserVo": {
+        "system.LoginUserVo": {
             "type": "object",
             "properties": {
                 "account": {

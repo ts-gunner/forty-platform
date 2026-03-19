@@ -71,7 +71,7 @@ const UserComponent = () => {
       className="flex items-center gap-3 active:opacity-70" 
       // onTap={onPress}
     >
-      <View className={`h-16 w-16 overflow-hidden rounded-full border border-gray-100 bg-red-400 p-1`}>
+      <View className={`h-16 w-16 overflow-hidden rounded-full border border-gray-100 bg-gray-100 shadow-lg p-3`}>
         <Image
           src={ICON_MAP.defaultAvatar}
           mode="aspectFill"

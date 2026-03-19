@@ -42,7 +42,7 @@ const AppLayout: React.FC = () => {
   }, []);
   const getUserLoginInfo = async () => {
     const resp = await getCurrentUser();
-    handleResponse<API.AdminLoginUserVo>({
+    handleResponse<API.LoginUserVo>({
       resp,
       onSuccess: (res) => {
         dispatch.authModel.setUserInfo(res)
