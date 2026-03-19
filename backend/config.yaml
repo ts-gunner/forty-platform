@@ -33,5 +33,20 @@ wechat:
 
 store:
     store-type: local
-    base-rel-path: D://data
-    access-prefix-url: http://127.0.0.1:180
+    super-bed:
+        access-prefix-url: 223
+        base-rel-path: C://
+    aliyun:
+        access-key-id: ss
+        access-key-secret: dd
+        access-prefix-url: 223
+        base-rel-path: C://
+    tencent:
+        access-key-id: ss
+        access-key-secret: dd
+        access-prefix-url: 223
+        base-rel-path: C://
+    minio:
+        access-prefix-url: 223
+        base-rel-path: C://
+
