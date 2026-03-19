@@ -1240,6 +1240,32 @@ paths:
       summary: 更新权限
       tags:
       - SystemPermissionController
+  /system/resource/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      operationId: uploadResource
+      parameters:
+      - description: 待上传的文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 资源类型
+        in: formData
+        name: resourceType
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 上传资源文件
+      tags:
+      - SystemResourceController
   /system/role/create:
     post:
       consumes:

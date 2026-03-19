@@ -758,6 +758,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/system/resource/upload": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SystemResourceController"
+                ],
+                "summary": "上传资源文件",
+                "operationId": "uploadResource",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "待上传的文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "资源类型",
+                        "name": "resourceType",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/system/role/create": {
             "post": {
                 "consumes": [

@@ -7,6 +7,7 @@ export const ROUTERS = {
     allCustomer: "/pages/all_customer/index",
     collection: "/pages/collection/index",
     mine: "/pages/user/index",
+    userProfile: "/pages/user_profile/index",
     settings: "/pages/settings/index",
     customerDetail: "/pages/customer_detail/index",
     createCustomer: "/pages/create_customer/index",

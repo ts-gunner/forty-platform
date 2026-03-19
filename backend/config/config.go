@@ -6,4 +6,5 @@ type AppConfig struct {
 	Zap     Zap          `mapstructure:"zap" json:"zap" yaml:"zap"`             // 日志相关配置
 	Redis   Redis        `mapstructure:"redis" json:"redis" yaml:"redis"`       // redis相关配置
 	Wechat  WechatConfig `mapstructure:"wechat" json:"wechat" yaml:"wechat"`    // 微信相关配置
+	Store   StoreConfig  `mapstructure:"store" json:"store" yaml:"store"`       // 存储资源相关配置
 }

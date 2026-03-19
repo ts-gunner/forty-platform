@@ -6,6 +6,7 @@ import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "@/store";
 import { withGlobalLayout } from "@/components/AppLayout";
+import { ROUTERS } from "@/constant/menus";
 
 // 定义列表项类型
 interface SettingItem {
@@ -15,14 +16,22 @@ interface SettingItem {
   value?: string;
   checked?: boolean;
   icon?: string;
+  onClick?: () => void;
 }
 
 const SettingsPage: React.FC = () => {
-  const dispatch = useDispatch<Dispatch>()
+  const dispatch = useDispatch<Dispatch>();
   // 模拟数据
   const menuGroups: SettingItem[][] = [
     [
-      { id: "profile", label: "个人资料", type: "arrow" },
+      {
+        id: "profile",
+        label: "个人资料",
+        type: "arrow",
+        onClick: () => {
+          Taro.navigateTo({ url: ROUTERS.userProfile });
+        },
+      },
       { id: "account", label: "账号与安全", type: "arrow" },
     ],
     [
@@ -36,9 +45,9 @@ const SettingsPage: React.FC = () => {
   const handleNavigate = (id: string) => {
     Taro.showToast({ title: `点击了 ${id}`, icon: "none" });
   };
-const doLogout = () => {
-dispatch.authModel.doLogout()
-}
+  const doLogout = () => {
+    dispatch.authModel.doLogout();
+  };
   return (
     <HeaderBodyFooterLayout>
       <>
@@ -51,9 +60,7 @@ dispatch.authModel.doLogout()
             {group.map((item, iIndex) => (
               <View
                 key={item.id}
-                onClick={() =>
-                  item.type !== "switch" && handleNavigate(item.id)
-                }
+                onClick={() => item.type !== "switch" && item.onClick()}
                 className={`flex flex-row items-center justify-between px-4 py-4 active:bg-gray-50 ${
                   iIndex !== group.length - 1 ? "border-b border-gray-100" : ""
                 }`}
@@ -90,12 +97,14 @@ dispatch.authModel.doLogout()
           <View
             className="bg-white py-4 rounded-xl flex items-center justify-center active:opacity-70 border border-red-100"
             onClick={async () => {
-              const res = await Taro.showModal({ title: "提示", content: "确定退出登录吗？"})
+              const res = await Taro.showModal({
+                title: "提示",
+                content: "确定退出登录吗？",
+              });
               if (res.confirm) {
-                doLogout()
+                doLogout();
               }
-            }
-            }
+            }}
           >
             <Text className="text-red-500 font-medium text-lg">退出登录</Text>
           </View>

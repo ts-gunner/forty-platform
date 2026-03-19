@@ -134,7 +134,7 @@ func updateRole(c *gin.Context) {
 func deleteRole(c *gin.Context) {
 	var req request.RoleDeleteRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		global.Logger.Error("参数校验异常", zap.Any("request", req))
+		global.Logger.Error("参数校验异常: "+err.Error(), zap.Any("request", req))
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return
 	}

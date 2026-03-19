@@ -2,6 +2,9 @@ export const APP_CONFIG = {
     title: "猎猫传媒"
 }
 
+// 后端前缀url
+export const API_PREFIX_URL = "http://127.0.0.1:18888/ft"
+
 // 图片素材
 export const IMAGE_MAP = {
 

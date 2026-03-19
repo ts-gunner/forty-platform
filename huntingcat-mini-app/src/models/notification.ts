@@ -33,24 +33,26 @@ export const notificationModel = createModel<RootModel>()({
     ) {
       const { timer } = rootState.notificationModel;
       if (timer) clearTimeout(timer);
-   
+
       dispatch.notificationModel.updateNotify({
         notifyOpen: true,
         notifyText: text,
         notifyIcon: icon || "",
         notifyStatus: status,
       });
+      if (duration > 0) {
+        const newTimer = setTimeout(() => {
+          dispatch.notificationModel.updateNotify({ notifyOpen: false });
+        }, duration);
 
-      const newTimer = setTimeout(() => {
-        dispatch.notificationModel.updateNotify({ notifyOpen: false });
-      }, duration);
-
-      dispatch.notificationModel.updateNotify({ timer: newTimer });
+        dispatch.notificationModel.updateNotify({ timer: newTimer });
+      }
     },
     notifyLoading(payload: string) {
       dispatch.notificationModel._showAndAutoClose({
         text: payload,
         status: "loading",
+        duration: 0
       });
     },
 

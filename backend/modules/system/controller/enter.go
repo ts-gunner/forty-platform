@@ -16,6 +16,7 @@ type RouterGroup struct {
 	PermissionRouter
 	UserRoleRelRouter
 	RolePermissionRelRouter
+	SystemResourceRouter
 }
 
 func (rg *RouterGroup) InitSystemRouter(r *gin.RouterGroup) {
@@ -25,6 +26,7 @@ func (rg *RouterGroup) InitSystemRouter(r *gin.RouterGroup) {
 	rg.InitPermissionRouter(MODULE_NAME, r)
 	rg.InitUserRoleRelRouter(MODULE_NAME, r)
 	rg.InitRolePermissionRelRouter(MODULE_NAME, r)
+	rg.InitResourceRouter(MODULE_NAME, r)
 }
 
 var (

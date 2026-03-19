@@ -33,10 +33,10 @@ export default defineAppConfig({
           },
     ]
   },
-  entryPagePath: "pages/customer/index",
+  entryPagePath: "pages/user_profile/index",
   pages: [
     'pages/all_customer/index', 'pages/customer/index',  'pages/collection/index',"pages/user/index", "pages/settings/index",
-    "pages/customer_detail/index", "pages/create_customer/index", "pages/login/index"
+    "pages/customer_detail/index", "pages/create_customer/index", "pages/login/index", "pages/user_profile/index"
   
   ],
   window: {

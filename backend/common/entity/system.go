@@ -19,7 +19,7 @@ type SysUser struct {
 	BaseSchemaField
 }
 
-func (user *SysUser) TableName() string { return "sys_user" }
+func (SysUser) TableName() string { return "sys_user" }
 
 type SysRole struct {
 	RoleId   int64  `json:"roleId" gorm:"primaryKey;column:role_id;type:bigint;comment:角色ID"`
@@ -29,7 +29,7 @@ type SysRole struct {
 	BaseSchemaField
 }
 
-func (role *SysRole) TableName() string { return "sys_role" }
+func (SysRole) TableName() string { return "sys_role" }
 
 type SysPermission struct {
 	PermissionId   int64  `json:"permissionId" gorm:"primaryKey;column:permission_id;type:bigint;comment:权限ID"`
@@ -40,7 +40,7 @@ type SysPermission struct {
 	BaseSchemaField
 }
 
-func (permission *SysPermission) TableName() string { return "sys_permission" }
+func (SysPermission) TableName() string { return "sys_permission" }
 
 type SysUserRoleRel struct {
 	Id     int64 `json:"id" gorm:"primaryKey;column:id;type:bigint;autoIncrement;comment:主键ID"`
@@ -48,7 +48,7 @@ type SysUserRoleRel struct {
 	UserId int64 `json:"userId" gorm:"column:user_id;not null;comment:用户ID"`
 }
 
-func (rel *SysUserRoleRel) TableName() string { return "sys_user_role_rel" }
+func (SysUserRoleRel) TableName() string { return "sys_user_role_rel" }
 
 type SysRolePermissionRel struct {
 	Id           int64 `json:"id" gorm:"primaryKey;column:id;type:bigint;autoIncrement;comment:主键ID"`
@@ -56,4 +56,20 @@ type SysRolePermissionRel struct {
 	PermissionId int64 `json:"permissionId" gorm:"column:permission_id;not null;comment:权限ID"`
 }
 
-func (rel *SysRolePermissionRel) TableName() string { return "sys_role_permission_rel" }
+func (SysRolePermissionRel) TableName() string { return "sys_role_permission_rel" }
+
+type SysResource struct {
+	ResourceId   int64  `json:"resourceId" gorm:"primaryKey;column:resource_id;type:bigint unsigned;comment:资源ID"`
+	ResourceType int    `json:"resourceType" gorm:"column:resource_type;type:int;not null;comment:资源类型，1-用户头像, 2-CRM"`
+	UserId       int64  `json:"userId" gorm:"column:user_id;type:bigint unsigned;comment:所属用户ID"`
+	StorageType  int    `json:"storageType" gorm:"column:storage_type;type:int;default:1;comment:存储类型: 1-本地, 2-OSS, 3-minio"`
+	RelPath      string `json:"relPath" gorm:"column:rel_path;type:varchar(2000);comment:存储相对路径"`
+	ResourceName string `json:"resourceName" gorm:"column:resource_name;type:varchar(255);comment:资源名称"`
+	MimeType     string `json:"mimeType" gorm:"column:mime_type;type:varchar(100);comment:MIME类型"`
+	Suffix       string `json:"suffix" gorm:"column:suffix;type:varchar(20);not null;comment:资源后缀名"`
+	Size         int64  `json:"size" gorm:"column:size;type:bigint;not null;default:0;comment:资源大小"`
+	BaseRecordField
+	BaseSchemaField
+}
+
+func (SysResource) TableName() string { return "sys_resource" }

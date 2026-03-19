@@ -1,7 +1,8 @@
+import { API_PREFIX_URL } from "@/constant/global";
 import { extend } from "./api";
 
 const request = extend({
-  prefix: "http://127.0.0.1:18888/ft",
+  prefix: API_PREFIX_URL,
 });
 
 

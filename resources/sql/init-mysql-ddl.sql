@@ -78,6 +78,27 @@ CREATE TABLE IF NOT EXISTS sys_role_permission_rel (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '角色权限关联表';
 
 
+DROP TABLE IF EXISTS sys_resource;
+
+CREATE TABLE IF NOT EXISTS sys_resource (
+  `resource_id` BIGINT UNSIGNED PRIMARY KEY COMMENT '资源ID',
+  `resource_type` INT NOT NULL COMMENT '资源类型，1-用户头像, 2-CRM',
+  `user_id` BIGINT UNSIGNED NOT NULL COMMENT '所属用户ID',
+  `storage_type` INT NOT NULL DEFAULT 1 COMMENT '存储类型: 1-本地, 2-OSS, 3-minio',
+  `rel_path` VARCHAR(2000) NOT NULL COMMENT '存储相对路径',
+  `resource_name` VARCHAR(255) NOT NULL COMMENT '资源名称',
+  `mime_type` VARCHAR(100) COMMENT 'MIME类型',
+  `suffix` VARCHAR(20) NOT NULL COMMENT '资源后缀名',
+  `size` BIGINT NOT NULL DEFAULT 0 COMMENT '资源大小',
+  `creator_id` BIGINT NOT NULL COMMENT '创建者id',
+  `updater_id` BIGINT COMMENT '更新者id',
+  `deleter_id` BIGINT COMMENT '删除者id',
+  `is_delete` TINYINT DEFAULT 0 COMMENT '逻辑删除',
+  `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `delete_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间'
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '资源信息表';
+
 -- ***************************************************************************
 -- crm 客户管理相关表
 -- 采用配置表 + JSONB存储客户信息的方式实现crm

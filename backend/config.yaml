@@ -30,3 +30,8 @@ zap:
 wechat:
   app-id: ${WECHAT_APP_ID}
   app-secret: ${WECHAT_APP_SECRET}
+
+store:
+    store-type: local
+    base-rel-path: D://data
+    access-prefix-url: http://127.0.0.1:180
