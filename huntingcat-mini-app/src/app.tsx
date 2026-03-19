@@ -19,9 +19,7 @@ function App({ children }: PropsWithChildren<any>) {
   return (
     <PersistGate persistor={persistor}>
       <Provider store={store}>
-        <NavbarProvider>
-          {children}
-        </NavbarProvider>
+        <NavbarProvider>{children}</NavbarProvider>
       </Provider>
     </PersistGate>
   );

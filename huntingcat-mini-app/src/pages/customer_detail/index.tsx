@@ -5,6 +5,7 @@ import { AtIcon, AtTag } from "taro-ui";
 import { CUSTOMER_INFO_LIST } from "@/constant/mock";
 import { THEME_CONFIG } from "@/constant/global";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
+import { withGlobalLayout } from "@/components/AppLayout";
 
 function CustomerDetailPage() {
   const router = useRouter();
@@ -158,4 +159,4 @@ const InfoRow = ({
   </View>
 );
 
-export default CustomerDetailPage;
+export default withGlobalLayout(CustomerDetailPage);

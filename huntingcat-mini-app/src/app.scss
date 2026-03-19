@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @import "~taro-ui/dist/style/components/toast.scss";
 @import "~taro-ui/dist/style/components/icon.scss";
 @import "~taro-ui/dist/style/components/modal.scss";
@@ -33,7 +32,9 @@
   background: #EF4444;
   color: #991B1B;
 }
-
+.at-toast {
+  z-index: 9999 !important; /* 确保它在最顶层 */
+}
 .at-message {
   top: 100px;
   display: flex;

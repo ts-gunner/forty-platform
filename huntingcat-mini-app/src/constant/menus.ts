@@ -13,6 +13,7 @@ export const ROUTERS = {
     login: "/pages/login/index",
 }
 
+export const DEFAULT_ROUTER = ROUTERS.customer
 export default [
      {
         text: "我的客户",

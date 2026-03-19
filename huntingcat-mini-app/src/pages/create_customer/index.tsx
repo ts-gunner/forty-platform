@@ -25,12 +25,10 @@ import {
   AtTextarea,
 } from "taro-ui";
 import "./index.scss";
-import { useNavbar } from "@/context/NavbarContext";
-import Taro from "@tarojs/taro";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
+import { withGlobalLayout } from "@/components/AppLayout";
 
-export default function CreateCustomerPage() {
-  const { navBarHeight, headerHeight } = useNavbar();
+function CreateCustomerPage() {
   // 基本信息 State
   const [baseInfo, setBaseInfo] = useState({
     companyName: "",
@@ -283,3 +281,4 @@ export default function CreateCustomerPage() {
     </HeaderBodyFooterLayout>
   );
 }
+export default withGlobalLayout(CreateCustomerPage)

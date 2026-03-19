@@ -5,8 +5,8 @@ import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Button, Tag } from "antd";
 import { useRef, useState } from "react";
 import CreateUserModal from "./CreateUserModal";
-import UpdateUserModal from "./UpdateUserModal";
 import ResetPwdModal from "./ResetPwdModal";
+import UpdateUserModal from "./UpdateUserModal";
 
 export default function UserTablePage() {
   const actionRef = useRef<ActionType>();
@@ -38,26 +38,23 @@ export default function UserTablePage() {
       hideInSearch: true,
       width: 140,
     },
-     {
+
+    {
       title: "角色列表",
       dataIndex: "roleNames",
       key: "roleNames",
       align: "center",
       hideInSearch: true,
       width: 180,
-      render: (_,record) => {
-        
+      render: (_, record) => {
         return (
-          <div className="flex items-center gap-2 flex-wrap">
-
-            {
-              record.roleNames?.split(",").map(it => (
-                <Tag>{it.trim()}</Tag>
-              ))
-            }
+          <div className="flex justify-center items-center gap-2 flex-wrap">
+            {record.roleNames?.split(",").map((it) => (
+              <Tag>{it.trim()}</Tag>
+            ))}
           </div>
-        )
-      }
+        );
+      },
     },
     {
       title: "状态",
@@ -199,7 +196,7 @@ export default function UserTablePage() {
         onSubmit={async (data: API.UserUpdateRequest) => {
           const resp = await updateUser({
             ...data,
-            userId: currentRecord?.userId as string
+            userId: currentRecord?.userId as string,
           });
           handleResponse({
             resp,
@@ -223,7 +220,7 @@ export default function UserTablePage() {
         onSubmit={async (data: API.UserResetPwdRequest) => {
           const resp = await updatePassword({
             newPassword: data.newPassword,
-            userId: currentRecord?.userId as string
+            userId: currentRecord?.userId as string,
           });
           handleResponse({
             resp,

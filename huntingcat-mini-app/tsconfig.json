@@ -27,9 +27,9 @@
     "./src",
     "./types",
     "./config",
-    "../../**/*.d.ts",
-    "../../**/*.ts",
-    "../../**/*.tsx"
+    "./**/*.d.ts",
+    "./**/*.ts",
+    "./**/*.tsx"
   ],
   "exclude": ["**/*.config.js"],
   "compileOnSave": false

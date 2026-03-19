@@ -5,6 +5,8 @@ import { ICON_MAP, IMAGE_MAP, THEME_CONFIG } from "@/constant/global";
 import { cn } from "@/utils/common";
 import { ROUTERS } from "@/constant/menus";
 import { withGlobalLayout } from "@/components/AppLayout";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 function UserPage() {
   const { navBarHeight } = useNavbar();
@@ -66,6 +68,7 @@ const StatsSection = () => (
 
 // 左上角的用户信息
 const UserComponent = () => {
+  const userInfo = useSelector((state: RootState) => state.authModel.userInfo)
   return (
     <View 
       className="flex items-center gap-3 active:opacity-70" 
@@ -82,7 +85,7 @@ const UserComponent = () => {
 
       {/* 文字描述 */}
       <Text className="text-gray-800 font-medium text-base tracking-tight">
-        请点击登录
+        {userInfo?.nickName}
       </Text>
     </View>
   );

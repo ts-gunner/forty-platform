@@ -3,6 +3,7 @@ import { ICON_MAP } from "@/constant/global";
 import { Button, View, Image, Text } from "@tarojs/components";
 import Taro, { login } from "@tarojs/taro";
 import { Dispatch } from "@/store";
+import { withGlobalLayout } from "@/components/AppLayout";
 function LoginPage() {
   const dispatch = useDispatch<Dispatch>();
   const doLogin = () => {
@@ -61,4 +62,5 @@ function LoginPage() {
     </View>
   );
 }
-export default LoginPage;
+
+export default withGlobalLayout(LoginPage);

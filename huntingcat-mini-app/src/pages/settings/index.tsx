@@ -5,6 +5,7 @@ import { THEME_CONFIG } from "@/constant/global";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "@/store";
+import { withGlobalLayout } from "@/components/AppLayout";
 
 // 定义列表项类型
 interface SettingItem {
@@ -108,4 +109,4 @@ dispatch.authModel.doLogout()
   );
 };
 
-export default SettingsPage;
+export default withGlobalLayout(SettingsPage);

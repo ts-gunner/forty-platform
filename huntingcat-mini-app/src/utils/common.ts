@@ -1,4 +1,6 @@
-
+import { ROUTERS } from "@/constant/menus";
+import { store } from "@/store";
+import { ApiResult } from "@/typing";
 import Taro from "@tarojs/taro";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -6,8 +8,6 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-
 
 export function handleResponse<T>({
   resp,
@@ -26,7 +26,13 @@ export function handleResponse<T>({
       return;
     }
     if (resp.code === 401) {
-    } else if (resp.code === 200) {
+      Notify.fail("登录过期");
+      Taro.navigateTo({ url: ROUTERS.login });
+    } 
+    if (resp.code === 500) {
+      Notify.fail(resp.msg)
+    }
+    else if (resp.code === 200) {
       onSuccess?.(resp.data as T);
     } else {
       onError?.(resp.data as T);
@@ -38,32 +44,15 @@ export function handleResponse<T>({
 
 export class Notify {
   // 显示加载中
-  static loading(message: string = '加载中...') {
-    Taro.showLoading({
-      title: message,
-      mask: true // 防止用户在加载时乱点
-    })
+  static loading(message: string) {
+    store.dispatch.notificationModel.notifyLoading(message);
   }
 
   static ok(message: string) {
-    Taro.hideLoading() // 关键：先关闭 Loading
-    setTimeout(() => { // 稍微延迟确保 Loading 彻底消失，Toast 弹出更稳健
-      Taro.showToast({
-        title: message,
-        icon: 'success',
-        duration: 2000
-      })
-    }, 50)
+    store.dispatch.notificationModel.notifyOk(message);
   }
 
   static fail(message: string) {
-    Taro.hideLoading()
-    setTimeout(() => {
-      Taro.showToast({
-        title: message || '操作失败',
-        icon: 'error',
-        duration: 2000
-      })
-    }, 50)
+    store.dispatch.notificationModel.notifyFail(message);
   }
 }

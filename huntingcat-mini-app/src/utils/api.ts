@@ -1,5 +1,6 @@
 import Taro from "@tarojs/taro";
 import storage from "./storage";
+import { ApiResult } from "@/typing";
 
 interface ResponseError<D = any> extends Error {
   name: string;
@@ -29,7 +30,7 @@ interface RequestOptions {
 }
 
 interface RequestFunc {
-  <T = any>(url: string, options: RequestOptions): Promise<T>;
+  <T = any>(url: string, options: RequestOptions): Promise<T | ApiResult>;
 }
 
 interface Extend {
@@ -37,31 +38,40 @@ interface Extend {
 }
 
 export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
-
-  return async <T>(url: string, options: RequestOptions): Promise<T> => {
+  return async <T>(
+    url: string,
+    options: RequestOptions,
+  ): Promise<T | ApiResult> => {
     let finalOptions = {
       ...initialOptions,
       ...options,
     };
-    let requestMethod = finalOptions?.method || "GET"
-    let requestBody = {}
+    let requestMethod = finalOptions?.method || "GET";
+    let requestBody = {};
     if (requestMethod === "GET") {
-      requestBody = finalOptions?.params
-    }else if (requestMethod === "POST") {
-      requestBody = finalOptions?.data
+      requestBody = finalOptions?.params;
+    } else if (requestMethod === "POST") {
+      requestBody = finalOptions?.data;
     }
-    
+
     let requestHeader = {
       ...finalOptions?.headers,
       Authorization: await storage.getItem("token"),
+    };
+    try {
+      let response = await Taro.request({
+        url: (finalOptions?.prefix || "") + url,
+        method: requestMethod,
+        header: requestHeader,
+        data: requestBody,
+        enableHttp2: true,
+      });
+      return response.data as T;
+    } catch (err) {
+      return {
+        code: 500,
+        msg: "服务异常:" + err.errMsg,
+      } as ApiResult;
     }
-    let response = await Taro.request({
-      url: (finalOptions?.prefix || "") + url,
-      method: requestMethod,
-      header: requestHeader,
-      data: requestBody,
-      enableHttp2: true,
-    })
-    return response.data as T;
   };
 };

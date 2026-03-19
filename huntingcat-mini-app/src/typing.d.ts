@@ -1,4 +1,9 @@
 import { TabBarItem } from "@tarojs/taro"
+interface ApiResult<T = any> {
+  code?: number;
+  msg?: string;
+  data?: T;
+}
 
 declare namespace ReduxModel {
     type RouterModelType = {
@@ -9,10 +14,12 @@ declare namespace ReduxModel {
     type CrmModelType = {
     }
 
-    type GlobalModelType = {
-        notifyOpen: boolean
-        notifyText: string
-
+    type NotificationModelType = {
+        notifyOpen?: boolean
+        notifyText?: string
+        notifyIcon?: string
+        notifyStatus?: "error" | "success" | "loading"
+        timer?: NodeJS.Timeout
     }
 }
 
