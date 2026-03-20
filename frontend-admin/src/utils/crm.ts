@@ -1,5 +1,8 @@
 import { CrmDataTypeEnum } from "@/constants/enums";
 import { ProColumns } from "@ant-design/pro-table";
+import { findSelectedNodes } from "./region";
+
+
 
 export const generateCrmValueColumns = (entityFields: API.CrmEntityFieldVo[]): ProColumns[] => {
   // 临时只展示5个字段
@@ -37,15 +40,17 @@ const handleCrmValueColumn = (field: API.CrmEntityFieldVo): ProColumns => {
   }
 };
 
-
 export const handleCrmValueByField = (field: API.CrmEntityFieldVo, data: any) => {
   if (!field.fieldKey) {
-    return "-"
+    return "-";
   }
   switch (field.dataType) {
     case CrmDataTypeEnum.Boolean:
-      return data?.[field.fieldKey] === true ? "是" : "否"
+      return data?.[field.fieldKey] === true ? "是" : "否";
+    case CrmDataTypeEnum.Region:
+      return findSelectedNodes(data?.[field.fieldKey])
     default:
-      return data?.[field.fieldKey]
+      return data?.[field.fieldKey];
   }
-} 
+};
+

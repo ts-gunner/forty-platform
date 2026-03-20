@@ -7,9 +7,9 @@ import { PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Button, Popconfirm, Tabs } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { history } from "umi";
 import CreateEntityValueModal from "./CreateEntityValueModal";
 import UpdateEntityValueModal from "./UpdateEntityValueModal";
-import { history } from "umi";
 
 export default function CrmValueManagementPage() {
   const [entityData, setEntityData] = useState<API.CrmEntityVo[]>([]);
@@ -43,9 +43,8 @@ export default function CrmValueManagementPage() {
         onChange={(key: string) => {
           setActiveKey(key);
         }}
-        key="entity_id"
+        key="entityId"
         items={entityData.map((it, i) => {
-          const id = String(i + 1);
           return {
             key: it.entityId as string,
             label: it.entityName,
@@ -107,7 +106,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
             <div className="flex justify-center items-center gap-3">
               <a
                 onClick={() => {
-                 history.push(`/crm_value_detail/${record.id}`)
+                  history.push(`/crm_value_detail/${record.id}`);
                 }}
               >
                 查看
@@ -147,12 +146,11 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
     ];
   }, [entityFields]);
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%" }} key={entity.entityId}>
       <ProTable
         actionRef={actionRef}
         columns={columns}
         key={"id"}
-     
         toolBarRender={() => [
           <Button
             type="primary"
@@ -204,7 +202,6 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
           },
         }}
       ></ProTable>
-
       <CreateEntityValueModal
         modalOpen={createModalOpen}
         handleModalOpen={handleCreateModalOpen}

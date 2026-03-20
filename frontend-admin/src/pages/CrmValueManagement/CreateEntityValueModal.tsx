@@ -49,7 +49,7 @@ export default function CreateEntityValueModal({ modalOpen, handleModalOpen, fie
                 rules={[{ required: field.isRequired, message: `${field.fieldName}是必填项` }]}
                 className="col-span-1"
               >
-                <ValueBoxGenerator field={field}/>
+                <ValueBoxGenerator key={field.id} field={field}/>
               </Form.Item>
             ))}
         </div>

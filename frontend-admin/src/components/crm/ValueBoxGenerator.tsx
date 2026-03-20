@@ -1,10 +1,11 @@
 import { CrmDataTypeEnum } from "@/constants/enums";
-import { DatePicker, Input, InputNumber, Select } from "antd";
+import { regionOptions } from "@/utils/region";
+import { Cascader, DatePicker, Input, InputNumber, Select } from "antd";
 import dayjs from "dayjs";
 
 export default function ValueBoxGenerator({ field, value, onChange }: { field: API.CrmEntityFieldVo; [key: string]: any }) {
   const { dataType, fieldName, options } = field;
-
+  console.log("dataType, fieldName, options", dataType, fieldName, options);
   switch (dataType) {
     case CrmDataTypeEnum.Number:
       return <InputNumber value={value} onChange={onChange} className="w-full" placeholder={`请输入${fieldName}`} />;
@@ -51,6 +52,18 @@ export default function ValueBoxGenerator({ field, value, onChange }: { field: A
           }}
           className="w-full"
           format={"YYYY-MM-DD"}
+        />
+      );
+    case CrmDataTypeEnum.Region:
+      return (
+        <Cascader
+          value={value ? value.split(',') : []}
+          options={regionOptions}
+          onChange={(val) => {
+            onChange(val.join(","))
+          }}
+          placeholder="请选择省市区"
+          showSearch
         />
       );
     default:
