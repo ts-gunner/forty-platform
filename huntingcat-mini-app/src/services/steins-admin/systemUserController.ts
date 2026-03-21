@@ -94,3 +94,42 @@ export async function updateUser(
     ...(options || {}),
   });
 }
+
+/** 上传头像 POST /system/user/updateAvatar */
+export async function updateAvatar(
+  body: {},
+  avatar?: File,
+  options?: { [key: string]: any }
+) {
+  const formData = new FormData();
+
+  if (avatar) {
+    formData.append("avatar", avatar);
+  }
+
+  Object.keys(body).forEach((ele) => {
+    const item = (body as any)[ele];
+
+    if (item !== undefined && item !== null) {
+      if (typeof item === "object" && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ""));
+        } else {
+          formData.append(
+            ele,
+            new Blob([JSON.stringify(item)], { type: "application/json" })
+          );
+        }
+      } else {
+        formData.append(ele, item);
+      }
+    }
+  });
+
+  return request<API.ApiResultString>("/system/user/updateAvatar", {
+    method: "POST",
+    data: formData,
+    requestType: "form",
+    ...(options || {}),
+  });
+}

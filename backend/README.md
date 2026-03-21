@@ -36,6 +36,10 @@ backend
 |     gmsm     |      	github.com/tjfoc/gmsm       |      国密算法	       |
 
 
+# 系统存储策略
+
+1. 用户头像 -> 聚合图床
+2. 其他文件 -> 本地
 
 
 # Q&A

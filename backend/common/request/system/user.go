@@ -1,5 +1,7 @@
 package system
 
+import "mime/multipart"
+
 type UserListRequest struct {
 	PageNum  int    `form:"pageNum" json:"pageNum"`
 	PageSize int    `form:"pageSize" json:"pageSize"`
@@ -39,4 +41,9 @@ type UserDeleteRequest struct {
 
 type UserDetailRequest struct {
 	UserId int64 `form:"userId,string" json:"userId" binding:"required"`
+}
+
+type UpdateAvatarRequest struct {
+	Avatar   *multipart.FileHeader `form:"avatar" json:"avatar" binding:"required"`
+	NickName string                `form:"nickName" json:"nickName" binding:"required"`
 }

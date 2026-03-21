@@ -7,6 +7,7 @@ import * as crmEntityFieldController from "./crmEntityFieldController";
 import * as crmEntityValueController from "./crmEntityValueController";
 import * as systemAuthController from "./systemAuthController";
 import * as systemPermissionController from "./systemPermissionController";
+import * as systemResourceController from "./systemResourceController";
 import * as systemRoleController from "./systemRoleController";
 import * as systemRolePermissionRelController from "./systemRolePermissionRelController";
 import * as systemUserController from "./systemUserController";
@@ -17,6 +18,7 @@ export default {
   crmEntityValueController,
   systemAuthController,
   systemPermissionController,
+  systemResourceController,
   systemRoleController,
   systemRolePermissionRelController,
   systemUserController,

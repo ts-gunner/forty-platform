@@ -1323,6 +1323,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/system/user/updateAvatar": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SystemUserController"
+                ],
+                "summary": "上传头像",
+                "operationId": "updateAvatar",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "待上传的文件",
+                        "name": "avatar",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-string"
+                        }
+                    }
+                }
+            }
+        },
         "/system/userRoleRel/assign": {
             "post": {
                 "consumes": [

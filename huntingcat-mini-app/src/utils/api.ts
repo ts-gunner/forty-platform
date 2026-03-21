@@ -46,32 +46,67 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
       ...initialOptions,
       ...options,
     };
-    let requestMethod = finalOptions?.method || "GET";
-    let requestBody = {};
-    if (requestMethod === "GET") {
-      requestBody = finalOptions?.params;
-    } else if (requestMethod === "POST") {
-      requestBody = finalOptions?.data;
-    }
-
+    let finalUrl = (finalOptions?.prefix || "") + url;
     let requestHeader = {
       ...finalOptions?.headers,
       Authorization: await storage.getItem("token"),
     };
-    try {
-      let response = await Taro.request({
-        url: (finalOptions?.prefix || "") + url,
-        method: requestMethod,
-        header: requestHeader,
-        data: requestBody,
-        enableHttp2: true,
-      });
-      return response.data as T;
-    } catch (err) {
-      return {
-        code: 500,
-        msg: "服务异常:" + err.errMsg,
-      } as ApiResult;
-    }
-  };
+
+    // 上传文件的方法
+    if (finalOptions.data && typeof finalOptions.data.getInternalData === "function") {
+      const formData = finalOptions.data.getInternalData()
+      let tempUrl = ""
+      let fileKey = undefined
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value && typeof value === 'object' && 'uri' in value) {
+          tempUrl = value.uri as string
+          fileKey = key
+        }
+      })
+      delete formData[fileKey];
+      try {
+        const resp = await Taro.uploadFile({
+          url: finalUrl,
+          filePath: tempUrl,
+          name: fileKey,
+          header: requestHeader,
+          formData: formData,
+        })
+        
+        return JSON.parse(resp.data) as T;
+      } catch (err) {
+        return {
+          code: 500,
+          msg: "服务异常:" + err.errMsg,
+        } as ApiResult;
+      }
+    } else {
+      // 常规上传
+      let requestMethod = finalOptions?.method || "GET";
+      let requestBody = {};
+      if (requestMethod === "GET") {
+        requestBody = finalOptions?.params;
+      } else if (requestMethod === "POST") {
+        requestBody = finalOptions?.data;
+      }
+
+
+      try {
+        let response = await Taro.request({
+          url: finalUrl,
+          method: requestMethod,
+          header: requestHeader,
+          data: requestBody,
+          enableHttp2: true,
+        });
+        return response.data as T;
+      } catch (err) {
+        return {
+          code: 500,
+          msg: "服务异常:" + err.errMsg,
+        } as ApiResult;
+      }
+    };
+  }
+
 };

@@ -22,6 +22,7 @@ func (UserRouter) InitUserRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup.PUT("/update", updateUser)
 	routerGroup.PUT("/resetPwd", updatePassword)
 	routerGroup.DELETE("/delete", deleteUser)
+	routerGroup.POST("/updateAvatar", updateAvatar)
 }
 
 // @Tags SystemUserController
@@ -162,7 +163,7 @@ func updatePassword(c *gin.Context) {
 func deleteUser(c *gin.Context) {
 	var req request.UserDeleteRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		global.Logger.Error("参数校验异常", zap.Any("request", req))
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return
 	}
@@ -173,4 +174,28 @@ func deleteUser(c *gin.Context) {
 	}
 
 	response.Ok(c)
+}
+
+// @Tags SystemUserController
+// @ID updateAvatar
+// @Router /system/user/updateAvatar [post]
+// @Summary 上传头像
+// @Accept mpfd
+// @Produce json
+// @Param avatar formData file true "待上传的文件"
+// @Success 200 {object} response.ApiResult[systemResponse.SysResourceVo]
+func updateAvatar(c *gin.Context) {
+	var req request.UpdateAvatarRequest
+	if err := c.ShouldBind(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+	if err := userService.UploadAvatar(c.Request.Context(), req); err != nil {
+		response.Fail(http.StatusBadRequest, err.Error(), c)
+		return
+	}
+	// 保存访问的url
+	response.Data(systemResponse.SysResourceVo{}, c)
+
 }

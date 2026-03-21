@@ -212,3 +212,9 @@ func (s UserService) GetUserDetail(userId int64) (*systemResponse.UserVo, error)
 		UpdateTime: user.UpdateTime,
 	}, nil
 }
+
+func (s UserService) UploadAvatar(ctx context.Context, req request.UpdateAvatarRequest) (systemResponse.SysResourceVo, error) {
+	vo := systemResponse.SysResourceVo{}
+	
+	return vo, nil
+}

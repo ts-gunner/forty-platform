@@ -1608,6 +1608,27 @@ paths:
       summary: 更新用户
       tags:
       - SystemUserController
+  /system/user/updateAvatar:
+    post:
+      consumes:
+      - multipart/form-data
+      operationId: updateAvatar
+      parameters:
+      - description: 待上传的文件
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-string'
+      summary: 上传头像
+      tags:
+      - SystemUserController
   /system/userRoleRel/assign:
     post:
       consumes:

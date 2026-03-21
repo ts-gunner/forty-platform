@@ -74,6 +74,8 @@ npm run build
 [x] 实现request函数
 [x] 小程序接上后端服务
 [x] 省市区接入开源数据
+[x] Taro适配umijs的openapi生成代码中的上传文件
+[ ] 实现上传头像与修改昵称功能
 [ ] 实现资源存储功能，(本地，聚合图床，阿里云)可支持动态选择存储方式存储
 
 
@@ -88,3 +90,8 @@ windows解决方案:  预装electron和electron-builder
 
 1. 下载压缩包: `https://www.steinstech.cn/resources/electron_install.zip`
 2. 将压缩包中的electron和electorn-builder文件夹放在`~\AppData\Local`文件夹下
+
+
+### 上传文件适配umijs的openapi插件
+
+file类型需要转成`{uri: "微信的临时地址"} as any`, 参考`user_profile`的上传头像和昵称
