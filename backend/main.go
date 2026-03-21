@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/ts-gunner/forty-platform/common/global"
 	"github.com/ts-gunner/forty-platform/core"
 )
@@ -25,4 +26,5 @@ func initializeSystem() {
 		global.DB = db
 	}
 	global.Enforcer = core.InitCasbinEnforcer()
+	global.Store = core.InitializeStore()
 }

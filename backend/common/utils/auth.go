@@ -2,6 +2,8 @@ package utils
 
 import (
 	"context"
+
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/ts-gunner/forty-platform/common/constant"
 	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
 )
@@ -17,4 +19,10 @@ func GetLoginUserId(ctx context.Context) int64 {
 		return 0
 	}
 	return user.UserId
+}
+
+func CreateToken(claim jwt.Claims, key string) string {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
+	signString, _ := token.SignedString([]byte(key))
+	return signString
 }

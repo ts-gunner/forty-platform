@@ -41,7 +41,7 @@ function UserPage() {
 }
 const StatsSection = () => (
   <View className="px-2 py-2">
-    <View 
+    <View
       className="flex justify-between items-center rounded-2xl p-4 shadow-lg"
       style={{ backgroundColor: THEME_CONFIG.active }}
     >
@@ -55,7 +55,7 @@ const StatsSection = () => (
           <Text className="text-white text-xl font-bold mb-1">{item.count}</Text>
           {/* 标签：小字半透明 */}
           <Text className="text-white/70 text-xs">{item.label}</Text>
-          
+
           {/* 分隔线：除了最后一项，每项右侧加一条淡色竖线 */}
           {i !== arr.length - 1 && (
             <View className="absolute right-0 top-1/4 h-1/2 w-[1px] bg-white/20" />
@@ -70,14 +70,17 @@ const StatsSection = () => (
 const UserComponent = () => {
   const userInfo = useSelector((state: RootState) => state.authModel.userInfo)
   return (
-    <View 
-      className="flex items-center gap-3 active:opacity-70" 
-      // onTap={onPress}
+    <View
+      className="flex items-center gap-3 active:opacity-70"
+    // onTap={onPress}
     >
-      <View className={`h-16 w-16 overflow-hidden rounded-full border border-gray-100 bg-gray-100 shadow-lg p-3`}>
+
+      <View className={cn(
+        `h-16 w-16 overflow-hidden rounded-full border border-gray-100 bg-gray-100 shadow-lg `,
+        !userInfo.avatar && "p-3"
+      )}>
         <Image
-          src={ICON_MAP.defaultAvatar}
-          mode="aspectFill"
+          src={userInfo.avatar || ICON_MAP.defaultAvatar}
           lazyLoad
           className="h-full w-full"
         />
@@ -108,7 +111,7 @@ const serviceData = [
     title: "附近企业",
     icon: <Image src={ICON_MAP.rangCompanyIcon} lazyLoad className="h-6 w-6" />,
   },
-    {
+  {
     key: "4",
     title: "物品流向",
     icon: <Image src={ICON_MAP.goodFlowIcon} lazyLoad className="h-6 w-6" />,

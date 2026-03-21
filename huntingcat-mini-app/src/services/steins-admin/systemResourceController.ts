@@ -36,7 +36,7 @@ export async function uploadResource(
     }
   });
 
-  return request<API.ApiResultString>("/system/resource/upload", {
+  return request<API.ApiResultAny>("/system/resource/upload", {
     method: "POST",
     data: formData,
     requestType: "form",

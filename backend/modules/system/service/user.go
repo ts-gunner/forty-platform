@@ -3,15 +3,21 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/jinzhu/copier"
+	"github.com/ts-gunner/forty-platform/common/constant"
 	"github.com/ts-gunner/forty-platform/common/entity"
 	"github.com/ts-gunner/forty-platform/common/global"
 	request "github.com/ts-gunner/forty-platform/common/request/system"
 	"github.com/ts-gunner/forty-platform/common/response"
 	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
+	"github.com/ts-gunner/forty-platform/common/storage"
 	"github.com/ts-gunner/forty-platform/common/utils"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -113,7 +119,7 @@ func (s UserService) CreateUser(ctx context.Context, req request.UserCreateReque
 		NickName: req.NickName,
 		Phone:    req.Phone,
 		Email:    req.Email,
-		AvatarId: req.AvatarId,
+		AvatarId: 0,
 		Status:   req.Status,
 		BaseRecordField: entity.BaseRecordField{
 			CreatorId: utils.GetLoginUserId(ctx),
@@ -206,15 +212,68 @@ func (s UserService) GetUserDetail(userId int64) (*systemResponse.UserVo, error)
 		NickName:   user.NickName,
 		Phone:      user.Phone,
 		Email:      user.Email,
-		AvatarId:   user.AvatarId,
+		Avatar:     "",
 		Status:     user.Status,
 		CreateTime: user.CreateTime,
 		UpdateTime: user.UpdateTime,
 	}, nil
 }
 
-func (s UserService) UploadAvatar(ctx context.Context, req request.UpdateAvatarRequest) (systemResponse.SysResourceVo, error) {
-	vo := systemResponse.SysResourceVo{}
-	
-	return vo, nil
+func (s UserService) UploadUserProfile(ctx context.Context, req request.UpdateUserProfileRequest) (string, error) {
+	updateMap := make(map[string]any)
+	if req.Avatar != nil {
+		vo, err := SystemService.SystemResourceService.UploadAvatar(ctx, req.Avatar)
+		if err != nil {
+			global.Logger.Error("UploadAvatar err", zap.Error(err))
+			return "", fmt.Errorf("头像上传失败")
+		}
+		if vo == nil {
+			return "", fmt.Errorf("头像上传失败, 对象为空")
+		}
+		updateMap["avatar_id"] = vo.ResourceId
+	}
+	if req.NickName != "" {
+		updateMap["nickname"] = req.NickName
+	}
+	token := ""
+	err := global.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&entity.SysUser{}).Where("user_id = ? and is_delete = 0", utils.GetLoginUserId(ctx)).Updates(updateMap).Error; err != nil {
+			return err
+		}
+		user, err := userMapper.GetUserById(tx, utils.GetLoginUserId(ctx))
+		if err != nil {
+			return err
+		}
+		resource, err := resourceMapper.GetResourceById(tx, user.AvatarId)
+		if err != nil {
+			return err
+		}
+
+		policy, err := storage.GetPolicyByMode(global.Store, storage.StorageMode(resource.StorageType))
+		if err != nil {
+			return err
+		}
+		url, err := policy.GetAccessUrl(storage.StorageVo{
+			RelativePath: resource.RelPath,
+			DirectUrl:    resource.PreviewUrl,
+		})
+		if err != nil {
+			return err
+		}
+
+		claim := systemResponse.LoginUserClaim{
+			RegisteredClaims: jwt.RegisteredClaims{
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			},
+		}
+		_ = copier.Copy(&claim, &user)
+		claim.Avatar = url
+		token = utils.CreateToken(claim, constant.SALT)
+		return nil
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }

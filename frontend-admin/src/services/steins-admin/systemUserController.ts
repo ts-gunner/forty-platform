@@ -95,9 +95,12 @@ export async function updateUser(
   });
 }
 
-/** 上传头像 POST /system/user/updateAvatar */
-export async function updateAvatar(
-  body: {},
+/** 更新用户个人信息， 头像和昵称 POST /system/user/updateUserProfile */
+export async function updateUserProfile(
+  body: {
+    /** 昵称 */
+    nickName?: string;
+  },
   avatar?: File,
   options?: { [key: string]: any }
 ) {
@@ -126,7 +129,7 @@ export async function updateAvatar(
     }
   });
 
-  return request<API.ApiResultString>("/system/user/updateAvatar", {
+  return request<API.ApiResultString>("/system/user/updateUserProfile", {
     method: "POST",
     data: formData,
     requestType: "form",

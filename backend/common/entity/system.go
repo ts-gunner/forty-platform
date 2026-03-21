@@ -10,7 +10,7 @@ type SysUser struct {
 	Password string `json:"pwd" gorm:"column:pwd;not null;comment:密码"`
 	OpenId   string `json:"openid" gorm:"column:openid;comment:微信小程序唯一标识id"`
 	UnionId  string `json:"unionId" gorm:"column:unionId;comment:微信开放平台id"`
-	AvatarId string `json:"avatarId" gorm:"column:avatar_id;comment:头像资源id"`
+	AvatarId int64  `json:"avatarId" gorm:"column:avatar_id;type:bigint;comment:头像资源id"`
 	NickName string `json:"nickName" gorm:"column:nickname;not null;comment:昵称"`
 	Email    string `json:"email" gorm:"column:email;comment:邮箱"`
 	Phone    string `json:"phone" gorm:"column:phone;comment:手机号码"`

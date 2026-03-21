@@ -17,7 +17,6 @@ type UserCreateRequest struct {
 	NickName string `json:"nickName" binding:"required"`
 	Phone    string `json:"phone"`
 	Email    string `json:"email"`
-	AvatarId string `json:"avatarId"`
 	Status   int    `json:"status"`
 }
 
@@ -43,7 +42,7 @@ type UserDetailRequest struct {
 	UserId int64 `form:"userId,string" json:"userId" binding:"required"`
 }
 
-type UpdateAvatarRequest struct {
-	Avatar   *multipart.FileHeader `form:"avatar" json:"avatar" binding:"required"`
-	NickName string                `form:"nickName" json:"nickName" binding:"required"`
+type UpdateUserProfileRequest struct {
+	Avatar   *multipart.FileHeader `form:"avatar" json:"avatar"`
+	NickName string                `form:"nickName" json:"nickName"`
 }

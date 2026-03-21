@@ -20,19 +20,23 @@ type StoreConfig struct {
 }
 
 type SuperBedConfig struct {
-	Token string `mapstructure:"token" json:"token" yaml:"token"`
+	Enable bool   `mapstructure:"enable" json:"enable" yaml:"enable"`
+	Token  string `mapstructure:"token" json:"token" yaml:"token"`
 }
 
 type AliyunConfig struct {
+	Enable         bool `mapstructure:"enable" json:"enable" yaml:"enable"`
 	BaseCloudField `mapstructure:",squash" yaml:",inline"`
 	BaseStoreField `mapstructure:",squash" yaml:",inline"`
 }
 
 type TencentConfig struct {
+	Enable         bool `mapstructure:"enable" json:"enable" yaml:"enable"`
 	BaseCloudField `mapstructure:",squash" yaml:",inline"`
 	BaseStoreField `mapstructure:",squash" yaml:",inline"`
 }
 
 type MinioConfig struct {
+	Enable         bool `mapstructure:"enable" json:"enable" yaml:"enable"`
 	BaseStoreField `mapstructure:",squash" yaml:",inline"`
 }

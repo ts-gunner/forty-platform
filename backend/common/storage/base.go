@@ -1,38 +1,43 @@
 package storage
 
 import (
+	"fmt"
 	"mime/multipart"
 	"os"
-
-	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
 )
 
+type StorageVo struct {
+	RelativePath string // 相对路径
+	DirectUrl    string // 直接访问的url
+
+}
 type StoragePolicy interface {
-	/**
-	上传文件
-	*/
-	PutObject(file multipart.File, relativePath string) (systemResponse.StorageVo, error)
+	PutObject(file multipart.File, relativePath string) (StorageVo, error) // 上传文件
 
-	/**
-	下载文件，返回文件流对象
-	*/
-	GetObject(vo systemResponse.StorageVo) (os.File, error)
+	GetObject(vo StorageVo) (os.File, error) // 下载文件，返回文件流对象
 
-	/**
-	获取访问链接
-	*/
-	GetAccessUrl(vo systemResponse.StorageVo) (string, error)
+	GetAccessUrl(vo StorageVo) (string, error) // 获取访问链接
 
-	/**
-	删除文件
-	*/
-	RemoveFile(vo systemResponse.StorageVo) (bool, error)
+	RemoveFile(vo StorageVo) (bool, error) //删除文件
 }
 
-type StorageService struct {
-	Mode string
+type StorageMode string
+
+const (
+	SUPERBED StorageMode = "superbed"
+	ALIYUN   StorageMode = "aliyun"
+	TENCENT  StorageMode = "tencent"
+	LOCAL    StorageMode = "local"
+	MINIO    StorageMode = "minio"
+)
+
+func Register(drivers map[StorageMode]StoragePolicy, driverName StorageMode, policy StoragePolicy) {
+	drivers[driverName] = policy
 }
 
-func (s StorageService) PutObject(file multipart.File, relativePath string) (systemResponse.StorageVo, error) {
-	return systemResponse.StorageVo{}, nil
+func GetPolicyByMode(drivers map[StorageMode]StoragePolicy, mode StorageMode) (StoragePolicy, error) {
+	if driver, ok := drivers[mode]; ok {
+		return driver, nil
+	}
+	return nil, fmt.Errorf("storage mode [%s] not supported", mode)
 }

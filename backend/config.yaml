@@ -28,24 +28,28 @@ zap:
     log-in-console: true
 
 wechat:
-  app-id: ${WECHAT_APP_ID}
-  app-secret: ${WECHAT_APP_SECRET}
+    app-id: ${WECHAT_APP_ID}
+    app-secret: ${WECHAT_APP_SECRET}
 
 store:
     store-type: local
     super-bed:
+        enable: true
         token: ${SUPER_BED_TOKEN}
     aliyun:
+        enable: false
         access-key-id: ss
         access-key-secret: dd
         access-prefix-url: 223
         base-rel-path: C://
     tencent:
+        enable: false
         access-key-id: ss
         access-key-secret: dd
         access-prefix-url: 223
         base-rel-path: C://
     minio:
+        enable: false
         access-prefix-url: 223
         base-rel-path: C://
 

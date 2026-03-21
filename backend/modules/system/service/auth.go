@@ -19,12 +19,6 @@ import (
 type AuthService struct {
 }
 
-func (s *AuthService) CreateToken(claim *systemResponse.LoginUserClaim, key string) string {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
-	signString, _ := token.SignedString([]byte(key))
-	return signString
-}
-
 func (s *AuthService) AdminLogin(user *entity.SysUser) (string, error) {
 	claim := &systemResponse.LoginUserClaim{
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -42,7 +36,7 @@ func (s *AuthService) AdminLogin(user *entity.SysUser) (string, error) {
 		return item.RoleKey
 	})
 	claim.RoleIds = strings.Join(roleKeys, ",")
-	token := s.CreateToken(claim, constant.SALT)
+	token := utils.CreateToken(claim, constant.SALT)
 	return token, nil
 }
 
@@ -79,7 +73,7 @@ func (s *AuthService) WechatCrmLogin(code string) (string, error) {
 			OpenId:   openId,
 			Phone:    "",
 			Email:    "",
-			AvatarId: "",
+			AvatarId: 0,
 			Status:   1,
 			BaseRecordField: entity.BaseRecordField{
 				CreatorId: 0,
@@ -131,6 +125,6 @@ func (s *AuthService) WechatCrmLogin(code string) (string, error) {
 		return item.RoleKey
 	})
 	claim.RoleIds = strings.Join(roleKeys, ",")
-	token := s.CreateToken(claim, constant.SALT)
+	token := utils.CreateToken(claim, constant.SALT)
 	return token, nil
 }

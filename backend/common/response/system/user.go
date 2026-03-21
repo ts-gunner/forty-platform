@@ -9,7 +9,7 @@ type UserVo struct {
 	NickName   string    `json:"nickName"`
 	Phone      string    `json:"phone"`
 	Email      string    `json:"email"`
-	AvatarId   string    `json:"avatarId"`
+	Avatar     string    `json:"avatar"`
 	Status     int       `json:"status"`
 	RoleNames  string    `json:"roleNames"` // 角色列表， 逗号相隔
 	CreateTime time.Time `json:"createTime"`

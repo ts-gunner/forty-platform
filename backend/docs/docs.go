@@ -1323,7 +1323,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/system/user/updateAvatar": {
+        "/system/user/updateUserProfile": {
             "post": {
                 "consumes": [
                     "multipart/form-data"
@@ -1334,15 +1334,20 @@ const docTemplate = `{
                 "tags": [
                     "SystemUserController"
                 ],
-                "summary": "上传头像",
-                "operationId": "updateAvatar",
+                "summary": "更新用户个人信息， 头像和昵称",
+                "operationId": "updateUserProfile",
                 "parameters": [
                     {
                         "type": "file",
-                        "description": "待上传的文件",
+                        "description": "待上传的头像",
                         "name": "avatar",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "昵称",
+                        "name": "nickName",
+                        "in": "formData"
                     }
                 ],
                 "responses": {

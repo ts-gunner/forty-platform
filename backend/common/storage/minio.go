@@ -4,25 +4,23 @@ import (
 	"errors"
 	"mime/multipart"
 	"os"
-
-	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
 )
 
 type MinioStorage struct{}
 
-func (a MinioStorage) PutObject(file multipart.File, relativePath string) (systemResponse.StorageVo, error) {
-	return systemResponse.StorageVo{}, errors.New("暂未实现")
+func (a MinioStorage) PutObject(file multipart.File, relativePath string) (StorageVo, error) {
+	return StorageVo{}, errors.New("暂未实现")
 }
 
-func (a MinioStorage) GetObject(vo systemResponse.StorageVo) (os.File, error) {
+func (a MinioStorage) GetObject(vo StorageVo) (os.File, error) {
 	var file os.File
 	return file, errors.New("暂未实现")
 }
 
-func (a MinioStorage) GetAccessUrl(vo systemResponse.StorageVo) (string, error) {
+func (a MinioStorage) GetAccessUrl(vo StorageVo) (string, error) {
 	return "", errors.New("暂未实现")
 }
 
-func (a MinioStorage) RemoveFile(vo systemResponse.StorageVo) (bool, error) {
+func (a MinioStorage) RemoveFile(vo StorageVo) (bool, error) {
 	return false, errors.New("暂未实现")
 }

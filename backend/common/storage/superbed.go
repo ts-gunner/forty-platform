@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-
-	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
 )
 
 // 图床存储
@@ -25,8 +23,8 @@ type UploadResult struct {
 	Url string `json:"url"`
 }
 
-func (a SuperBedStorage) PutObject(file multipart.File, relativePath string) (systemResponse.StorageVo, error) {
-	var vo systemResponse.StorageVo
+func (a SuperBedStorage) PutObject(file multipart.File, relativePath string) (StorageVo, error) {
+	var vo StorageVo
 	if file == nil {
 		return vo, fmt.Errorf("文件不能为空")
 	}
@@ -75,15 +73,15 @@ func (a SuperBedStorage) PutObject(file multipart.File, relativePath string) (sy
 	return vo, nil
 }
 
-func (a SuperBedStorage) GetObject(vo systemResponse.StorageVo) (os.File, error) {
+func (a SuperBedStorage) GetObject(vo StorageVo) (os.File, error) {
 	var file os.File
 	return file, errors.New("暂未实现")
 }
 
-func (a SuperBedStorage) GetAccessUrl(vo systemResponse.StorageVo) (string, error) {
+func (a SuperBedStorage) GetAccessUrl(vo StorageVo) (string, error) {
 	return vo.DirectUrl, nil
 }
 
-func (a SuperBedStorage) RemoveFile(vo systemResponse.StorageVo) (bool, error) {
+func (a SuperBedStorage) RemoveFile(vo StorageVo) (bool, error) {
 	return false, errors.New("暂未实现")
 }

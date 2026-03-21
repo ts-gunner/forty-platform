@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
   `openid` VARCHAR(100) NULL COMMENT '微信小程序唯一标识id',
   `unionid` VARCHAR(100) NULL COMMENT '微信开放平台id',
   `nickname` VARCHAR(255) NOT NULL COMMENT '用户昵称',
-  `avatar_id` VARCHAR(255) NULL COMMENT '头像url地址',
+  `avatar_id` BIGINT NULL COMMENT '头像对应的资源id',
   `email` VARCHAR(255) NULL COMMENT '邮箱',
   `phone` VARCHAR(255) NULL COMMENT '手机号码',
   `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1 COMMENT '账号状态, 0: 停用, 1:正常',

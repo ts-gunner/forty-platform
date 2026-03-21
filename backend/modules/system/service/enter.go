@@ -11,8 +11,11 @@ type ServiceGroup struct {
 	PermissionService
 	UserRoleRelService
 	RolePermissionRelService
+	SystemResourceService
 }
 
 var (
-	roleMapper = mapper.SystemMapper.RoleMapper
+	roleMapper     = mapper.SystemMapper.RoleMapper
+	userMapper     = mapper.SystemMapper.SysUserMapper
+	resourceMapper = mapper.SystemMapper.SysResourceMapper
 )
