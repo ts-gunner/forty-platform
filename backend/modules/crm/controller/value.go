@@ -17,6 +17,7 @@ type EntityValueRouter struct{}
 func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup := router.Group(fmt.Sprintf("/%s/value", moduleName))
 	routerGroup.GET("/list", getEntityValueList)
+	routerGroup.GET("/listBySelf", getEntityValueListBySelf)
 	routerGroup.GET("/detail", getEntityValueDetail)
 	routerGroup.POST("/insert", insertEntityValue)
 	routerGroup.POST("/update", updateEntityValue)
@@ -25,13 +26,40 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 }
 
 // @Tags CrmEntityValueController
-// @ID getEntityValueList
-// @Router /crm/value/list [get]
-// @Summary 获取对应的实体表数据
+// @ID getEntityValueListBySelf
+// @Router /crm/value/listBySelf [get]
+// @Summary 客户端 - 获取自己创建的客户信息
 // @Produce json
 // @Param pageNum query int false "页码" in:query
 // @Param pageSize query int false "每页数量" in:query
-// @Param entityId query string false "实体表id" in:query
+// @Param entityKey query string true "实体表key" in:query
+// @Success 200 {object} response.ApiResult[crmResponse.CrmEntityValueObjectVo]
+func getEntityValueListBySelf(c *gin.Context) {
+	var req request.GetCrmEntityValueListRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	result, err := entityValueService.GetEntityValuePageListBySelf(c.Request.Context(), req)
+	if err != nil {
+		global.Logger.Error("获取客户实体表数据失败", zap.Error(err))
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("获取客户实体表数据失败: %v", err), c)
+		return
+	}
+
+	response.Data[crmResponse.CrmEntityValueObjectVo](*result, c)
+}
+
+// @Tags CrmEntityValueController
+// @ID getEntityValueList
+// @Router /crm/value/list [get]
+// @Summary 运营端 - 获取对应的实体表数据
+// @Produce json
+// @Param pageNum query int false "页码" in:query
+// @Param pageSize query int false "每页数量" in:query
+// @Param entityKey query string false "实体key" in:query
 // @Success 200 {object} response.ApiResult[crmResponse.CrmEntityValueObjectVo]
 func getEntityValueList(c *gin.Context) {
 	var req request.GetCrmEntityValueListRequest
@@ -72,7 +100,6 @@ func getEntityValueDetail(c *gin.Context) {
 		response.Fail(http.StatusBadRequest, fmt.Sprintf("获取客户数据明细失败: %v", err), c)
 		return
 	}
-
 	response.Data[crmResponse.CrmEntityValueVo](*result, c)
 }
 

@@ -81,7 +81,7 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
     setFieldDataLoading(true);
     let result: API.CrmEntityFieldVo[] = [];
     const resp = await getFieldsByEntityId({
-      entityId: value?.entityId,
+      entityId: value?.entityId as string,
     });
     handleResponse({
       resp,
@@ -222,7 +222,7 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                             <Input />
                           </Form.Item>
                           <Form.Item className="flex-1" name={[name, "fieldName"]} rules={[{ required: true, message: "缺少字段中文名" }]}>
-                            <Input placeholder="填写字段中文描述" disabled={INIT_FIELD.map((_, idx) => idx).includes(name)} />
+                            <Input placeholder="填写字段中文描述" />
                           </Form.Item>
                           <Form.Item className="flex-1" name={[name, "fieldKey"]} rules={[{ required: true, message: "缺少字段key" }]}>
                             <Input placeholder="填写字段key（仅限英文）" disabled={INIT_FIELD.map((_, idx) => idx).includes(name) || Boolean(fieldId)} />

@@ -17,3 +17,14 @@ func (CrmEntityMapper) GetEntityById(entityId int64) (*entity.CrmCustomerEntity,
 	}
 	return &entityObj, nil
 }
+
+func (CrmEntityMapper) GetEntityByKey(entityKey string) (*entity.CrmCustomerEntity, error) {
+	var entityObj entity.CrmCustomerEntity
+	if err := global.DB.Where(map[string]any{
+		"entity_code": entityKey,
+		"is_delete":   0,
+	}).First(&entityObj).Error; err != nil {
+		return nil, err
+	}
+	return &entityObj, nil
+}

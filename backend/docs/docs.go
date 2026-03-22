@@ -235,7 +235,37 @@ const docTemplate = `{
                         "type": "string",
                         "description": "实体表id",
                         "name": "entityId",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-array_crm_CrmEntityFieldVo"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/field/getFieldsByEntityKey": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityFieldController"
+                ],
+                "summary": "根据实体表key获取实体表字段",
+                "operationId": "getFieldsByEntityKey",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "实体表key",
+                        "name": "entityKey",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -421,7 +451,7 @@ const docTemplate = `{
                 "tags": [
                     "CrmEntityValueController"
                 ],
-                "summary": "获取对应的实体表数据",
+                "summary": "运营端 - 获取对应的实体表数据",
                 "operationId": "getEntityValueList",
                 "parameters": [
                     {
@@ -438,9 +468,50 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "实体表id",
-                        "name": "entityId",
+                        "description": "实体key",
+                        "name": "entityKey",
                         "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-crm_CrmEntityValueObjectVo"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/value/listBySelf": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityValueController"
+                ],
+                "summary": "客户端 - 获取自己创建的客户信息",
+                "operationId": "getEntityValueListBySelf",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageNum",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "实体表key",
+                        "name": "entityKey",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2415,9 +2486,6 @@ const docTemplate = `{
                 "account": {
                     "type": "string"
                 },
-                "avatarId": {
-                    "type": "string"
-                },
                 "email": {
                     "type": "string"
                 },
@@ -2547,7 +2615,7 @@ const docTemplate = `{
                 "account": {
                     "type": "string"
                 },
-                "avatarId": {
+                "avatar": {
                     "type": "string"
                 },
                 "createTime": {

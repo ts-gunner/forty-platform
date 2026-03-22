@@ -621,8 +621,6 @@ definitions:
     properties:
       account:
         type: string
-      avatarId:
-        type: string
       email:
         type: string
       nickName:
@@ -714,7 +712,7 @@ definitions:
     properties:
       account:
         type: string
-      avatarId:
+      avatar:
         type: string
       createTime:
         type: string
@@ -898,6 +896,7 @@ paths:
       - description: 实体表id
         in: query
         name: entityId
+        required: true
         type: string
       produces:
       - application/json
@@ -907,6 +906,25 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-array_crm_CrmEntityFieldVo'
       summary: 根据实体表id获取实体表字段
+      tags:
+      - CrmEntityFieldController
+  /crm/field/getFieldsByEntityKey:
+    get:
+      operationId: getFieldsByEntityKey
+      parameters:
+      - description: 实体表key
+        in: query
+        name: entityKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-array_crm_CrmEntityFieldVo'
+      summary: 根据实体表key获取实体表字段
       tags:
       - CrmEntityFieldController
   /crm/field/restoreField:
@@ -1028,9 +1046,9 @@ paths:
         in: query
         name: pageSize
         type: integer
-      - description: 实体表id
+      - description: 实体key
         in: query
-        name: entityId
+        name: entityKey
         type: string
       produces:
       - application/json
@@ -1039,7 +1057,34 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.ApiResult-crm_CrmEntityValueObjectVo'
-      summary: 获取对应的实体表数据
+      summary: 运营端 - 获取对应的实体表数据
+      tags:
+      - CrmEntityValueController
+  /crm/value/listBySelf:
+    get:
+      operationId: getEntityValueListBySelf
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 实体表key
+        in: query
+        name: entityKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-crm_CrmEntityValueObjectVo'
+      summary: 客户端 - 获取自己创建的客户信息
       tags:
       - CrmEntityValueController
   /crm/value/update:

@@ -203,18 +203,32 @@ declare namespace API {
     entityValueId: string;
   };
 
+  type getEntityValueListBySelfParams = {
+    /** 页码 */
+    pageNum?: number;
+    /** 每页数量 */
+    pageSize?: number;
+    /** 实体表key */
+    entityKey: string;
+  };
+
   type getEntityValueListParams = {
     /** 页码 */
     pageNum?: number;
     /** 每页数量 */
     pageSize?: number;
-    /** 实体表id */
-    entityId?: string;
+    /** 实体key */
+    entityKey?: string;
   };
 
   type getFieldsByEntityIdParams = {
     /** 实体表id */
-    entityId?: string;
+    entityId: string;
+  };
+
+  type getFieldsByEntityKeyParams = {
+    /** 实体表key */
+    entityKey: string;
   };
 
   type getPermissionDetailParams = {
@@ -434,7 +448,6 @@ declare namespace API {
 
   type UserCreateRequest = {
     account: string;
-    avatarId?: string;
     email?: string;
     nickName: string;
     password: string;
@@ -478,7 +491,7 @@ declare namespace API {
 
   type UserVo = {
     account?: string;
-    avatarId?: string;
+    avatar?: string;
     createTime?: string;
     email?: string;
     nickName?: string;

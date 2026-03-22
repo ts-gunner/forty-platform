@@ -47,7 +47,7 @@ export async function insertEntityValue(
   });
 }
 
-/** 获取对应的实体表数据 GET /crm/value/list */
+/** 运营端 - 获取对应的实体表数据 GET /crm/value/list */
 export async function getEntityValueList(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.getEntityValueListParams,
@@ -60,6 +60,24 @@ export async function getEntityValueList(
     },
     ...(options || {}),
   });
+}
+
+/** 客户端 - 获取自己创建的客户信息 GET /crm/value/listBySelf */
+export async function getEntityValueListBySelf(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getEntityValueListBySelfParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultCrmCrmEntityValueObjectVo>(
+    "/crm/value/listBySelf",
+    {
+      method: "GET",
+      params: {
+        ...params,
+      },
+      ...(options || {}),
+    }
+  );
 }
 
 /** 更新实体数据 POST /crm/value/update */

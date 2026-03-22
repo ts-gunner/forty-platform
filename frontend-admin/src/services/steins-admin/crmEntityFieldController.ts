@@ -38,6 +38,24 @@ export async function getFieldsByEntityId(
   );
 }
 
+/** 根据实体表key获取实体表字段 GET /crm/field/getFieldsByEntityKey */
+export async function getFieldsByEntityKey(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getFieldsByEntityKeyParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultArrayCrmCrmEntityFieldVo>(
+    "/crm/field/getFieldsByEntityKey",
+    {
+      method: "GET",
+      params: {
+        ...params,
+      },
+      ...(options || {}),
+    }
+  );
+}
+
 /** 恢复已删除的实体表字段 POST /crm/field/restoreField */
 export async function restoreField(
   body: API.RestoreCrmEntityFieldRequest,

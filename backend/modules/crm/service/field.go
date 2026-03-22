@@ -22,19 +22,8 @@ import (
 
 type EntityFieldService struct{}
 
-func (EntityFieldService) GetFieldById(fieldId int64) (*entity.CrmCustomerFields, error) {
-	var field entity.CrmCustomerFields
-	if err := global.DB.Where(map[string]any{
-		"id":        fieldId,
-		"is_delete": 0,
-	}).First(&field).Error; err != nil {
-		return nil, err
-	}
-	return &field, nil
-}
-
 func (EntityFieldService) GetFieldsByEntityId(entityId int64) ([]response.CrmEntityFieldVo, error) {
-	_, err := entityMapper.GetEntityById(entityId)
+	e, err := entityMapper.GetEntityById(entityId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("实体不存在")
@@ -42,24 +31,18 @@ func (EntityFieldService) GetFieldsByEntityId(entityId int64) ([]response.CrmEnt
 		return nil, err
 	}
 
-	var entityFields []*entity.CrmCustomerFields
-	if err := global.DB.Where("entity_id = ? and is_delete = 0", entityId).Order("sort_order ASC").Find(&entityFields).Error; err != nil {
+	return convertFieldVos(e.Id, 0)
+}
+
+func (EntityFieldService) GetFieldsByEntityKey(entityKey string) ([]response.CrmEntityFieldVo, error) {
+	e, err := entityMapper.GetEntityByKey(entityKey)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("实体不存在")
+		}
 		return nil, err
 	}
-
-	result := lo.Map(entityFields, func(it *entity.CrmCustomerFields, idx int) response.CrmEntityFieldVo {
-		var opt = make([]string, 0)
-		if it.Options != nil {
-			_ = json.Unmarshal(*it.Options, &opt)
-		}
-
-		var vo response.CrmEntityFieldVo
-		_ = copier.Copy(&vo, it)
-		vo.Options = strings.Join(opt, ",")
-		return vo
-	})
-
-	return result, nil
+	return convertFieldVos(e.Id, 0)
 }
 
 func (EntityFieldService) GetDeletedFieldsByEntityId(entityId int64) ([]response.CrmEntityFieldVo, error) {
@@ -70,9 +53,12 @@ func (EntityFieldService) GetDeletedFieldsByEntityId(entityId int64) ([]response
 		}
 		return nil, err
 	}
+	return convertFieldVos(entityId, 1)
+}
 
+func convertFieldVos(entityId int64, isDelete int) ([]response.CrmEntityFieldVo, error) {
 	var entityFields []*entity.CrmCustomerFields
-	if err := global.DB.Where("entity_id = ? and is_delete = 1", entityId).Order("delete_time DESC").Find(&entityFields).Error; err != nil {
+	if err := global.DB.Where("entity_id = ? and is_delete = ?", entityId, isDelete).Order("sort_order ASC").Find(&entityFields).Error; err != nil {
 		return nil, err
 	}
 

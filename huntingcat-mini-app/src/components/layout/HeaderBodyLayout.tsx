@@ -16,7 +16,7 @@ type LayoutProps = {
 export default function HeaderBodyLayout({ headerComponent, headerHeight, rootClassName, children, bodyClassName }: LayoutProps) {
     const { navBarHeight } = useNavbar();
     return (
-        <View className={cn(rootClassName)}>
+        <View className={cn("min-h-screen flex flex-col", rootClassName)}>
 
             {/* 头部组件 */}
             <View style={{
@@ -24,7 +24,7 @@ export default function HeaderBodyLayout({ headerComponent, headerHeight, rootCl
             }}>
                 {headerComponent}
             </View>
-            <View className={cn(bodyClassName)}>
+            <View className={cn("flex-1",bodyClassName)}>
                 {children}
             </View>
 

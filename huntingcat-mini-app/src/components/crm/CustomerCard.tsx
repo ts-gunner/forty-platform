@@ -1,65 +1,96 @@
+import { Dispatch } from "@/store";
 import { MockData } from "@/typing";
 import { Text, View } from "@tarojs/components";
+import { useDispatch } from "react-redux";
 
-
-export const MyCustomerCard: React.FC<{ data: MockData.CustomerDataType, onClick: (key: string) => void }> = ({
-  data, onClick
-}) => {
+export const MyCustomerCard: React.FC<{
+  data: API.CrmEntityValueVo;
+  onClick: (key: string) => void;
+}> = ({ data, onClick }) => {
+  const dispatch = useDispatch<Dispatch>();
+  const dataObject = JSON.parse(data.values);
   return (
     <View
-      onClick={() => onClick(data.key)}
-      className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/60 p-3 shadow-xl backdrop-blur-md">
+      onClick={() => onClick(data.id)}
+      className="relative overflow-hidden rounded-2xl border border-white/30 bg-white p-3 shadow-xl backdrop-blur-md"
+    >
       {/* 顶部：标题与标签 */}
       <View className="flex justify-between items-start mb-2">
         <View className="flex-1">
-          <Text className="text-xs text-gray-500 block">企业名称</Text>
+          <Text className="text-xs text-gray-500 block">
+            {dispatch.crmModel.getFieldName("customer_name")}
+          </Text>
           <Text className="font-bold text-gray-800 leading-tight">
-            {data.companyName}
+            {dataObject["customer_name"]}
           </Text>
         </View>
+
         {/* 标签化处理 */}
-        <View className="px-3 py-1  shadow rounded-full flex justify-center items-center bg-active">
+        {/* <View className="px-3 py-1  shadow rounded-full flex justify-center items-center bg-active">
           <Text className="text-xs font-medium text-white">{data.tag}</Text>
-        </View>
+        </View> */}
       </View>
 
       <View className="h-[1px] w-full bg-gray-200/50 mb-2" />
 
       {/* 底部：详细信息网格排版 */}
       <View className="grid grid-cols-1 gap-2">
-        <InfoItem label="联系人" value={data.contractName} />
-        <InfoItem label="联系电话" value={data.contractPhone} />
-        <InfoItem label="地址" value={data.addr} />
+        <InfoItem
+          label={dispatch.crmModel.getFieldName("contract_name")}
+          value={dataObject["contract_name"]}
+        />
+        <InfoItem
+          label={dispatch.crmModel.getFieldName("contract_phone")}
+          value={dataObject["contract_phone"]}
+        />
+        <InfoItem
+          label={dispatch.crmModel.getFieldName("detail_addr")}
+          value={dataObject["detail_addr"]}
+        />
       </View>
     </View>
   );
 };
-export const AllCustomerCard: React.FC<{ data: MockData.CustomerDataType, onClick: (key: string) => void }> = ({
-  data, onClick
-}) => {
+export const AllCustomerCard: React.FC<{
+  data: API.CrmEntityValueVo;
+  onClick: (key: string) => void;
+}> = ({ data, onClick }) => {
+  const dispatch = useDispatch<Dispatch>();
+  const dataObject = JSON.parse(data.values);
   return (
     <View
-      onClick={() => onClick(data.key)}
+      onClick={() => onClick(data.id)}
       className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/70 p-4 shadow-xl backdrop-blur-md mb-3"
     >
       {/* 顶部：公司名与状态标签 */}
       <View className="flex flex-row justify-between items-start mb-3">
         <View className="flex-1">
-          <Text className="text-[20rpx] text-gray-400 block mb-0.5">企业名称</Text>
+          <Text className="text-[20rpx] text-gray-400 block mb-0.5">
+            {dispatch.crmModel.getFieldName("customer_name")}
+          </Text>
           <Text className="text-[32rpx] font-bold text-gray-800 leading-tight">
-            {data.companyName}
+            {dataObject["customer_name"]}
           </Text>
         </View>
-        <View className="px-3 py-1 rounded-full bg-active shadow-sm text-center">
+        {/* <View className="px-3 py-1 rounded-full bg-active shadow-sm text-center">
           <Text className="text-[22rpx] font-medium text-white">{data.tag}</Text>
-        </View>
+        </View> */}
       </View>
 
       {/* 客户基本信息 */}
       <View className="space-y-2 mb-3">
-        <InfoItem label="联系人" value={data.contractName} />
-        <InfoItem label="联系电话" value={data.contractPhone} />
-        <InfoItem label="地址" value={data.addr} />
+        <InfoItem
+          label={dispatch.crmModel.getFieldName("contract_name")}
+          value={dataObject["contract_name"]}
+        />
+        <InfoItem
+          label={dispatch.crmModel.getFieldName("contract_phone")}
+          value={dataObject["contract_phone"]}
+        />
+        <InfoItem
+          label={dispatch.crmModel.getFieldName("detail_addr")}
+          value={dataObject["detail_addr"]}
+        />
       </View>
 
       {/* 分隔虚线或细线 */}
@@ -79,11 +110,10 @@ export const AllCustomerCard: React.FC<{ data: MockData.CustomerDataType, onClic
             </Text>
           </View>
         </View>
-        
-  
-          <View className="bg-gray-100 px-2 py-0.5 rounded">
-            <Text className="text-[20rpx] text-gray-500">{"广州分部"}</Text>
-          </View>
+
+        <View className="bg-gray-100 px-2 py-0.5 rounded">
+          <Text className="text-[20rpx] text-gray-500">{"广州分部"}</Text>
+        </View>
       </View>
     </View>
   );

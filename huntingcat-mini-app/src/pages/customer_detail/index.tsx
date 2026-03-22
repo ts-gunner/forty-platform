@@ -2,25 +2,17 @@ import { View, Text, ScrollView } from "@tarojs/components";
 import Taro, { useRouter } from "@tarojs/taro";
 import { useState, useEffect } from "react";
 import { AtIcon, AtTag } from "taro-ui";
-import { CUSTOMER_INFO_LIST } from "@/constant/mock";
 import { THEME_CONFIG } from "@/constant/global";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { withGlobalLayout } from "@/components/AppLayout";
+import { useDispatch, useSelector } from "react-redux";
+import { Dispatch, RootState } from "@/store";
+import { findSelectedNodes } from "@/utils/region";
 
 function CustomerDetailPage() {
-  const router = useRouter();
-  const { id } = router.params;
-  const [info, setInfo] = useState<any>(null);
-
-  useEffect(() => {
-    // 实际开发中根据 ID 请求 API
-    const data =
-      CUSTOMER_INFO_LIST.find((item) => item.key === id) ||
-      CUSTOMER_INFO_LIST[0];
-    setInfo(data);
-  }, [id]);
-
-  if (!info) return null;
+  const dispatch = useDispatch<Dispatch>()
+  const selectedEntityValue = useSelector((state:RootState) => state.crmModel.selectedEntityValue)
+  const valueObject = JSON.parse(selectedEntityValue.values)
 
   return (
     <HeaderBodyFooterLayout
@@ -30,10 +22,9 @@ function CustomerDetailPage() {
             编辑信息
           </View>
           <View
-            className="flex-1 py-3 rounded-full text-center text-sm font-bold text-white shadow-lg active:opacity-80"
-            style={{ backgroundColor: THEME_CONFIG.active }}
+            className="bg-active flex-1 py-3 rounded-full text-center text-sm font-bold text-white shadow-lg active:opacity-80"
             onClick={() =>
-              Taro.makePhoneCall({ phoneNumber: info.contractPhone })
+              Taro.makePhoneCall({ phoneNumber: valueObject["contract_phone"] })
             }
           >
             立即联系
@@ -47,15 +38,15 @@ function CustomerDetailPage() {
           <View className="flex justify-between items-start">
             <View>
               <Text className="text-2xl font-bold text-gray-800">
-                {info.companyName}
+                {valueObject["customer_name"]}
               </Text>
               <View className="flex gap-2 mt-2">
-                <AtTag size="small" circle active type="primary">
+                {/* <AtTag size="small" circle active type="primary">
                   {info.tag}
-                </AtTag>
-                <AtTag size="small" circle>
+                </AtTag> */}
+                {/* <AtTag size="small" circle>
                   常规客户
-                </AtTag>
+                </AtTag> */}
               </View>
             </View>
             <View className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center shadow-sm">
@@ -67,20 +58,20 @@ function CustomerDetailPage() {
         <View className="px-4 space-y-4">
           {/* Section: 基本信息 */}
           <DetailSection title="基本信息" iconColor="bg-amber-400">
-            <InfoRow label="联系人" value={info.contractName} />
+            <InfoRow label={dispatch.crmModel.getFieldName("contract_name")} value={valueObject["contract_name"]} />
             <InfoRow
-              label="联系电话"
-              value={info.contractPhone}
+              label={dispatch.crmModel.getFieldName("contract_phone")}
+              value={valueObject["contract_phone"]}
               isLink
               color="text-blue-600"
               onClick={() =>
-                Taro.makePhoneCall({ phoneNumber: info.contractPhone })
+                Taro.makePhoneCall({ phoneNumber: valueObject["contract_phone"] })
               }
             />
-            <InfoRow label="职位" value={info.jobTitle || "经理"} />
+            <InfoRow label={dispatch.crmModel.getFieldName("job_title")} value={valueObject["job_title"]} />
             <InfoRow
               label="籍贯"
-              value={info.originAddr || "暂无"}
+              value={valueObject["origin_addr"]}
               border={false}
             />
           </DetailSection>
@@ -88,34 +79,34 @@ function CustomerDetailPage() {
           {/* Section: 项目基本信息 */}
           <DetailSection title="项目基本信息" iconColor="bg-blue-400">
             <InfoRow
-              label="主营项目"
-              value={"暂无"}
+              label={dispatch.crmModel.getFieldName("project_name")}
+              value={valueObject["project_name"]}
             />
             <InfoRow
-              label="区域地址"
-              value={info.addr}
+              label={dispatch.crmModel.getFieldName("region")}
+              value={findSelectedNodes(valueObject["region"])}
             />
             <InfoRow
-              label="详细地址"
-              value={info.addr}
+              label={dispatch.crmModel.getFieldName("detail_addr")}
+              value={valueObject["detail_addr"]}
             />
             <InfoRow
-              label="合作类型"
-              value={info.cooperationType}
+              label={dispatch.crmModel.getFieldName("cooperate_type")}
+              value={valueObject["cooperate_type"]}
             />
-            <InfoRow label="客户类型" value={info.customerType} />
+            <InfoRow label={dispatch.crmModel.getFieldName("customer_type")} value={valueObject["customer_type"]} />
             <InfoRow
-              label="客户来源"
-              value={info.customerSource}
+              label={dispatch.crmModel.getFieldName("customer_source")}
+              value={valueObject["customer_source"]}
               border={false}
             />
           </DetailSection>
 
           {/* Section: 备注 */}
-          <DetailSection title="备注" iconColor="bg-green-400">
+          <DetailSection title={dispatch.crmModel.getFieldName("remark")} iconColor="bg-green-400">
             <View className="p-3 bg-gray-50/50 rounded-lg">
               <Text className="text-sm text-gray-600 leading-relaxed">
-                {info.remark || "暂无备注信息..."}
+                {valueObject["remark"] || "暂无备注信息..."}
               </Text>
             </View>
           </DetailSection>

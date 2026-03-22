@@ -37,3 +37,9 @@ type PageResult[T any] struct {
 	PageNum  int   `json:"pageNum"`
 	PageSize int   `json:"pageSize"`
 }
+
+type PageInfo struct {
+	Total    int64 `json:"total"`
+	PageNum  int   `json:"pageNum"`
+	PageSize int   `json:"pageSize"`
+}

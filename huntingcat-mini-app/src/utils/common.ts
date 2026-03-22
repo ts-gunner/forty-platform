@@ -8,7 +8,7 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-export function handleResponse<T>({
+export function handleResponse<T = any>({
   resp,
   onSuccess,
   onError,
@@ -53,5 +53,8 @@ export class Notify {
 
   static fail(message: string) {
     store.dispatch.notificationModel.notifyFail(message);
+  }
+  static clear() {
+    store.dispatch.notificationModel.hideNotify()
   }
 }

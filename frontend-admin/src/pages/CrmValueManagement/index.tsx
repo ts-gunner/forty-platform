@@ -73,7 +73,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
   const getEntityFields = async () => {
     setPageLoading(true);
     const resp = await getFieldsByEntityId({
-      entityId: entity.entityId,
+      entityId: entity.entityId as string,
     });
     handleResponse({
       resp,
@@ -166,7 +166,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
           const resp = await getEntityValueList({
             pageNum: params.current,
             pageSize: params.pageSize,
-            entityId: entity.entityId,
+            entityKey: entity.entityCode,
           });
           let tableData: any[] = [];
           let total = 0;

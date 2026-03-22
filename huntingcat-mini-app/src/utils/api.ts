@@ -30,7 +30,7 @@ interface RequestOptions {
 }
 
 interface RequestFunc {
-  <T = any>(url: string, options: RequestOptions): Promise<T | ApiResult>;
+  <T = any>(url: string, options: RequestOptions): Promise<T>;
 }
 
 interface Extend {
@@ -41,7 +41,7 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
   return async <T>(
     url: string,
     options: RequestOptions,
-  ): Promise<T | ApiResult> => {
+  ): Promise<T> => {
     let finalOptions = {
       ...initialOptions,
       ...options,
@@ -91,7 +91,7 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
         return {
           code: 500,
           msg: "服务异常:" + err.errMsg,
-        } as ApiResult;
+        } as T;
       }
     } else {
       // 常规上传
@@ -116,7 +116,7 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
         return {
           code: 500,
           msg: "服务异常:" + err.errMsg,
-        } as ApiResult;
+        } as T;
       }
     }
   };

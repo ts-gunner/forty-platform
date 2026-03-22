@@ -1,53 +1,5 @@
 import { MockData } from "@/typing";
 
-export const CUSTOMER_INFO_LIST: MockData.CustomerDataType[] = [
-    {
-        key: "1",
-        companyName: "xxxxxxxxx有限股份公司",
-        contractName: "朱元璋",
-        contractPhone: "12345678910",
-        addr: "广东省广州市中山一路五四小学十栋十号409",
-        position: "总经理",
-        tag: "vip"
-    },
-    {
-        key: "2",
-        companyName: "xxxxxxxxx有限股份公司",
-        contractName: "朱元璋",
-        contractPhone: "12345678910",
-        addr: "广东省广州市中山一路五四小学十栋十号409",
-        position: "总经理",
-        tag: "svip"
-    },
-    {
-        key: "3",
-        companyName: "xxxxxxxxx有限股份公司",
-        contractName: "朱元璋",
-        contractPhone: "12345678910",
-        addr: "广东省广州市中山一路五四小学十栋十号409",
-        position: "总经理",
-        tag: "普通"
-    },
-    {
-        key: "4",
-        companyName: "xxxxxxxxx有限股份公司",
-        contractName: "朱元璋",
-        contractPhone: "12345678910",
-        addr: "广东省广州市中山一路五四小学十栋十号409",
-        position: "总经理",
-        tag: "ssvip"
-    },
-    {
-        key: "5",
-        companyName: "xxxxxxxxx有限股份公司",
-        contractName: "朱元璋",
-        contractPhone: "12345678910",
-        addr: "广东省广州市中山一路五四小学十栋十号409",
-        position: "总经理",
-        tag: "vip"
-    },
-]
-
 
 export const COOPERATION_TYPE_LIST = ['成品厂', '配件厂', '贸易商', '代理商', '电商', '外商', '第三方服务']
 export const CUSTOMER_TYPE_LIST = ['杂志客户', '网络客户', '会员客户', '普通客户',]
