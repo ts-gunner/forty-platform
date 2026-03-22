@@ -28,7 +28,7 @@ export function withGlobalLayout<T>(WrappedComponent: React.ComponentType<T>) {
       if (router.path !== ROUTERS.login) {
         getLoginUser();
       }
-    }, []);
+    }, [router.path]);
 
     const getLoginUser = async () => {
       const resp = await getCurrentUser();

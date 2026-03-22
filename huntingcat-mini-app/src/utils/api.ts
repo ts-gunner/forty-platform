@@ -53,27 +53,40 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
     };
 
     // 上传文件的方法
-    if (finalOptions.data && typeof finalOptions.data.getInternalData === "function") {
-      const formData = finalOptions.data.getInternalData()
-      let tempUrl = ""
-      let fileKey = undefined
+    if (
+      finalOptions.data &&
+      typeof finalOptions.data.getInternalData === "function"
+    ) {
+      const formData = finalOptions.data.getInternalData();
+      let tempUrl = "";
+      let fileKey = undefined;
       Object.entries(formData).forEach(([key, value]) => {
-        if (value && typeof value === 'object' && 'uri' in value) {
-          tempUrl = value.uri as string
-          fileKey = key
+        if (value && typeof value === "object" && "uri" in value) {
+          tempUrl = value.uri as string;
+          fileKey = key;
         }
-      })
+      });
       delete formData[fileKey];
       try {
-        const resp = await Taro.uploadFile({
-          url: finalUrl,
-          filePath: tempUrl,
-          name: fileKey,
-          header: requestHeader,
-          formData: formData,
-        })
-        
-        return JSON.parse(resp.data) as T;
+        if (tempUrl) {
+          const resp = await Taro.uploadFile({
+            url: finalUrl,
+            filePath: tempUrl,
+            name: fileKey,
+            header: requestHeader,
+            formData: formData,
+          });
+
+          return JSON.parse(resp.data) as T;
+        } else {
+          let response = await Taro.request({
+            url: finalUrl,
+            method: "POST",
+            header: requestHeader,
+            data: formData,
+          });
+          return response.data as T;
+        }
       } catch (err) {
         return {
           code: 500,
@@ -90,7 +103,6 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
         requestBody = finalOptions?.data;
       }
 
-
       try {
         let response = await Taro.request({
           url: finalUrl,
@@ -106,7 +118,6 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
           msg: "服务异常:" + err.errMsg,
         } as ApiResult;
       }
-    };
-  }
-
+    }
+  };
 };

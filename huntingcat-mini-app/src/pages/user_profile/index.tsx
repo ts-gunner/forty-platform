@@ -10,16 +10,18 @@ import HeaderBodyLayout from "@/components/layout/HeaderBodyLayout";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { ApiResult } from "@/typing";
 
 function UserProfilePage() {
-  const userInfo = useSelector((state:RootState) => state.authModel.userInfo)
-  const [avatar, setAvatar] = useState(userInfo.avatar || ICON_MAP.defaultAvatar);
+  const userInfo = useSelector((state: RootState) => state.authModel.userInfo);
+  const [avatar, setAvatar] = useState(
+    userInfo.avatar || ICON_MAP.defaultAvatar,
+  );
   const [nickname, setNickname] = useState(userInfo.nickName);
 
   // 处理头像选择
   const onChooseAvatar = async (e: any) => {
     const { avatarUrl } = e.detail;
-
 
     setAvatar(avatarUrl);
   };
@@ -31,19 +33,32 @@ function UserProfilePage() {
 
   const handleSave = async () => {
     // {avatar: "http://tmp/9G76GjfCgMNb6a133fdc51c20dde1707efc0ecbf5299.jpeg", nickname: "🚴🏻"}
-    const resp = await updateUserProfile({
-      nickName: nickname
-    }, { uri: avatar } as any)
+    let resp: ApiResult;
+    if (avatar.startsWith("http://tmp")) {
+      resp = await updateUserProfile(
+        {
+          nickName: nickname,
+        },
+        { uri: avatar } as any,
+      );
+    } else {
+      resp = await updateUserProfile(
+        {
+          nickName: nickname,
+        },
+        null,
+      );
+    }
     handleResponse({
       resp,
       onSuccess: (data) => {
-        Notify.ok("保存成功")
-        storage.setItem("token", data)
+        Notify.ok("保存成功");
+        storage.setItem("token", data);
       },
       onError: () => {
-        Notify.fail("上传失败:" + resp.msg)
-      }
-    })
+        Notify.fail("上传失败:" + resp.msg);
+      },
+    });
   };
 
   return (
@@ -61,11 +76,7 @@ function UserProfilePage() {
               onChooseAvatar={onChooseAvatar}
               className="w-24 h-24 p-2 m-0 bg-gray-100 flex flex-col items-center rounded-full "
             >
-              <Image
-                src={avatar}
-                className="w-full h-full"
-                mode="aspectFill"
-              />
+              <Image src={avatar} className="w-full h-full" mode="aspectFill" />
             </Button>
             <Text className="text-sm text-gray-400 mt-2">点击更换头像</Text>
           </View>
@@ -103,7 +114,6 @@ function UserProfilePage() {
         </View>
       </View>
     </HeaderBodyFooterLayout>
-
   );
 }
 
