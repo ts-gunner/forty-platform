@@ -1562,7 +1562,7 @@
             ],
             "properties": {
                 "dataType": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "fieldKey": {
                     "type": "string"
@@ -1589,7 +1589,7 @@
             "type": "object",
             "properties": {
                 "dataType": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "entityId": {
                     "type": "string",
@@ -1659,6 +1659,13 @@
                     "example": "0"
                 },
                 "remark": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "userName": {
                     "type": "string"
                 },
                 "values": {

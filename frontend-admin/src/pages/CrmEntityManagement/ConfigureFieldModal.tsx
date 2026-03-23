@@ -16,7 +16,7 @@ const INIT_FIELD = [
     id: null,
     fieldKey: "customer_name",
     fieldName: "客户名称",
-    dataType: 1,
+    dataType: "text",
     isRequired: true,
     sortOrder: 0,
   },
@@ -24,7 +24,7 @@ const INIT_FIELD = [
     id: null,
     fieldKey: "remark",
     fieldName: "备注",
-    dataType: 1,
+    dataType: "textarea",
     isRequired: false,
     sortOrder: 0,
   },
@@ -33,27 +33,31 @@ const INIT_FIELD = [
 const DATA_TYPE_OPIONS = [
   {
     label: "文本",
-    value: 1,
+    value: "text",
+  },
+   {
+    label: "多行文本",
+    value: "textarea",
   },
   {
     label: "数字",
-    value: 2,
+    value: "number",
   },
   {
     label: "布尔",
-    value: 3,
+    value: "bool",
   },
   {
     label: "选择器",
-    value: 4,
+    value: "picker",
   },
   {
     label: "日期",
-    value: 5,
+    value: "date",
   },
   {
     label: "行政区划",
-    value: 6,
+    value: "region",
   },
 ];
 export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubmit, value }: ModalProps) {
@@ -228,7 +232,7 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                             <Input placeholder="填写字段key（仅限英文）" disabled={INIT_FIELD.map((_, idx) => idx).includes(name) || Boolean(fieldId)} />
                           </Form.Item>
 
-                          <Form.Item className="flex-1" name={[name, "dataType"]} initialValue={1} rules={[{ required: true, message: "数据类型" }]}>
+                          <Form.Item className="flex-1" name={[name, "dataType"]} initialValue={"text"} rules={[{ required: true, message: "数据类型" }]}>
                             <Select disabled={INIT_FIELD.map((_, idx) => idx).includes(name) || Boolean(fieldId)} options={DATA_TYPE_OPIONS} />
                           </Form.Item>
                           <Form.Item

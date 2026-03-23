@@ -14,7 +14,7 @@ type CrmEntityField struct {
 	Id         *int64 `json:"id,string"`
 	FieldName  string `json:"fieldName" binding:"required"`
 	FieldKey   string `json:"fieldKey" binding:"required"`
-	DataType   int    `json:"dataType" binding:"required"`
+	DataType   string `json:"dataType" binding:"required"`
 	Options    string `json:"options"`
 	IsRequired bool   `json:"isRequired" binding:"required"`
 	SortOrder  int    `json:"sortOrder" binding:"required"`

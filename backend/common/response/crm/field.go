@@ -5,7 +5,7 @@ type CrmEntityFieldVo struct {
 	EntityId   int64  `json:"entityId,string"`
 	FieldKey   string `json:"fieldKey"`
 	FieldName  string `json:"fieldName"`
-	DataType   int    `json:"dataType"`
+	DataType   string `json:"dataType"`
 	Options    string `json:"options"`
 	IsRequired bool   `json:"isRequired"`
 	SortOrder  int    `json:"sortOrder"`

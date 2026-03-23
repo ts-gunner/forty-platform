@@ -108,7 +108,7 @@ declare namespace API {
   };
 
   type CrmEntityField = {
-    dataType: number;
+    dataType: string;
     fieldKey: string;
     fieldName: string;
     id?: string;
@@ -118,7 +118,7 @@ declare namespace API {
   };
 
   type CrmEntityFieldVo = {
-    dataType?: number;
+    dataType?: string;
     entityId?: string;
     fieldKey?: string;
     fieldName?: string;
@@ -144,6 +144,8 @@ declare namespace API {
     entityId?: string;
     id?: string;
     remark?: string;
+    userId?: string;
+    userName?: string;
     values?: string;
   };
 

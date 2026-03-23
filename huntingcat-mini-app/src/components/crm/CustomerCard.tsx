@@ -12,29 +12,28 @@ export const MyCustomerCard: React.FC<{
   return (
     <View
       onClick={() => onClick(data.id)}
-      className="relative overflow-hidden rounded-2xl border border-white/30 bg-white p-3 shadow-xl backdrop-blur-md"
+      className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/90 p-4 shadow-xl backdrop-blur-md mb-1"
     >
-      {/* 顶部：标题与标签 */}
-      <View className="flex justify-between items-start mb-2">
+      {/* 顶部：公司名与状态标签 */}
+      <View className="flex flex-row justify-between items-start mb-3">
         <View className="flex-1">
-          <Text className="text-xs text-gray-500 block">
+          <Text className="text-[20rpx] text-gray-400 block mb-0.5">
             {dispatch.crmModel.getFieldName("customer_name")}
           </Text>
-          <Text className="font-bold text-gray-800 leading-tight">
+          <Text className="text-[32rpx] font-bold text-gray-800 leading-tight">
             {dataObject["customer_name"]}
           </Text>
         </View>
-
-        {/* 标签化处理 */}
-        {/* <View className="px-3 py-1  shadow rounded-full flex justify-center items-center bg-active">
-          <Text className="text-xs font-medium text-white">{data.tag}</Text>
-        </View> */}
+        {/* 标签 */}
+        <View className="px-3 py-2 rounded-full bg-active shadow-sm flex items-center justify-center">
+          <Text className="text-[22rpx] font-medium text-white">
+            {dataObject["customer_type"]}
+          </Text>
+        </View>
       </View>
 
-      <View className="h-[1px] w-full bg-gray-200/50 mb-2" />
-
-      {/* 底部：详细信息网格排版 */}
-      <View className="grid grid-cols-1 gap-2">
+      {/* 客户基本信息 */}
+      <View className="space-y-2 mb-3">
         <InfoItem
           label={dispatch.crmModel.getFieldName("contract_name")}
           value={dataObject["contract_name"]}
@@ -60,7 +59,7 @@ export const AllCustomerCard: React.FC<{
   return (
     <View
       onClick={() => onClick(data.id)}
-      className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/70 p-4 shadow-xl backdrop-blur-md mb-3"
+      className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/90 p-4 shadow-xl backdrop-blur-md mb-1"
     >
       {/* 顶部：公司名与状态标签 */}
       <View className="flex flex-row justify-between items-start mb-3">
@@ -72,9 +71,12 @@ export const AllCustomerCard: React.FC<{
             {dataObject["customer_name"]}
           </Text>
         </View>
-        {/* <View className="px-3 py-1 rounded-full bg-active shadow-sm text-center">
-          <Text className="text-[22rpx] font-medium text-white">{data.tag}</Text>
-        </View> */}
+        {/* 标签 */}
+        <View className="px-3 py-2 rounded-full bg-active shadow-sm text-center">
+          <Text className="text-[22rpx] font-medium text-white flex items-center justify-center">
+            {dataObject["customer_type"]}
+          </Text>
+        </View>
       </View>
 
       {/* 客户基本信息 */}
@@ -104,16 +106,16 @@ export const AllCustomerCard: React.FC<{
             <Text className="text-[18rpx] text-white font-bold">责</Text>
           </View>
           <View>
-            <Text className="text-[20rpx] text-gray-400">负责业务员:</Text>
+            <Text className="text-[20rpx] text-gray-400">业务员:</Text>
             <Text className="text-[24rpx] font-semibold text-gray-700">
-              {"王翔"}
+              {data.userName}
             </Text>
           </View>
         </View>
-
+        {/* 
         <View className="bg-gray-100 px-2 py-0.5 rounded">
           <Text className="text-[20rpx] text-gray-500">{"广州分部"}</Text>
-        </View>
+        </View> */}
       </View>
     </View>
   );

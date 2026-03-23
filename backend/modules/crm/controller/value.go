@@ -48,7 +48,6 @@ func getEntityValueListBySelf(c *gin.Context) {
 		response.Fail(http.StatusBadRequest, fmt.Sprintf("获取客户实体表数据失败: %v", err), c)
 		return
 	}
-
 	response.Data[crmResponse.CrmEntityValueObjectVo](*result, c)
 }
 

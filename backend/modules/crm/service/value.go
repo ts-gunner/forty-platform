@@ -25,6 +25,7 @@ type EntityValueService struct {
 }
 
 func (EntityValueService) GetEntityValuePageListBySelf(ctx context.Context, req request.GetCrmEntityValueListRequest) (*crmResponse.CrmEntityValueObjectVo, error) {
+	var vos []crmResponse.CrmEntityValueVo
 	entityObject, err := entityMapper.GetEntityByKey(req.EntityKey)
 	if err != nil {
 		return nil, err
@@ -32,11 +33,10 @@ func (EntityValueService) GetEntityValuePageListBySelf(ctx context.Context, req 
 	if entityObject == nil {
 		return nil, errors.New("该实体不存在")
 	}
-	var entityValues []entity.CrmCustomerValues
-	db := global.DB.Model(&entity.CrmCustomerValues{}).Where(
-		"entity_id = ? and creator_id = ? and is_delete = 0",
-		entityObject.Id, utils.GetLoginUserId(ctx),
-	)
+	db := global.DB.Table("crm_customer_values c").
+		Select("c.*, s.nickname as user_name").
+		Joins("LEFT JOIN sys_user s ON c.user_id = s.user_id").
+		Where("c.entity_id = ? and c.user_id = ? and c.is_delete = 0", entityObject.Id, utils.GetLoginUserId(ctx))
 	if req.PageNum <= 0 {
 		req.PageNum = 1
 	}
@@ -44,60 +44,47 @@ func (EntityValueService) GetEntityValuePageListBySelf(ctx context.Context, req 
 		req.PageSize = 10
 	}
 	offset := (req.PageNum - 1) * req.PageSize
-	if err := db.Order("create_time DESC").Offset(offset).Limit(req.PageSize).Find(&entityValues).Error; err != nil {
+	if err := db.Order("create_time DESC").Offset(offset).Limit(req.PageSize).Find(&vos).Error; err != nil {
 		return nil, err
-	}
-	return convert2EntityValueVos(entityValues, response.PageInfo{
-		PageNum:  req.PageNum,
-		PageSize: req.PageSize,
-		Total:    int64(len(entityValues)),
-	})
-}
-func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueListRequest) (*crmResponse.CrmEntityValueObjectVo, error) {
-	entityObject, err := entityMapper.GetEntityByKey(req.EntityKey)
-	if err != nil {
-		return nil, err
-	}
-	if entityObject == nil {
-		return nil, errors.New("该实体不存在")
-	}
-	var entityValues []entity.CrmCustomerValues
-	db := global.DB.Model(&entity.CrmCustomerValues{}).Where("entity_id = ? and is_delete = 0", entityObject.Id)
-	if req.PageNum <= 0 {
-		req.PageNum = 1
-	}
-	if req.PageSize <= 0 {
-		req.PageSize = 10
-	}
-	offset := (req.PageNum - 1) * req.PageSize
-	if err := db.Order("create_time DESC").Offset(offset).Limit(req.PageSize).Find(&entityValues).Error; err != nil {
-		return nil, err
-	}
-	return convert2EntityValueVos(entityValues, response.PageInfo{
-		PageNum:  req.PageNum,
-		PageSize: req.PageSize,
-		Total:    int64(len(entityValues)),
-	})
-}
-
-func convert2EntityValueVos(entityValues []entity.CrmCustomerValues, info response.PageInfo) (*crmResponse.CrmEntityValueObjectVo, error) {
-	list := make([]crmResponse.CrmEntityValueVo, 0, len(entityValues))
-	for _, e := range entityValues {
-		list = append(list, crmResponse.CrmEntityValueVo{
-			Id:           e.Id,
-			EntityId:     e.EntityId,
-			CustomerName: e.CustomerName,
-			Remark:       e.Remark,
-			Values:       e.Values.String(),
-			CreateTime:   e.UpdateTime,
-		})
 	}
 	return &crmResponse.CrmEntityValueObjectVo{
 		EntityValue: response.PageResult[crmResponse.CrmEntityValueVo]{
-			List:     list,
-			Total:    info.Total,
-			PageNum:  info.PageNum,
-			PageSize: info.PageSize,
+			List:     vos,
+			Total:    int64(len(vos)),
+			PageNum:  req.PageNum,
+			PageSize: req.PageSize,
+		},
+	}, nil
+}
+func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueListRequest) (*crmResponse.CrmEntityValueObjectVo, error) {
+	var vos []crmResponse.CrmEntityValueVo
+	entityObject, err := entityMapper.GetEntityByKey(req.EntityKey)
+	if err != nil {
+		return nil, err
+	}
+	if entityObject == nil {
+		return nil, errors.New("该实体不存在")
+	}
+	db := global.DB.Table("crm_customer_values c").
+		Select("c.*, s.nickname as user_name").
+		Joins("LEFT JOIN sys_user s ON c.user_id = s.user_id").
+		Where("c.entity_id = ? and c.is_delete = 0", entityObject.Id)
+	if req.PageNum <= 0 {
+		req.PageNum = 1
+	}
+	if req.PageSize <= 0 {
+		req.PageSize = 10
+	}
+	offset := (req.PageNum - 1) * req.PageSize
+	if err := db.Order("create_time DESC").Offset(offset).Limit(req.PageSize).Find(&vos).Error; err != nil {
+		return nil, err
+	}
+	return &crmResponse.CrmEntityValueObjectVo{
+		EntityValue: response.PageResult[crmResponse.CrmEntityValueVo]{
+			List:     vos,
+			Total:    int64(len(vos)),
+			PageNum:  req.PageNum,
+			PageSize: req.PageSize,
 		},
 	}, nil
 }
@@ -120,7 +107,7 @@ func (EntityValueService) GetEntityValueDetailBySelf(ctx context.Context, entity
 	if err := global.DB.Model(&entity.CrmCustomerValues{}).Where("id = ? and is_delete = 0", entityValueId).First(&value).Error; err != nil {
 		return nil, err
 	}
-	if value.CreatorId != utils.GetLoginUserId(ctx) {
+	if value.UserId != utils.GetLoginUserId(ctx) {
 		return nil, fmt.Errorf("无权限查看该客户信息")
 	}
 	var vo crmResponse.CrmEntityValueVo
@@ -228,14 +215,15 @@ func (EntityValueService) InsertEntityValueData(ctx context.Context, req request
 			return err
 		}
 		var values []entity.CrmCustomerValues
-
+		userId := utils.GetLoginUserId(ctx)
 		values = append(values, entity.CrmCustomerValues{
 			EntityId:     req.EntityId,
 			CustomerName: customerName,
 			Remark:       remark,
 			Values:       datatypes.JSON(resultBytes),
+			UserId:       userId,
 			BaseRecordField: entity.BaseRecordField{
-				CreatorId: utils.GetLoginUserId(ctx),
+				CreatorId: userId,
 			},
 		})
 
@@ -283,8 +271,11 @@ func (EntityValueService) UpdateEntityValueData(ctx context.Context, req request
 }
 
 func (EntityValueService) DeleteEntityValueData(ctx context.Context, id int64) error {
+	updates := make(map[string]interface{})
+	updates["deleter_id"] = utils.GetLoginUserId(ctx)
+	updates["is_delete"] = 1
 	// 软删除记录
-	if err := global.DB.Model(&entity.CrmCustomerValues{}).Where("id = ?", id).Update("is_delete", 1).Error; err != nil {
+	if err := global.DB.Model(&entity.CrmCustomerValues{}).Where("id = ?", id).Updates(updates).Error; err != nil {
 		return err
 	}
 

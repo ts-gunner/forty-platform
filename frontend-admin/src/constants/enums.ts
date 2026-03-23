@@ -28,10 +28,11 @@ export const StatusOptions = [
 ];
 
 export enum CrmDataTypeEnum {
-  Text = 1, // 文本
-  Number = 2, // 数字
-  Boolean = 3, // 布尔值
-  Picker = 4, // 选择器
-  Date = 5, // 日期
-  Region = 6, // 行政区划
+  Text = "text", // 文本
+  TextArea = "textarea", // 多行文本
+  Number = "number", // 数字
+  Boolean = "bool", // 布尔值
+  Picker = "picker", // 选择器
+  Date = "date", // 日期
+  Region = "region", // 行政区划
 }

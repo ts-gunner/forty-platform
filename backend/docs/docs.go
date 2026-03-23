@@ -1570,7 +1570,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "dataType": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "fieldKey": {
                     "type": "string"
@@ -1597,7 +1597,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "dataType": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "entityId": {
                     "type": "string",
@@ -1667,6 +1667,13 @@ const docTemplate = `{
                     "example": "0"
                 },
                 "remark": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "userName": {
                     "type": "string"
                 },
                 "values": {

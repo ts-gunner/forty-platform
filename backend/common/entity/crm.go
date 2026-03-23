@@ -18,7 +18,7 @@ type CrmCustomerFields struct {
 	EntityId   int64           `gorm:"column:entity_id;not null;comment:客户实体定义表id"`
 	FieldKey   string          `gorm:"column:field_key;not null;comment:字段名（英文）"`
 	FieldName  string          `gorm:"column:field_name;not null;comment:字段名解释（中文）"`
-	DataType   int             `gorm:"column:data_type;comment:数据类型，枚举类"`
+	DataType   string          `gorm:"column:data_type;comment:数据类型，枚举类"`
 	Options    *datatypes.JSON `gorm:"column:options;comment:当数据类型为选择器时的选项值"`
 	IsRequired bool            `gorm:"column:is_required;comment:是否必填"`
 	SortOrder  int             `gorm:"column:sort_order;comment:排序顺序"`
@@ -34,6 +34,7 @@ type CrmCustomerValues struct {
 	CustomerName string         `gorm:"column:customer_name;not null;comment:固定字段，客户名称"`
 	Remark       string         `gorm:"column:remark;comment:备注"`
 	Values       datatypes.JSON `gorm:"column:values;type:json;null;comment:客户数据"`
+	UserId       int64          `gorm:"column:user_id;not null;comment:所属用户id"`
 	BaseRecordField
 	BaseSchemaField
 }

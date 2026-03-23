@@ -1,6 +1,5 @@
 import { View } from "@tarojs/components";
 import "./index.scss";
-import { MockData } from "@/typing";
 import { useEffect, useState } from "react";
 import Taro, { useReachBottom } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";

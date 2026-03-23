@@ -2,7 +2,7 @@ definitions:
   crm.CrmEntityField:
     properties:
       dataType:
-        type: integer
+        type: string
       fieldKey:
         type: string
       fieldName:
@@ -26,7 +26,7 @@ definitions:
   crm.CrmEntityFieldVo:
     properties:
       dataType:
-        type: integer
+        type: string
       entityId:
         example: "0"
         type: string
@@ -73,6 +73,11 @@ definitions:
         example: "0"
         type: string
       remark:
+        type: string
+      userId:
+        example: "0"
+        type: string
+      userName:
         type: string
       values:
         type: string

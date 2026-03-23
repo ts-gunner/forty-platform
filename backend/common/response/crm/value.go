@@ -12,6 +12,8 @@ type CrmEntityValueVo struct {
 	CustomerName string    `json:"customerName"`
 	Remark       string    `json:"remark"`
 	Values       string    `json:"values"`
+	UserId       int64     `json:"userId,string"`
+	UserName     string    `json:"userName"`
 	CreateTime   time.Time `json:"createTime"`
 }
 

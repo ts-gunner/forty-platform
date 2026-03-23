@@ -97,6 +97,12 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
     return [
       ...columns,
       {
+        title: "创建人",
+        dataIndex: "userName",
+        key: "userName",
+        align: "center",
+      },
+      {
         title: "操作",
         dataIndex: "action",
         key: "action",
