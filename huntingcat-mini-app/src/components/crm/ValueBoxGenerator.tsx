@@ -1,6 +1,6 @@
 import { CrmDataTypeEnum } from "@/constant/enums";
 import { findSelectedNodes } from "@/utils/region";
-import { Picker } from "@tarojs/components";
+import { Picker, Text, View } from "@tarojs/components";
 import { AtInput, AtListItem, AtTextarea } from "taro-ui";
 
 export default function ValueBoxGenerator({
@@ -11,7 +11,7 @@ export default function ValueBoxGenerator({
   field: API.CrmEntityFieldVo;
   [key: string]: any;
 }) {
-  const { dataType, fieldName, fieldKey, options } = field;
+  const { dataType, fieldName, fieldKey, options, isRequired } = field;
 
   switch (dataType) {
     case CrmDataTypeEnum.Number:
@@ -21,6 +21,7 @@ export default function ValueBoxGenerator({
           cursor={-1}
           name={fieldKey}
           title={fieldName}
+          required={isRequired}
           placeholder={"请输入" + fieldName}
           value={value}
           onChange={onChange}
@@ -66,7 +67,12 @@ export default function ValueBoxGenerator({
           }}
         >
           <AtListItem
-            title={fieldName}
+            title={(
+              <View className="flex items-center gap-1">
+                {isRequired && <Text className="text-red-600">*</Text>}
+                {fieldName}
+              </View>
+            )}
             extraText={previewValue || "请选择"}
             arrow="right"
           />
@@ -84,7 +90,12 @@ export default function ValueBoxGenerator({
           range={selectOptions}
         >
           <AtListItem
-            title={fieldName}
+            title={(
+              <View className="flex items-center gap-1">
+                {isRequired && <Text className="text-red-600">*</Text>}
+                {fieldName}
+              </View>
+            )}
             extraText={value || "请选择"}
             arrow="right"
           />
@@ -100,7 +111,12 @@ export default function ValueBoxGenerator({
           }}
         >
           <AtListItem
-            title={fieldName}
+            title={(
+              <View className="flex items-center gap-1">
+                {isRequired && <Text className="text-red-600">*</Text>}
+                {fieldName}
+              </View>
+            )}
             extraText={value || "请选择"}
             arrow="right"
           />
@@ -115,6 +131,7 @@ export default function ValueBoxGenerator({
         <Picker
           mode="region"
           value={value}
+
           onChange={(e: any) => {
             let changeValues = e.target.code.map((it: string) => {
               return it.replace(/0+$/, "");
@@ -123,7 +140,12 @@ export default function ValueBoxGenerator({
           }}
         >
           <AtListItem
-            title={fieldName}
+            title={(
+              <View className="flex items-center gap-1">
+                {isRequired && <Text className="text-red-600">*</Text>}
+                {fieldName}
+              </View>
+            )}
             note={regionValue || "请选择"}
             arrow="right"
           />
@@ -135,6 +157,7 @@ export default function ValueBoxGenerator({
           cursor={-1}
           name={fieldKey}
           title={fieldName}
+          required={isRequired}
           placeholder={"请输入" + fieldName}
           value={value}
           onChange={onChange}

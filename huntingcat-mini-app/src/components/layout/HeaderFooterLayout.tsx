@@ -4,6 +4,8 @@ import { Button, ScrollView, Text, View } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React from "react";
 import { AtIcon } from "taro-ui";
+import { useDispatch } from "react-redux";
+import { Dispatch } from "@/store";
 /**
 上中下布局
 头部是常规的微信navbar高度
@@ -19,6 +21,7 @@ export default function HeaderBodyFooterLayout({
   children: React.ReactNode;
   className?: string
 }) {
+  const dispatch = useDispatch<Dispatch>()
   const { navBarHeight, headerHeight } = useNavbar();
   return (
     <View className={cn("flex flex-col h-screen", className)}>
@@ -38,7 +41,7 @@ export default function HeaderBodyFooterLayout({
           {headerRender ? (
             headerRender
           ) : (
-            <View onClick={() => Taro.navigateBack()}>
+            <View onClick={() => dispatch.routerModel.navigateBack()}>
               <AtIcon value="chevron-left" size="24" />
               <Text className="font-bold">返回</Text>
             </View>

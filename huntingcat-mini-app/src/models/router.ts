@@ -42,5 +42,15 @@ export const routerModel = createModel<RootModel>()({
       dispatch.routerModel.setActiveRoute(payload.url);
       Taro.navigateTo({ url: payload.url });
     },
+
+    navigateBack: () => {
+      const pages = Taro.getCurrentPages()
+      const pageLength = pages.length
+      if (pageLength >= 2) {
+         const backUrl = "/" + pages[pageLength - 2].route
+         dispatch.routerModel.setActiveRoute(backUrl)
+         Taro.navigateBack()
+      }
+    }
   }),
 });
