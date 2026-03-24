@@ -1,6 +1,6 @@
 import { View } from "@tarojs/components";
 import "./index.scss";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Taro, { useReachBottom } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { ROUTERS } from "@/constant/menus";
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 
 function AllCustomerPage() {
+  const router = Taro.useRouter();
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
@@ -21,11 +22,14 @@ function AllCustomerPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [customerData, setCustomerData] = useState<API.CrmEntityValueVo[]>([]);
   useEffect(() => {
+    getAllCrmData();
+  }, []);
+
+  useEffect(() => {
     if (tableFields === undefined) {
       dispatch.crmModel.getCrmFields();
     }
-    getAllCrmData();
-  }, []);
+  }, [router.path]);
 
   // 4. 触底加载更多
   useReachBottom(() => {

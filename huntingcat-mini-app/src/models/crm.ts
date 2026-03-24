@@ -40,6 +40,9 @@ export const crmModel = createModel<RootModel>()({
     },
     getFieldName: (fieldKey:string, state) => {
       const {tableFields} = state.crmModel
+      if (!tableFields) {
+        return "-"
+      }
       let idx = tableFields.findIndex(it => it.fieldKey === fieldKey)
       if (idx !== -1) {
         return tableFields[idx].fieldName

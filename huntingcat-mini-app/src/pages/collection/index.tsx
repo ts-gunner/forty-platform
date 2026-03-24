@@ -1,6 +1,5 @@
 import { View, Text, Input } from "@tarojs/components";
 import { useState, useEffect } from "react";
-import { CUSTOMER_INFO_LIST } from "@/constant/mock";
 import { useNavbar } from "@/context/NavbarContext";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { MockData } from "@/typing";
@@ -11,7 +10,7 @@ import { ROUTERS } from "@/constant/menus";
 function FavoriteCustomerPage() {
   const { navBarHeight } = useNavbar();
   const [keyword, setKeyword] = useState("");
-  const [favorites, setFavorites] = useState<MockData.CustomerDataType[]>(CUSTOMER_INFO_LIST.slice(0,2));
+  const [favorites, setFavorites] = useState<MockData.CustomerDataType[]>([]);
   const [loading, setLoading] = useState(false);
 
   // 模拟获取收藏列表

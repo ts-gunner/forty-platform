@@ -1,6 +1,6 @@
 import { View } from "@tarojs/components";
 import "./index.scss";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Taro, { useReachBottom } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { ROUTERS } from "@/constant/menus";
@@ -15,6 +15,7 @@ import { handleResponse, Notify } from "@/utils/common";
 import EmptyComponent from "@/components/EmptyComponent";
 
 function MyCustomerPage() {
+  const router = Taro.useRouter();
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
@@ -22,12 +23,13 @@ function MyCustomerPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [customerData, setCustomerData] = useState<API.CrmEntityValueVo[]>([]);
   useEffect(() => {
+    getCrmDataBySelf();
+  }, []);
+  useEffect(() => {
     if (tableFields === undefined) {
       dispatch.crmModel.getCrmFields();
     }
-    getCrmDataBySelf();
-  }, []);
-
+  }, [router.path]);
   const getCrmDataBySelf = async (pageNum?: number, pageSize?: number) => {
     Notify.loading("数据加载中....");
     const resp = await getEntityValueListBySelf({
@@ -65,16 +67,20 @@ function MyCustomerPage() {
     >
       <View className="p-3 flex flex-col gap-2">
         {customerData.length === 0 && (
-          <EmptyComponent btnText="刷新" icon={ICON_MAP.EmptyIcon} onBtnClick={() => {
-            getCrmDataBySelf()
-          }}/>
+          <EmptyComponent
+            btnText="刷新"
+            icon={ICON_MAP.EmptyIcon}
+            onBtnClick={() => {
+              getCrmDataBySelf();
+            }}
+          />
         )}
         {customerData.map((it, idx) => (
           <MyCustomerCard
             key={idx}
             data={it}
             onClick={() => {
-              dispatch.crmModel.setSelectedEntityValue(it)
+              dispatch.crmModel.setSelectedEntityValue(it);
               Taro.navigateTo({ url: ROUTERS.customerDetail });
             }}
           />

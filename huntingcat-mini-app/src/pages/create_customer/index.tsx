@@ -1,19 +1,14 @@
-import {
-  COOPERATION_TYPE_LIST,
-  CUSTOMER_CATEGORY_LIST,
-  CUSTOMER_SOURCE_LIST,
-  CUSTOMER_TYPE_LIST,
-} from "@/constant/mock";
+
 import { THEME_CONFIG } from "@/constant/global";
-import { Button, Picker, Text, View } from "@tarojs/components";
-import { useState, useCallback, useEffect } from "react";
-import { AtIcon, AtInput, AtList, AtListItem, AtTextarea } from "taro-ui";
+import { Button,Text, View } from "@tarojs/components";
+import { useState, useEffect } from "react";
 import "./index.scss";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import ValueBoxGenerator from "@/components/crm/ValueBoxGenerator";
+import Taro from "@tarojs/taro";
 
 const GROUP_INFO = {
   基本信息: [
@@ -35,17 +30,20 @@ const GROUP_INFO = {
   备注: ["remark"],
 };
 function CreateCustomerPage() {
+  const router = Taro.useRouter();
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
   const dispatch = useDispatch<Dispatch>();
   const [createData, setCreateData] = useState<Record<string, string>>({});
   useEffect(() => {
+ 
+  }, []);
+  useEffect(() => {
     if (tableFields === undefined) {
       dispatch.crmModel.getCrmFields();
     }
-  }, []);
-
+  }, [router.path]);
   // 提交逻辑：组合原本的数据结构
   const handleSubmit = () => {
     console.log("提交的数据:", createData);
@@ -92,17 +90,24 @@ function CreateCustomerPage() {
                       return null;
                     }
                     return (
-                      <ValueBoxGenerator key={fieldKey} field={tableFields[idx]} value={createData[fieldKey]} onChange={(val:any) => {
-                        console.log("fieldKey:", fieldKey, "change val", val)
-                      }}/>
+                      <ValueBoxGenerator
+                        key={fieldKey}
+                        field={tableFields[idx]}
+                        value={createData[fieldKey]}
+                        onChange={(val: any) => {
+                          console.log("fieldKey:", fieldKey, "change val", val);
+                          setCreateData(prev => ({
+                            ...prev,
+                            [fieldKey]: val
+                          }))
+                        }}
+                      />
                     );
                   })}
-                 
                 </View>
               </View>
             );
           })}
-    
         </View>
       </>
     </HeaderBodyFooterLayout>
