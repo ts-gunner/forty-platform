@@ -10,7 +10,7 @@ import ValueBoxGenerator from "@/components/crm/ValueBoxGenerator";
 import Taro from "@tarojs/taro";
 import { insertEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
-
+import { ROUTERS } from "@/constant/menus";
 const GROUP_INFO = {
   基本信息: [
     "customer_name",
@@ -49,7 +49,12 @@ function CreateCustomerPage() {
   }, [router.path]);
   // 提交逻辑：组合原本的数据结构
   const handleSubmit = async () => {
-    console.log("提交的数据:", createData);
+    console.log("提交的数据:", createData,entityVo);
+    let errorMsg = validateValue();
+    if (errorMsg) {
+      Notify.fail(errorMsg);
+      return;
+    }
     const resp = await insertEntityValue({
       entityId: entityVo.entityId,
       data: [
@@ -63,16 +68,37 @@ function CreateCustomerPage() {
     handleResponse({
       resp,
       onSuccess: () => {
-        Notify.ok("创建成功!")
-        Taro.navigateBack()
+        Notify.ok("创建成功!");
+        dispatch.routerModel.switchTab({url: ROUTERS.customer})
       },
       onError: () => {
-        Notify.fail("创建失败:" + resp.msg)
-      }
-    })
-    // 这里执行你的 API 请求
+        Notify.fail("创建失败:" + resp.msg);
+      },
+    });
   };
+  const validateValue = () => {
+    let errorMsg = "";
 
+    Object.values(GROUP_INFO).forEach((fields) => {
+      if (errorMsg) {
+        return;
+      }
+      for (let field of fields) {
+        let idx = tableFields.findIndex((it) => it.fieldKey === field);
+        if (idx === -1) {
+          errorMsg = `【${field}】字段找不到`;
+          return
+        }
+        let fieldName = tableFields[idx].fieldName;
+        let isRequired = tableFields[idx].isRequired;
+        if (isRequired && !createData?.[field]) {
+          errorMsg = `【${fieldName}】为必填项`;
+          return;
+        }
+      }
+    });
+    return errorMsg;
+  };
   return (
     <HeaderBodyFooterLayout
       FooterRender={

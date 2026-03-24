@@ -9,6 +9,7 @@ declare namespace ReduxModel {
     type RouterModelType = {
         routerIndex: number
         tabList: TabBarItem[]
+        activeRoute: string
     }
 
     type CrmModelType = {

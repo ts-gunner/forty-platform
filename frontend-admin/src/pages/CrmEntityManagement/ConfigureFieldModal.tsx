@@ -4,6 +4,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Popconfirm, Select, Table, Tag } from "antd";
 import { RefreshCw, Trash2, RotateCw } from "lucide-react";
 import { useEffect, useState } from "react";
+import { CrmDataTypeEnum } from "@/constants/enums";
 
 type ModalProps = {
   modalOpen: boolean;
@@ -243,7 +244,7 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                           >
                             {({ getFieldValue }) => {
                               const dataType = getFieldValue(["customers", name, "dataType"]);
-                              return dataType === 4 ? (
+                              return dataType === CrmDataTypeEnum.Picker ? (
                                 <Form.Item {...restField} name={[name, "options"]} rules={[{ required: true, message: "请输入选项内容" }]}>
                                   <Input placeholder="选项(用逗号隔开，如: A,B,C)" />
                                 </Form.Item>

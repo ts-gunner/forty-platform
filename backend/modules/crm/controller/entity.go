@@ -2,7 +2,6 @@ package controller
 
 import (
 	"fmt"
-	"github.com/jinzhu/copier"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -74,8 +73,12 @@ func getEntityByKey(c *gin.Context) {
 		response.Fail(http.StatusBadRequest, fmt.Sprintf("获取客户实体失败: %v", err), c)
 		return
 	}
-	vo := crmResponse.CrmEntityVo{}
-	_ = copier.Copy(&vo, result)
+	vo := crmResponse.CrmEntityVo{
+		EntityId:    result.Id,
+		EntityName:  result.EntityName,
+		EntityCode:  result.EntityCode,
+		Description: result.Description,
+	}
 	response.Data[crmResponse.CrmEntityVo](vo, c)
 }
 

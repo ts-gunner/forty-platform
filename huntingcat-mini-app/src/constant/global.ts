@@ -14,7 +14,7 @@ export const IMAGE_MAP = {
 
 // 图标素材
 export const ICON_MAP = {
-    searchLogo: "https://pic1.imgdb.cn/item/69b66abc0a6745dc77dc11e0.png",
+    // searchLogo: "https://pic1.imgdb.cn/item/69b66abc0a6745dc77dc11e0.png",
     loginLogo: "https://pic1.imgdb.cn/item/69b57d120ee6511f188d3ae7.png",
     defaultAvatar: "https://pic1.imgdb.cn/item/69bb6f8eb96fa53fd04d16c1.png",
     settingIcon: "https://pic1.imgdb.cn/item/699e859d86daecd63652ecd0.png",

@@ -6,8 +6,11 @@ import { MockData } from "@/typing";
 import { AtIcon, AtToast } from "taro-ui";
 import Taro from "@tarojs/taro";
 import { ROUTERS } from "@/constant/menus";
+import { useDispatch } from "react-redux";
+import { Dispatch } from "@/store";
 
 function FavoriteCustomerPage() {
+  const dispatch = useDispatch<Dispatch>()
   const { navBarHeight } = useNavbar();
   const [keyword, setKeyword] = useState("");
   const [favorites, setFavorites] = useState<MockData.CustomerDataType[]>([]);
@@ -62,7 +65,7 @@ function FavoriteCustomerPage() {
               key={item.key} 
               data={item} 
               onClick={() => {
-                Taro.navigateTo({url: ROUTERS.customerDetail})
+                dispatch.routerModel.navigateTo({url: ROUTERS.customerDetail})
               }}
               onUnfavorite={() => handleToggleFavorite(item.key)} 
             />

@@ -26,7 +26,7 @@ export function handleResponse<T = any>({
     }
     if (resp.code === 401) {
       Notify.fail("登录过期");
-      Taro.navigateTo({ url: ROUTERS.login });
+      store.dispatch.routerModel.navigateTo({url: ROUTERS.login });
     } 
     if (resp.code === 500) {
       Notify.fail(resp.msg)

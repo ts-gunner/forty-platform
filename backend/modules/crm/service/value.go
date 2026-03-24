@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"gorm.io/gorm"
 	"time"
 
 	"github.com/jinzhu/copier"
@@ -186,7 +187,7 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 }
 func (EntityValueService) InsertEntityValueData(ctx context.Context, req request.InsertCrmEntityValueRequest) error {
 	entityObject, err := entityMapper.GetEntityById(req.EntityId)
-	if err != nil {
+	if err != nil && err != gorm.ErrRecordNotFound {
 		return err
 	}
 	if entityObject == nil {

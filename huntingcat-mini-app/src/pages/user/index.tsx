@@ -5,10 +5,11 @@ import { ICON_MAP, IMAGE_MAP, THEME_CONFIG } from "@/constant/global";
 import { cn } from "@/utils/common";
 import { ROUTERS } from "@/constant/menus";
 import { withGlobalLayout } from "@/components/AppLayout";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useDispatch, useSelector } from "react-redux";
+import { Dispatch, RootState } from "@/store";
 
 function UserPage() {
+  const dispatch = useDispatch<Dispatch>()
   const { navBarHeight } = useNavbar();
 
   return (
@@ -28,7 +29,7 @@ function UserPage() {
               title="设置"
               className="gap-0 text-sm"
               onClick={() => {
-                Taro.navigateTo({ url: ROUTERS.settings });
+                dispatch.routerModel.navigateTo({url: ROUTERS.settings });
               }}
             />
           </View>

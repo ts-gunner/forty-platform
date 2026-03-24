@@ -12,7 +12,7 @@ function CustomTabBar() {
   const routerIndex = useSelector((state: RootState) => state.routerModel.routerIndex)
   const clickTab = (index: number, path: string) => {
     dispatch.routerModel.setRouteIndex(index)
-    Taro.switchTab({ url: path })
+    dispatch.routerModel.switchTab({url: path})
   }
  
   return (
@@ -35,7 +35,7 @@ function CustomTabBar() {
                   height: '100%'        // 确保高度充满以对齐
                 }}
               onClick={() => {
-                Taro.navigateTo({url: ROUTERS.createCustomer})
+                dispatch.routerModel.navigateTo({url: ROUTERS.createCustomer})
               }}
               >
                 <View style={{

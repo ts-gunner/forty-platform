@@ -14,17 +14,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 
 function AllCustomerPage() {
-  const router = Taro.useRouter();
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
   const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
+  const activeRoute = useSelector(
+    (state: RootState) => state.routerModel.activeRoute,
+  );
   const dispatch = useDispatch<Dispatch>();
   const [currentPage, setCurrentPage] = useState(1);
   const [customerData, setCustomerData] = useState<API.CrmEntityValueVo[]>([]);
-  useEffect(() => {
-    getAllCrmData();
-  }, []);
 
   useEffect(() => {
     if (tableFields === undefined) {
@@ -33,8 +32,8 @@ function AllCustomerPage() {
     if (entityVo === undefined) {
       dispatch.crmModel.getEntityObject();
     }
-  }, [router.path]);
-
+    getAllCrmData();
+  }, [activeRoute]);
   // 4. 触底加载更多
   useReachBottom(() => {
     console.log("触碰底部");
@@ -76,7 +75,7 @@ function AllCustomerPage() {
             data={it}
             onClick={() => {
               dispatch.crmModel.setSelectedEntityValue(it);
-              Taro.navigateTo({ url: ROUTERS.customerDetail });
+              dispatch.routerModel.navigateTo({url: ROUTERS.customerDetail });
             }}
           />
         ))}

@@ -15,27 +15,26 @@ import { handleResponse, Notify } from "@/utils/common";
 import EmptyComponent from "@/components/EmptyComponent";
 
 function MyCustomerPage() {
-  const router = Taro.useRouter();
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
-    const entityVo = useSelector(
-    (state: RootState) => state.crmModel.entityVo,
+  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
+  const activeRoute = useSelector(
+    (state: RootState) => state.routerModel.activeRoute,
   );
   const dispatch = useDispatch<Dispatch>();
   const [currentPage, setCurrentPage] = useState(1);
   const [customerData, setCustomerData] = useState<API.CrmEntityValueVo[]>([]);
-  useEffect(() => {
-    getCrmDataBySelf();
-  }, []);
+
   useEffect(() => {
     if (tableFields === undefined) {
       dispatch.crmModel.getCrmFields();
     }
     if (entityVo === undefined) {
-      dispatch.crmModel.getEntityObject()
+      dispatch.crmModel.getEntityObject();
     }
-  }, [router.path]);
+    getCrmDataBySelf();
+  }, [activeRoute]);
   const getCrmDataBySelf = async (pageNum?: number, pageSize?: number) => {
     Notify.loading("数据加载中....");
     const resp = await getEntityValueListBySelf({
@@ -87,7 +86,7 @@ function MyCustomerPage() {
             data={it}
             onClick={() => {
               dispatch.crmModel.setSelectedEntityValue(it);
-              Taro.navigateTo({ url: ROUTERS.customerDetail });
+              dispatch.routerModel.navigateTo({ url: ROUTERS.customerDetail });
             }}
           />
         ))}

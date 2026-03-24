@@ -45,7 +45,7 @@ export const authModel = createModel<RootModel>()({
         onSuccess: (data) => {
           storage.setItem("token", data)
           dispatch.authModel.setIsAuth(true)
-          Taro.switchTab({ url: DEFAULT_ROUTER });
+          dispatch.routerModel.switchTab({url: DEFAULT_ROUTER})
           Notify.ok(resp.msg || "")
         },
         onError: () => {
@@ -58,7 +58,7 @@ export const authModel = createModel<RootModel>()({
     doLogout: () => {
       dispatch.authModel.setIsAuth(false);
       storage.removeItem("token")
-      Taro.navigateTo({ url: ROUTERS.login });
+      dispatch.routerModel.navigateTo({url: ROUTERS.login });
     },
   }),
 });

@@ -29,7 +29,7 @@ const SettingsPage: React.FC = () => {
         label: "个人资料",
         type: "arrow",
         onClick: () => {
-          Taro.navigateTo({ url: ROUTERS.userProfile });
+          dispatch.routerModel.navigateTo({url: ROUTERS.userProfile });
         },
       },
       { id: "account", label: "账号与安全", type: "arrow" },
