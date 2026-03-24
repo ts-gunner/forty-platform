@@ -6,6 +6,9 @@ type GetEntityListRequest struct {
 	EntityName string `form:"entityName" json:"entityName"`
 	EntityCode string `form:"entityCode" json:"entityCode"`
 }
+type GetEntityByKeyRequest struct {
+	EntityKey string `form:"entityKey" json:"entityKey"`
+}
 
 type EntityCreateRequest struct {
 	EntityName  string `json:"entityName" binding:"required"`

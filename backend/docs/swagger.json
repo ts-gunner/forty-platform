@@ -104,6 +104,34 @@
                 }
             }
         },
+        "/crm/entity/getByKey": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityController"
+                ],
+                "summary": "根据key获取客户实体",
+                "operationId": "getEntityByKey",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "实体标识",
+                        "name": "entityKey",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-crm_CrmEntityVo"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/entity/list": {
             "get": {
                 "produces": [

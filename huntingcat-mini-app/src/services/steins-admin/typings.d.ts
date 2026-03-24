@@ -184,6 +184,11 @@ declare namespace API {
     entityId?: string;
   };
 
+  type getEntityByKeyParams = {
+    /** 实体标识 */
+    entityKey?: string;
+  };
+
   type getEntityDetailParams = {
     /** 实体ID */
     entityId: number;

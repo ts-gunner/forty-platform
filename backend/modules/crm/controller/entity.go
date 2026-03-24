@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/jinzhu/copier"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,7 @@ type EntityRouter struct{}
 func (EntityRouter) InitEntityRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup := router.Group(fmt.Sprintf("/%s/entity", moduleName))
 	routerGroup.GET("/list", getEntityList)
+	routerGroup.GET("/getByKey", getEntityByKey)
 	routerGroup.GET("/detail", getEntityDetail)
 	routerGroup.POST("/create", createEntity)
 	routerGroup.POST("/update", updateEntity)
@@ -52,6 +54,32 @@ func getEntityList(c *gin.Context) {
 }
 
 // @Tags CrmEntityController
+// @ID getEntityByKey
+// @Router /crm/entity/getByKey [get]
+// @Summary 根据key获取客户实体
+// @Produce json
+// @Param entityKey query string false "实体标识" in:query
+// @Success 200 {object} response.ApiResult[crmResponse.CrmEntityVo]
+func getEntityByKey(c *gin.Context) {
+	var req request.GetEntityByKeyRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		global.Logger.Error("参数校验异常", zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	result, err := entityService.GetEntityByCode(req.EntityKey)
+	if err != nil {
+		global.Logger.Error("获取客户实体失败", zap.Error(err))
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("获取客户实体失败: %v", err), c)
+		return
+	}
+	vo := crmResponse.CrmEntityVo{}
+	_ = copier.Copy(&vo, result)
+	response.Data[crmResponse.CrmEntityVo](vo, c)
+}
+
+// @Tags CrmEntityController
 // @ID getEntityDetail
 // @Router /crm/entity/detail [get]
 // @Summary 获取客户实体详情
@@ -71,7 +99,6 @@ func getEntityDetail(c *gin.Context) {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
-
 	response.Data[crmResponse.CrmEntityVo](*result, c)
 }
 

@@ -1,11 +1,13 @@
 import { createModel } from "@rematch/core";
 import type { RootModel } from "../models";
 import { ReduxModel } from "@/typing";
-import { getFieldsByEntityKey } from "@/services/steins-admin/crmEntityFieldController";
+import { getFieldsByEntityId, getFieldsByEntityKey } from "@/services/steins-admin/crmEntityFieldController";
 import { CRM_TABLE_CODE } from "@/constant/global";
 import { handleResponse, Notify } from "@/utils/common";
+import { getEntityByKey } from "@/services/steins-admin/crmEntityController";
 
 const initState: ReduxModel.CrmModelType = {
+  entityVo: undefined,
   tableFields: undefined,
   selectedEntityValue: undefined,
 };
@@ -13,6 +15,10 @@ const initState: ReduxModel.CrmModelType = {
 export const crmModel = createModel<RootModel>()({
   state: initState,
   reducers: {
+    setEntityVo: (state, payload: API.CrmEntityVo) => ({
+      ...state,
+      entityVo: payload,
+    }),
     setTableFields: (state, payload: API.CrmEntityFieldVo[]) => ({
       ...state,
       tableFields: payload,
@@ -23,6 +29,20 @@ export const crmModel = createModel<RootModel>()({
     }),
   },
   effects: (dispatch) => ({
+    getEntityObject:async () => {
+      const resp = await getEntityByKey({
+        entityKey: CRM_TABLE_CODE
+      })
+      handleResponse({
+        resp,
+        onSuccess: (data) => {
+          dispatch.crmModel.setEntityVo(data)
+        },
+        onError: () => {
+            Notify.fail("获取实体失败:" + resp.msg);
+        }
+      })
+    },
     // 获取CRM字段信息
     getCrmFields: async () => {
       const resp = await getFieldsByEntityKey({

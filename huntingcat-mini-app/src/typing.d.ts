@@ -12,6 +12,7 @@ declare namespace ReduxModel {
     }
 
     type CrmModelType = {
+        entityVo: API.CrmEntityVo
         tableFields: API.CrmEntityFieldVo[]  // 实体字段列表
         selectedEntityValue: API.CrmEntityValueVo  // 选中的客户信息
     }

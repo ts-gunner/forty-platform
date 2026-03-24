@@ -1,6 +1,5 @@
-
 import { THEME_CONFIG } from "@/constant/global";
-import { Button,Text, View } from "@tarojs/components";
+import { Button, Text, View } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import "./index.scss";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
@@ -9,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import ValueBoxGenerator from "@/components/crm/ValueBoxGenerator";
 import Taro from "@tarojs/taro";
+import { insertEntityValue } from "@/services/steins-admin/crmEntityValueController";
+import { handleResponse, Notify } from "@/utils/common";
 
 const GROUP_INFO = {
   基本信息: [
@@ -34,19 +35,41 @@ function CreateCustomerPage() {
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
+  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
   const dispatch = useDispatch<Dispatch>();
   const [createData, setCreateData] = useState<Record<string, string>>({});
-  useEffect(() => {
- 
-  }, []);
+  useEffect(() => {}, []);
   useEffect(() => {
     if (tableFields === undefined) {
       dispatch.crmModel.getCrmFields();
     }
+    if (entityVo === undefined) {
+      dispatch.crmModel.getEntityObject();
+    }
   }, [router.path]);
   // 提交逻辑：组合原本的数据结构
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("提交的数据:", createData);
+    const resp = await insertEntityValue({
+      entityId: entityVo.entityId,
+      data: [
+        {
+          customerName: createData["customer_name"],
+          remark: createData["remark"],
+          values: JSON.stringify(createData),
+        },
+      ],
+    });
+    handleResponse({
+      resp,
+      onSuccess: () => {
+        Notify.ok("创建成功!")
+        Taro.navigateBack()
+      },
+      onError: () => {
+        Notify.fail("创建失败:" + resp.msg)
+      }
+    })
     // 这里执行你的 API 请求
   };
 
@@ -59,8 +82,7 @@ function CreateCustomerPage() {
           </Button>
           <Button
             onClick={handleSubmit}
-            className="font-bold bg-transparent border-none flex-1"
-            style={{ color: THEME_CONFIG.active }}
+            className="font-bold bg-transparent border-none flex-1 text-active"
           >
             确认提交
           </Button>
@@ -95,11 +117,10 @@ function CreateCustomerPage() {
                         field={tableFields[idx]}
                         value={createData[fieldKey]}
                         onChange={(val: any) => {
-                          console.log("fieldKey:", fieldKey, "change val", val);
-                          setCreateData(prev => ({
+                          setCreateData((prev) => ({
                             ...prev,
-                            [fieldKey]: val
-                          }))
+                            [fieldKey]: val,
+                          }));
                         }}
                       />
                     );

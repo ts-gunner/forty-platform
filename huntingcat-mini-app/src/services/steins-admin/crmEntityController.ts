@@ -47,6 +47,21 @@ export async function getEntityDetail(
   });
 }
 
+/** 根据key获取客户实体 GET /crm/entity/getByKey */
+export async function getEntityByKey(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getEntityByKeyParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultCrmCrmEntityVo>("/crm/entity/getByKey", {
+    method: "GET",
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 /** 获取客户实体列表 GET /crm/entity/list */
 export async function getEntityList(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)

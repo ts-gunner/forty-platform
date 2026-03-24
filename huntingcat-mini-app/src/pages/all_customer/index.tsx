@@ -18,6 +18,7 @@ function AllCustomerPage() {
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
+  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
   const dispatch = useDispatch<Dispatch>();
   const [currentPage, setCurrentPage] = useState(1);
   const [customerData, setCustomerData] = useState<API.CrmEntityValueVo[]>([]);
@@ -28,6 +29,9 @@ function AllCustomerPage() {
   useEffect(() => {
     if (tableFields === undefined) {
       dispatch.crmModel.getCrmFields();
+    }
+    if (entityVo === undefined) {
+      dispatch.crmModel.getEntityObject();
     }
   }, [router.path]);
 

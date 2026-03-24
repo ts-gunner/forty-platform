@@ -824,6 +824,24 @@ paths:
       summary: 获取客户实体详情
       tags:
       - CrmEntityController
+  /crm/entity/getByKey:
+    get:
+      operationId: getEntityByKey
+      parameters:
+      - description: 实体标识
+        in: query
+        name: entityKey
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-crm_CrmEntityVo'
+      summary: 根据key获取客户实体
+      tags:
+      - CrmEntityController
   /crm/entity/list:
     get:
       operationId: getEntityList
