@@ -26,4 +26,5 @@ INSERT INTO `crm_customer_fields`(`id`, `entity_id`, `field_key`, `field_name`, 
 (1010, 1, "cooperate_type", "合作类型", "picker", '["成品厂", "配件厂", "贸易商", "代理商"]', 1, 8, 1001),
 (1011, 1, "customer_type", "客户类型", "picker", '["杂志客户", "网络客户", "会员客户", "普通客户"]', 1, 9, 1001),
 (1012, 1, "customer_category", "客户分类", "picker", '["3C数码", "电子烟"]', 1, 10, 1001),
-(1013, 1, "customer_source", "客户来源", "picker", '["抖音", "微信", "小红书"]', 1, 11, 1001);
+(1013, 1, "customer_source", "客户来源", "picker", '["抖音", "微信", "小红书"]', 1, 11, 1001),
+(1014, 1, "is_favorite", "是否收藏", "bool", null, 0, 12, 1001);

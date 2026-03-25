@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"gorm.io/gorm"
+	"strings"
 	"time"
+
+	"gorm.io/gorm"
 
 	"github.com/jinzhu/copier"
 	"github.com/samber/lo"
@@ -26,7 +28,6 @@ type EntityValueService struct {
 }
 
 func (EntityValueService) GetEntityValuePageListBySelf(ctx context.Context, req request.GetCrmEntityValueListRequest) (*crmResponse.CrmEntityValueObjectVo, error) {
-	var vos []crmResponse.CrmEntityValueVo
 	entityObject, err := entityMapper.GetEntityByKey(req.EntityKey)
 	if err != nil {
 		return nil, err
@@ -38,29 +39,11 @@ func (EntityValueService) GetEntityValuePageListBySelf(ctx context.Context, req 
 		Select("c.*, s.nickname as user_name").
 		Joins("LEFT JOIN sys_user s ON c.user_id = s.user_id").
 		Where("c.entity_id = ? and c.user_id = ? and c.is_delete = 0", entityObject.Id, utils.GetLoginUserId(ctx))
-	if req.PageNum <= 0 {
-		req.PageNum = 1
-	}
-	if req.PageSize <= 0 {
-		req.PageSize = 10
-	}
-	offset := (req.PageNum - 1) * req.PageSize
-	if err := db.Order("create_time DESC").Offset(offset).Limit(req.PageSize).Find(&vos).Error; err != nil {
-		return nil, err
-	}
-	return &crmResponse.CrmEntityValueObjectVo{
-		EntityValue: response.PageResult[crmResponse.CrmEntityValueVo]{
-			List:     vos,
-			Total:    int64(len(vos)),
-			PageNum:  req.PageNum,
-			PageSize: req.PageSize,
-		},
-	}, nil
+	return FindEntityValuePageList(db, entityObject.Id, req)
 }
 func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueListRequest) (*crmResponse.CrmEntityValueObjectVo, error) {
-	var vos []crmResponse.CrmEntityValueVo
 	entityObject, err := entityMapper.GetEntityByKey(req.EntityKey)
-	if err != nil {
+	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
 	if entityObject == nil {
@@ -70,22 +53,53 @@ func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueLi
 		Select("c.*, s.nickname as user_name").
 		Joins("LEFT JOIN sys_user s ON c.user_id = s.user_id").
 		Where("c.entity_id = ? and c.is_delete = 0", entityObject.Id)
-	if req.PageNum <= 0 {
-		req.PageNum = 1
+
+	return FindEntityValuePageList(db, entityObject.Id, req)
+}
+func FindEntityValuePageList(db *gorm.DB, entityId int64, req request.GetCrmEntityValueListRequest) (*crmResponse.CrmEntityValueObjectVo, error) {
+	var vos []crmResponse.CrmEntityValueVo
+	fields, err := entityFieldMapper.GetEntityFieldsByEntityId(global.DB, entityId)
+	if err != nil {
+		return nil, err
 	}
-	if req.PageSize <= 0 {
-		req.PageSize = 10
+	for k, v := range req.FilterParams {
+		if v == nil {
+			continue
+		}
+		field, ok := lo.Find(fields, func(field entity.CrmCustomerFields) bool {
+			return field.FieldKey == k
+		})
+		if !ok {
+			continue
+		}
+		switch enums.CrmFieldDataType(field.DataType) {
+		case enums.CrmDataTypeText:
+			query := fmt.Sprintf("c.values ->>'$.%s' LIKE %s", field.FieldKey, "CONCAT('%', ?, '%')")
+			db = db.Where(query, v.(string))
+		case enums.CrmDataTypePicker:
+			inQuery := fmt.Sprintf("c.values ->>'$.%s' IN ?", field.FieldKey)
+			equalQuery := fmt.Sprintf("c.values ->>'$.%s' = ?", field.FieldKey)
+			options := strings.Split(v.(string), ",")
+			if len(options) >= 2 {
+				db = db.Where(inQuery, strings.Split(v.(string), ","))
+			} else if len(options) == 1 {
+				db = db.Where(equalQuery, v.(string))
+			}
+		}
 	}
-	offset := (req.PageNum - 1) * req.PageSize
-	if err := db.Order("create_time DESC").Offset(offset).Limit(req.PageSize).Find(&vos).Error; err != nil {
+	pageNum := utils.GetCurrentPage(req.PageNum)
+	pageSize := utils.GetPageSize(req.PageSize)
+
+	offset := (pageNum - 1) * pageSize
+	if err := db.Order("create_time DESC").Offset(offset).Limit(pageSize).Find(&vos).Error; err != nil {
 		return nil, err
 	}
 	return &crmResponse.CrmEntityValueObjectVo{
 		EntityValue: response.PageResult[crmResponse.CrmEntityValueVo]{
 			List:     vos,
 			Total:    int64(len(vos)),
-			PageNum:  req.PageNum,
-			PageSize: req.PageSize,
+			PageNum:  pageNum,
+			PageSize: pageSize,
 		},
 	}, nil
 }

@@ -57,6 +57,8 @@ export async function getEntityValueList(
     method: "GET",
     params: {
       ...params,
+      filterParams: undefined,
+      ...params["filterParams"],
     },
     ...(options || {}),
   });
@@ -74,6 +76,8 @@ export async function getEntityValueListBySelf(
       method: "GET",
       params: {
         ...params,
+        filterParams: undefined,
+        ...params["filterParams"],
       },
       ...(options || {}),
     }

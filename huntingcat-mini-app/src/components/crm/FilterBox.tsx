@@ -48,10 +48,14 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
 
   // 选择筛选项
   const handleSelect = (type: string, value: string) => {
-    dispatch.crmModel.setFilterParams((prev) => ({ ...prev, [type]: value }));
+    dispatch.crmModel.setFilterParams({
+      ...filterParams,
+      [type]: value
+    });
+    dispatch.crmModel.getEntityValues({
+      mode
+    })
     setActiveMenu(null);
-    // 这里触发刷新数据逻辑...
-    console.log("执行筛选:", value);
   };
 
   const getFieldNameByKey = (key: string) => {
@@ -88,15 +92,9 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
     let fields = tableFields.filter(
       (it) => it.dataType === CrmDataTypeEnum.Picker,
     );
-    dispatch.crmModel.setFilterParams((prev) => {
-      let finalVal = {
-        ...prev,
-      };
-      for (let field of fields) {
-        finalVal[field.fieldKey] = null;
-      }
-      return finalVal;
-    });
+    dispatch.crmModel.setFilterParams({});
+    dispatch.crmModel.getEntityValues({mode})
+    setActiveMenu(null)
   };
   const handlePickerSelect = (fieldKey: string ,val:string) => {
     let paramValue = filterParams?.[fieldKey]
@@ -108,18 +106,24 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
       }else {
         options = [...options, val]
       }
-      dispatch.crmModel.setFilterParams(prev => ({
-        ...prev,
+
+      dispatch.crmModel.setFilterParams({
+        ...filterParams,
         [fieldKey]: options.join(",")
-      }))
+      })
     }else {
-      dispatch.crmModel.setFilterParams(prev => ({
-        ...prev,
+      dispatch.crmModel.setFilterParams({
+         ...filterParams,
         [fieldKey]: val
-      }))
+      })
     }
     
   };
+  // 全局搜索
+  const searchFilter =async () => {
+    await dispatch.crmModel.getEntityValues({mode})
+    setActiveMenu(null);
+  }
   return (
     <View className="sticky top-0 z-50">
       {/* 2. 下拉菜单触发器 (Tab Bar) */}
@@ -164,6 +168,7 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
             })}
             {activeMenu === "filter" && (
               <AllFilterMenu
+              searchFilter={searchFilter}
                 filterParams={filterParams}
                 handlePickerSelect={handlePickerSelect}
                 resetPickerSelect={resetPickerSelect}
@@ -216,7 +221,8 @@ const AllFilterMenu: React.FC<{
   filterParams: Record<string, any>;
   handlePickerSelect: (fieldKey: string, val: string) => void;
   resetPickerSelect: () => void;
-}> = ({ filterParams, resetPickerSelect,handlePickerSelect }) => {
+  searchFilter: () => void
+}> = ({ filterParams, resetPickerSelect,handlePickerSelect,searchFilter }) => {
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
@@ -297,7 +303,7 @@ const AllFilterMenu: React.FC<{
         >
           重置
         </View>
-        <Button className="flex-[9] text-sm text-white py-2 font-bold bg-active rounded-full">
+        <Button className="flex-[9] text-sm text-white py-2 font-bold bg-active rounded-full" onClick={searchFilter}>
           查看全部
         </Button>
       </View>

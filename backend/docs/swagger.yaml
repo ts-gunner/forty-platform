@@ -1072,7 +1072,12 @@ paths:
       - description: 实体key
         in: query
         name: entityKey
+        required: true
         type: string
+      - description: 过滤参数
+        in: query
+        name: filterParams
+        type: object
       produces:
       - application/json
       responses:
@@ -1095,11 +1100,15 @@ paths:
         in: query
         name: pageSize
         type: integer
-      - description: 实体表key
+      - description: 实体key
         in: query
         name: entityKey
         required: true
         type: string
+      - description: 过滤参数
+        in: query
+        name: filterParams
+        type: object
       produces:
       - application/json
       responses:

@@ -77,7 +77,7 @@ function CustomerDetailPage() {
       <>
         {/* 顶部 Header：公司大标题 */}
         <View className="p-6">
-          <View className="flex justify-between items-start">
+          <View className="flex justify-between items-center">
             <View>
               {
                 isEdit ? <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "customer_name")} valueObject={valueObject} setValueObject={setValueObject} /> : (
@@ -86,18 +86,11 @@ function CustomerDetailPage() {
                   </Text>
                 )
               }
-
-              <View className="flex gap-2 mt-2">
-                {/* <AtTag size="small" circle active type="primary">
-                  {info.tag}
-                </AtTag> */}
-                {/* <AtTag size="small" circle>
-                  常规客户
-                </AtTag> */}
-              </View>
             </View>
-            <View className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center shadow-sm">
-              <AtIcon value="user" size="24" color={THEME_CONFIG.active} />
+            <View className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center shadow-sm" onClick={() => {
+
+            }}>
+              <AtIcon value={valueObject["is_favorite"] ? "star-2": "star"} size="24" className="text-yellow-500"/>
             </View>
           </View>
         </View>

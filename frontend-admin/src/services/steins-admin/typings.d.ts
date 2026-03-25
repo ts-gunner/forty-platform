@@ -215,8 +215,10 @@ declare namespace API {
     pageNum?: number;
     /** 每页数量 */
     pageSize?: number;
-    /** 实体表key */
+    /** 实体key */
     entityKey: string;
+    /** 过滤参数 */
+    filterParams?: Record<string, any>;
   };
 
   type getEntityValueListParams = {
@@ -225,7 +227,9 @@ declare namespace API {
     /** 每页数量 */
     pageSize?: number;
     /** 实体key */
-    entityKey?: string;
+    entityKey: string;
+    /** 过滤参数 */
+    filterParams?: Record<string, any>;
   };
 
   type getFieldsByEntityIdParams = {

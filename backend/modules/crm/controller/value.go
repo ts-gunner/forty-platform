@@ -32,7 +32,8 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 // @Produce json
 // @Param pageNum query int false "页码" in:query
 // @Param pageSize query int false "每页数量" in:query
-// @Param entityKey query string true "实体表key" in:query
+// @Param entityKey query string true "实体key" in:query
+// @Param filterParams query object false "过滤参数" in:query
 // @Success 200 {object} response.ApiResult[crmResponse.CrmEntityValueObjectVo]
 func getEntityValueListBySelf(c *gin.Context) {
 	var req request.GetCrmEntityValueListRequest
@@ -58,7 +59,8 @@ func getEntityValueListBySelf(c *gin.Context) {
 // @Produce json
 // @Param pageNum query int false "页码" in:query
 // @Param pageSize query int false "每页数量" in:query
-// @Param entityKey query string false "实体key" in:query
+// @Param entityKey query string true "实体key" in:query
+// @Param filterParams query object false "过滤参数" in:query
 // @Success 200 {object} response.ApiResult[crmResponse.CrmEntityValueObjectVo]
 func getEntityValueList(c *gin.Context) {
 	var req request.GetCrmEntityValueListRequest

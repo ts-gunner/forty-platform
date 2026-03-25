@@ -1,9 +1,10 @@
 package crm
 
 type GetCrmEntityValueListRequest struct {
-	PageNum   int    `form:"pageNum" json:"pageNum"`
-	PageSize  int    `form:"pageSize" json:"pageSize"`
-	EntityKey string `form:"entityKey" json:"entityKey" binding:"required"`
+	PageNum      int                    `form:"pageNum" json:"pageNum"`
+	PageSize     int                    `form:"pageSize" json:"pageSize"`
+	FilterParams map[string]interface{} `form:"filterParams" json:"filterParams"`
+	EntityKey    string                 `form:"entityKey" json:"entityKey" binding:"required"`
 }
 
 type GetCrmEntityValueDetailRequest struct {

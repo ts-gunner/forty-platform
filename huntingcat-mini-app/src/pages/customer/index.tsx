@@ -9,9 +9,7 @@ import { MyCustomerCard } from "@/components/crm/CustomerCard";
 import { SearchHeader } from "@/components/crm/SearchBox";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
-import { getEntityValueListBySelf } from "@/services/steins-admin/crmEntityValueController";
-import { CRM_TABLE_CODE, DEFAULT_PAGE_SIZE, ICON_MAP } from "@/constant/global";
-import { handleResponse, Notify } from "@/utils/common";
+import { ICON_MAP } from "@/constant/global";
 import EmptyComponent from "@/components/EmptyComponent";
 
 function MyCustomerPage() {
@@ -19,12 +17,12 @@ function MyCustomerPage() {
     (state: RootState) => state.crmModel.tableFields,
   );
   const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
+  const myCustomerData = useSelector((state: RootState) => state.crmModel.myCustomerData);
   const activeRoute = useSelector(
     (state: RootState) => state.routerModel.activeRoute,
   );
   const dispatch = useDispatch<Dispatch>();
   const [currentPage, setCurrentPage] = useState(1);
-  const [customerData, setCustomerData] = useState<API.CrmEntityValueVo[]>([]);
 
   useEffect(() => {
     if (tableFields === undefined) {
@@ -36,26 +34,11 @@ function MyCustomerPage() {
     getCrmDataBySelf();
   }, [activeRoute]);
   const getCrmDataBySelf = async (pageNum?: number, pageSize?: number) => {
-    Notify.loading("数据加载中....");
-    const resp = await getEntityValueListBySelf({
-      pageNum: pageNum || 1,
-      pageSize: pageSize || DEFAULT_PAGE_SIZE,
-      entityKey: CRM_TABLE_CODE,
-    });
-    handleResponse({
-      resp,
-      onSuccess: (data) => {
-        if (data.entityValue.list.length === 0) {
-          Notify.ok("没有更多数据了");
-        } else {
-          setCustomerData(data.entityValue.list);
-          Notify.clear();
-        }
-      },
-      onError: () => {
-        Notify.fail("获取客户数据失败:" + resp.msg);
-      },
-    });
+    await dispatch.crmModel.getEntityValues({
+      mode: "mine",
+      pageNum,
+      pageSize
+    })
   };
 
   // 4. 触底加载更多
@@ -71,7 +54,7 @@ function MyCustomerPage() {
       headerComponent={<SearchHeader mode="mine" />}
     >
       <View className="p-3 flex flex-col gap-2">
-        {customerData.length === 0 && (
+        {myCustomerData.length === 0 && (
           <EmptyComponent
             btnText="刷新"
             icon={ICON_MAP.EmptyIcon}
@@ -80,7 +63,7 @@ function MyCustomerPage() {
             }}
           />
         )}
-        {customerData.map((it, idx) => (
+        {myCustomerData.map((it, idx) => (
           <MyCustomerCard
             key={idx}
             data={it}

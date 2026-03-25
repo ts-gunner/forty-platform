@@ -5,16 +5,18 @@ import {
   getFieldsByEntityId,
   getFieldsByEntityKey,
 } from "@/services/steins-admin/crmEntityFieldController";
-import { CRM_TABLE_CODE } from "@/constant/global";
+import { CRM_TABLE_CODE, DEFAULT_PAGE_SIZE } from "@/constant/global";
 import { handleResponse, Notify } from "@/utils/common";
 import { getEntityByKey } from "@/services/steins-admin/crmEntityController";
+import { getEntityValueList, getEntityValueListBySelf } from "@/services/steins-admin/crmEntityValueController";
 
 const initState: ReduxModel.CrmModelType = {
   entityVo: undefined,
   tableFields: undefined,
   selectedEntityValue: undefined,
   filterParams: {},
-  searchText: "",
+  myCustomerData: [],
+  allCustomerData: [],
 };
 
 export const crmModel = createModel<RootModel>()({
@@ -28,10 +30,6 @@ export const crmModel = createModel<RootModel>()({
       ...state,
       filterParams: payload,
     }),
-    setSearchText: (state, payload: string) => ({
-      ...state,
-      searchText: payload,
-    }),
     setTableFields: (state, payload: API.CrmEntityFieldVo[]) => ({
       ...state,
       tableFields: payload,
@@ -39,6 +37,14 @@ export const crmModel = createModel<RootModel>()({
     setSelectedEntityValue: (state, payload: API.CrmEntityValueVo) => ({
       ...state,
       selectedEntityValue: payload,
+    }),
+    setMyCustomerData: (state, payload: API.CrmEntityValueVo[]) => ({
+      ...state,
+      myCustomerData: payload,
+    }),
+    setAllCustomerData: (state, payload: API.CrmEntityValueVo[]) => ({
+      ...state,
+      allCustomerData: payload,
     }),
   },
   effects: (dispatch) => ({
@@ -82,5 +88,71 @@ export const crmModel = createModel<RootModel>()({
       }
       return "未知";
     },
+
+    getEntityValues: async (payload: {
+      mode: "mine" | "all";
+      pageNum?: number
+      pageSize?: number
+    }, state) => {
+      Notify.loading("数据加载中....");
+      let resp: API.ApiResultCrmCrmEntityValueObjectVo;
+      if (payload.mode === "mine") {
+        resp = await getEntityValueListBySelf({
+          pageNum: payload.pageNum || 1,
+          pageSize: payload.pageSize || DEFAULT_PAGE_SIZE,
+          entityKey: CRM_TABLE_CODE,
+          filterParams: state.crmModel.filterParams,
+        });
+      } else {
+        resp = await getEntityValueList({
+          pageNum: payload.pageNum || 1,
+          pageSize: payload.pageSize || DEFAULT_PAGE_SIZE,
+          entityKey: CRM_TABLE_CODE,
+          filterParams: state.crmModel.filterParams,
+        });
+      }
+      handleResponse({
+        resp,
+        onSuccess: (data) => {
+          if (data.entityValue.list.length === 0) {
+            dispatch.crmModel.updateCustomerDataState({
+              mode: payload.mode,
+              list: data.entityValue.list
+            })
+            Notify.ok("没有更多数据了");
+          } else {
+            dispatch.crmModel.updateCustomerDataState({
+              mode: payload.mode,
+              list: data.entityValue.list
+            })
+            Notify.clear();
+          }
+        },
+        onError: () => {
+          Notify.fail("获取客户数据失败:" + resp.msg);
+        },
+      })
+    },
+    handleSearchData: async (payload: {
+      mode: "mine" | "all"
+      text: string
+    }, state) => {
+      dispatch.crmModel.setFilterParams({
+        ...state.crmModel.filterParams,
+        "customer_name": payload.text,
+      })
+
+      await dispatch.crmModel.getEntityValues({ mode: payload.mode })
+    },
+    updateCustomerDataState: (payload: {
+      mode: "mine" | "all",
+      list: API.CrmEntityValueVo[]
+    }) => {
+      if (payload.mode === "mine") {
+        dispatch.crmModel.setMyCustomerData(payload.list)
+      } else {
+        dispatch.crmModel.setAllCustomerData(payload.list)
+      }
+    }
   }),
 });

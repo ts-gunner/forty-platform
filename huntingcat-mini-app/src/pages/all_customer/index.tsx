@@ -18,12 +18,12 @@ function AllCustomerPage() {
     (state: RootState) => state.crmModel.tableFields,
   );
   const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
+  const allCustomerData = useSelector((state: RootState) => state.crmModel.allCustomerData);
   const activeRoute = useSelector(
     (state: RootState) => state.routerModel.activeRoute,
   );
   const dispatch = useDispatch<Dispatch>();
   const [currentPage, setCurrentPage] = useState(1);
-  const [customerData, setCustomerData] = useState<API.CrmEntityValueVo[]>([]);
 
   useEffect(() => {
     if (tableFields === undefined) {
@@ -40,26 +40,11 @@ function AllCustomerPage() {
     setCurrentPage((prev) => prev + 1);
   });
   const getAllCrmData = async (pageNum?: number, pageSize?: number) => {
-    Notify.loading("数据加载中....");
-    const resp = await getEntityValueList({
-      pageNum: pageNum || 1,
-      pageSize: pageSize || DEFAULT_PAGE_SIZE,
-      entityKey: CRM_TABLE_CODE,
-    });
-    handleResponse({
-      resp,
-      onSuccess: (data) => {
-        if (data.entityValue.list.length === 0) {
-          Notify.ok("没有更多数据了");
-        } else {
-          setCustomerData(data.entityValue.list);
-          Notify.clear();
-        }
-      },
-      onError: () => {
-        Notify.fail("获取客户数据失败:" + resp.msg);
-      },
-    });
+    await dispatch.crmModel.getEntityValues({
+      mode: "all",
+      pageNum,
+      pageSize
+    })
   };
   return (
     <HeaderBodyLayout
@@ -69,13 +54,13 @@ function AllCustomerPage() {
       headerComponent={<SearchHeader mode="all" />}
     >
       <View className="p-3 flex flex-col gap-2">
-        {customerData.map((it, idx) => (
+        {allCustomerData.map((it, idx) => (
           <AllCustomerCard
             key={idx}
             data={it}
             onClick={() => {
               dispatch.crmModel.setSelectedEntityValue(it);
-              dispatch.routerModel.navigateTo({url: ROUTERS.customerDetail });
+              dispatch.routerModel.navigateTo({ url: ROUTERS.customerDetail });
             }}
           />
         ))}

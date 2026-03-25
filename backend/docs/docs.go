@@ -498,6 +498,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "实体key",
                         "name": "entityKey",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "object",
+                        "description": "过滤参数",
+                        "name": "filterParams",
                         "in": "query"
                     }
                 ],
@@ -536,10 +543,16 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "实体表key",
+                        "description": "实体key",
                         "name": "entityKey",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "object",
+                        "description": "过滤参数",
+                        "name": "filterParams",
+                        "in": "query"
                     }
                 ],
                 "responses": {
