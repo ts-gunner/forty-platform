@@ -2,6 +2,9 @@ import { CrmDataTypeEnum } from "@/constant/enums";
 import { findSelectedNodes } from "./region";
 
 export const handleCrmValueByField = (field: API.CrmEntityFieldVo, data: any) => {
+  if (!field) {
+    return "unknown"
+  }
   if (!field.fieldKey) {
     return "-";
   }
@@ -14,3 +17,11 @@ export const handleCrmValueByField = (field: API.CrmEntityFieldVo, data: any) =>
       return data?.[field.fieldKey];
   }
 };
+
+
+export const findFieldByFieldKey = (fields: API.CrmEntityFieldVo[], fieldKey: string) => {
+  if (fields === undefined) {
+    return null
+  }
+  return fields.find(it => it.fieldKey === fieldKey)
+}
