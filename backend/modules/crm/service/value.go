@@ -62,31 +62,34 @@ func FindEntityValuePageList(db *gorm.DB, entityId int64, req request.GetCrmEnti
 	if err != nil {
 		return nil, err
 	}
-	for k, v := range req.FilterParams {
-		if v == nil {
-			continue
-		}
-		field, ok := lo.Find(fields, func(field entity.CrmCustomerFields) bool {
-			return field.FieldKey == k
-		})
-		if !ok {
-			continue
-		}
-		switch enums.CrmFieldDataType(field.DataType) {
-		case enums.CrmDataTypeText:
-			query := fmt.Sprintf("c.values ->>'$.%s' LIKE %s", field.FieldKey, "CONCAT('%', ?, '%')")
-			db = db.Where(query, v.(string))
-		case enums.CrmDataTypePicker:
-			inQuery := fmt.Sprintf("c.values ->>'$.%s' IN ?", field.FieldKey)
-			equalQuery := fmt.Sprintf("c.values ->>'$.%s' = ?", field.FieldKey)
-			options := strings.Split(v.(string), ",")
-			if len(options) >= 2 {
-				db = db.Where(inQuery, strings.Split(v.(string), ","))
-			} else if len(options) == 1 {
-				db = db.Where(equalQuery, v.(string))
+	if req.FilterParams != nil {
+		for k, v := range req.FilterParams {
+			if v == nil {
+				continue
+			}
+			field, ok := lo.Find(fields, func(field entity.CrmCustomerFields) bool {
+				return field.FieldKey == k
+			})
+			if !ok {
+				continue
+			}
+			switch enums.CrmFieldDataType(field.DataType) {
+			case enums.CrmDataTypeText:
+				query := fmt.Sprintf("c.values ->>'$.%s' LIKE %s", field.FieldKey, "CONCAT('%', ?, '%')")
+				db = db.Where(query, v.(string))
+			case enums.CrmDataTypePicker:
+				inQuery := fmt.Sprintf("c.values ->>'$.%s' IN ?", field.FieldKey)
+				equalQuery := fmt.Sprintf("c.values ->>'$.%s' = ?", field.FieldKey)
+				options := strings.Split(v.(string), ",")
+				if len(options) >= 2 {
+					db = db.Where(inQuery, strings.Split(v.(string), ","))
+				} else if len(options) == 1 {
+					db = db.Where(equalQuery, v.(string))
+				}
 			}
 		}
 	}
+
 	pageNum := utils.GetCurrentPage(req.PageNum)
 	pageSize := utils.GetPageSize(req.PageSize)
 

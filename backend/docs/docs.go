@@ -472,7 +472,10 @@ const docTemplate = `{
             }
         },
         "/crm/value/list": {
-            "get": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -483,29 +486,13 @@ const docTemplate = `{
                 "operationId": "getEntityValueList",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "页码",
-                        "name": "pageNum",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "每页数量",
-                        "name": "pageSize",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "实体key",
-                        "name": "entityKey",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "object",
-                        "description": "过滤参数",
-                        "name": "filterParams",
-                        "in": "query"
+                        "description": "查询实体数据参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.GetCrmEntityValueListRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -519,7 +506,10 @@ const docTemplate = `{
             }
         },
         "/crm/value/listBySelf": {
-            "get": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -530,29 +520,13 @@ const docTemplate = `{
                 "operationId": "getEntityValueListBySelf",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "页码",
-                        "name": "pageNum",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "每页数量",
-                        "name": "pageSize",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "实体key",
-                        "name": "entityKey",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "object",
-                        "description": "过滤参数",
-                        "name": "filterParams",
-                        "in": "query"
+                        "description": "查询实体数据参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.GetCrmEntityValueListRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -1806,6 +1780,28 @@ const docTemplate = `{
                 },
                 "entityName": {
                     "type": "string"
+                }
+            }
+        },
+        "crm.GetCrmEntityValueListRequest": {
+            "type": "object",
+            "required": [
+                "entityKey",
+                "filterParams"
+            ],
+            "properties": {
+                "entityKey": {
+                    "type": "string"
+                },
+                "filterParams": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "pageNum": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
                 }
             }
         },

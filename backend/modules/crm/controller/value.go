@@ -16,8 +16,8 @@ type EntityValueRouter struct{}
 
 func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup := router.Group(fmt.Sprintf("/%s/value", moduleName))
-	routerGroup.GET("/list", getEntityValueList)
-	routerGroup.GET("/listBySelf", getEntityValueListBySelf)
+	routerGroup.POST("/list", getEntityValueList)
+	routerGroup.POST("/listBySelf", getEntityValueListBySelf)
 	routerGroup.GET("/detail", getEntityValueDetail)
 	routerGroup.POST("/insert", insertEntityValue)
 	routerGroup.POST("/update", updateEntityValue)
@@ -27,17 +27,15 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 
 // @Tags CrmEntityValueController
 // @ID getEntityValueListBySelf
-// @Router /crm/value/listBySelf [get]
+// @Router /crm/value/listBySelf [post]
 // @Summary 客户端 - 获取自己创建的客户信息
+// @Accept json
 // @Produce json
-// @Param pageNum query int false "页码" in:query
-// @Param pageSize query int false "每页数量" in:query
-// @Param entityKey query string true "实体key" in:query
-// @Param filterParams query object false "过滤参数" in:query
+// @Param request body request.GetCrmEntityValueListRequest true "查询实体数据参数"
 // @Success 200 {object} response.ApiResult[crmResponse.CrmEntityValueObjectVo]
 func getEntityValueListBySelf(c *gin.Context) {
 	var req request.GetCrmEntityValueListRequest
-	if err := c.ShouldBindQuery(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return
@@ -54,17 +52,15 @@ func getEntityValueListBySelf(c *gin.Context) {
 
 // @Tags CrmEntityValueController
 // @ID getEntityValueList
-// @Router /crm/value/list [get]
+// @Router /crm/value/list [post]
 // @Summary 运营端 - 获取对应的实体表数据
+// @Accept json
 // @Produce json
-// @Param pageNum query int false "页码" in:query
-// @Param pageSize query int false "每页数量" in:query
-// @Param entityKey query string true "实体key" in:query
-// @Param filterParams query object false "过滤参数" in:query
+// @Param request body request.GetCrmEntityValueListRequest true "查询实体数据参数"
 // @Success 200 {object} response.ApiResult[crmResponse.CrmEntityValueObjectVo]
 func getEntityValueList(c *gin.Context) {
 	var req request.GetCrmEntityValueListRequest
-	if err := c.ShouldBindQuery(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return

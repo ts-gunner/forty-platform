@@ -101,14 +101,14 @@ export const crmModel = createModel<RootModel>()({
           pageNum: payload.pageNum || 1,
           pageSize: payload.pageSize || DEFAULT_PAGE_SIZE,
           entityKey: CRM_TABLE_CODE,
-          filterParams: state.crmModel.filterParams,
+          filterParams: state.crmModel.filterParams || {},
         });
       } else {
         resp = await getEntityValueList({
           pageNum: payload.pageNum || 1,
           pageSize: payload.pageSize || DEFAULT_PAGE_SIZE,
           entityKey: CRM_TABLE_CODE,
-          filterParams: state.crmModel.filterParams,
+          filterParams: state.crmModel.filterParams || {},
         });
       }
       handleResponse({

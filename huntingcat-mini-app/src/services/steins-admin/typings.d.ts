@@ -179,6 +179,13 @@ declare namespace API {
     entityName?: string;
   };
 
+  type GetCrmEntityValueListRequest = {
+    entityKey: string;
+    filterParams: Record<string, any>;
+    pageNum?: number;
+    pageSize?: number;
+  };
+
   type getDeletedFieldsByEntityIdParams = {
     /** 实体表id */
     entityId?: string;
@@ -208,28 +215,6 @@ declare namespace API {
   type getEntityValueDetailParams = {
     /** 实体数据id */
     entityValueId: string;
-  };
-
-  type getEntityValueListBySelfParams = {
-    /** 页码 */
-    pageNum?: number;
-    /** 每页数量 */
-    pageSize?: number;
-    /** 实体key */
-    entityKey: string;
-    /** 过滤参数 */
-    filterParams?: Record<string, any>;
-  };
-
-  type getEntityValueListParams = {
-    /** 页码 */
-    pageNum?: number;
-    /** 每页数量 */
-    pageSize?: number;
-    /** 实体key */
-    entityKey: string;
-    /** 过滤参数 */
-    filterParams?: Record<string, any>;
   };
 
   type getFieldsByEntityIdParams = {

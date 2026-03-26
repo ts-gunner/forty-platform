@@ -3,7 +3,7 @@ export const APP_CONFIG = {
 }
 
 // 后端前缀url
-export const API_PREFIX_URL = "http://127.0.0.1:18888/ft"
+export const API_PREFIX_URL = "http://192.168.3.196:18888/ft"
 
 export const DEFAULT_PAGE_SIZE = 20
 

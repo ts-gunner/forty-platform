@@ -140,6 +140,21 @@ definitions:
     required:
     - entityId
     type: object
+  crm.GetCrmEntityValueListRequest:
+    properties:
+      entityKey:
+        type: string
+      filterParams:
+        additionalProperties: {}
+        type: object
+      pageNum:
+        type: integer
+      pageSize:
+        type: integer
+    required:
+    - entityKey
+    - filterParams
+    type: object
   crm.InsertCrmEntityValueRequest:
     properties:
       data:
@@ -1058,26 +1073,17 @@ paths:
       tags:
       - CrmEntityValueController
   /crm/value/list:
-    get:
+    post:
+      consumes:
+      - application/json
       operationId: getEntityValueList
       parameters:
-      - description: 页码
-        in: query
-        name: pageNum
-        type: integer
-      - description: 每页数量
-        in: query
-        name: pageSize
-        type: integer
-      - description: 实体key
-        in: query
-        name: entityKey
+      - description: 查询实体数据参数
+        in: body
+        name: request
         required: true
-        type: string
-      - description: 过滤参数
-        in: query
-        name: filterParams
-        type: object
+        schema:
+          $ref: '#/definitions/crm.GetCrmEntityValueListRequest'
       produces:
       - application/json
       responses:
@@ -1089,26 +1095,17 @@ paths:
       tags:
       - CrmEntityValueController
   /crm/value/listBySelf:
-    get:
+    post:
+      consumes:
+      - application/json
       operationId: getEntityValueListBySelf
       parameters:
-      - description: 页码
-        in: query
-        name: pageNum
-        type: integer
-      - description: 每页数量
-        in: query
-        name: pageSize
-        type: integer
-      - description: 实体key
-        in: query
-        name: entityKey
+      - description: 查询实体数据参数
+        in: body
+        name: request
         required: true
-        type: string
-      - description: 过滤参数
-        in: query
-        name: filterParams
-        type: object
+        schema:
+          $ref: '#/definitions/crm.GetCrmEntityValueListRequest'
       produces:
       - application/json
       responses:
