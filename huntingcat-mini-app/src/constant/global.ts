@@ -3,7 +3,7 @@ export const APP_CONFIG = {
 }
 
 // 后端前缀url
-export const API_PREFIX_URL = "http://192.168.3.196:18888/ft"
+export const API_PREFIX_URL = "http://192.168.5.57:18888/ft"
 
 export const DEFAULT_PAGE_SIZE = 20
 
@@ -33,3 +33,5 @@ export const THEME_CONFIG = {
 }
 
 export const CRM_TABLE_CODE = "huntingcat_customer"
+
+export const FAVORITE_FIELD_KEY = "is_favorite"

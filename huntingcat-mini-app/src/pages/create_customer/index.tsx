@@ -31,22 +31,13 @@ const GROUP_INFO = {
   备注: ["remark"],
 };
 function CreateCustomerPage() {
-  const router = Taro.useRouter();
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
   const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
   const dispatch = useDispatch<Dispatch>();
   const [createData, setCreateData] = useState<Record<string, string>>({});
-  useEffect(() => {}, []);
-  useEffect(() => {
-    if (tableFields === undefined) {
-      dispatch.crmModel.getCrmFields();
-    }
-    if (entityVo === undefined) {
-      dispatch.crmModel.getEntityObject();
-    }
-  }, [router.path]);
+ 
   // 提交逻辑：组合原本的数据结构
   const handleSubmit = async () => {
     console.log("提交的数据:", createData,entityVo);

@@ -289,13 +289,27 @@ func (EntityValueService) UpdateEntityValueData(ctx context.Context, req request
 }
 
 func (EntityValueService) DeleteEntityValueData(ctx context.Context, id int64) error {
-	updates := make(map[string]interface{})
-	updates["deleter_id"] = utils.GetLoginUserId(ctx)
-	updates["is_delete"] = 1
-	// 软删除记录
-	if err := global.DB.Model(&entity.CrmCustomerValues{}).Where("id = ?", id).Updates(updates).Error; err != nil {
-		return err
-	}
+	operatorId := utils.GetLoginUserId(ctx)
+	return global.DB.Transaction(func(tx *gorm.DB) error {
+		var entityValue entity.CrmCustomerValues
+		if err := tx.Where("id = ? and is_delete = 0", id).First(&entityValue).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return fmt.Errorf("找不到该记录")
+			}
+			return err
+		}
 
-	return nil
+		if entityValue.UserId != operatorId {
+			return fmt.Errorf("没有权限删除该数据")
+		}
+		updates := make(map[string]interface{})
+		updates["deleter_id"] = operatorId
+		updates["is_delete"] = 1
+		// 软删除记录
+		if err := tx.Model(&entity.CrmCustomerValues{}).Where("id = ?", id).Updates(updates).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
 }

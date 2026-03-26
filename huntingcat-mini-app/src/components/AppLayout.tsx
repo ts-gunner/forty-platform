@@ -12,6 +12,9 @@ export function withGlobalLayout<T>(WrappedComponent: React.ComponentType<T>) {
   return (props: T) => {
     const router = Taro.useRouter();
     const dispatch = useDispatch<Dispatch>();
+      const activeRoute = useSelector(
+      (state: RootState) => state.routerModel.activeRoute,
+    );
     const notifyOpen = useSelector(
       (state: RootState) => state.notificationModel.notifyOpen,
     );
@@ -25,10 +28,10 @@ export function withGlobalLayout<T>(WrappedComponent: React.ComponentType<T>) {
       (state: RootState) => state.notificationModel.notifyStatus,
     );
     useEffect(() => {
-      if (router.path !== ROUTERS.login) {
+      if (activeRoute !== ROUTERS.login) {
         getLoginUser();
       }
-    }, [router.path]);
+    }, [activeRoute]);
 
     const getLoginUser = async () => {
       const resp = await getCurrentUser();

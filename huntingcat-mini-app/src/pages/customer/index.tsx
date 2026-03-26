@@ -5,7 +5,7 @@ import Taro, { useReachBottom } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { ROUTERS } from "@/constant/menus";
 import HeaderBodyLayout from "@/components/layout/HeaderBodyLayout";
-import { MyCustomerCard } from "@/components/crm/CustomerCard";
+import { CustomerCard } from "@/components/crm/CustomerCard";
 import { SearchHeader } from "@/components/crm/SearchBox";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
@@ -64,7 +64,8 @@ function MyCustomerPage() {
           />
         )}
         {myCustomerData.map((it, idx) => (
-          <MyCustomerCard
+          <CustomerCard
+            mode="mine"
             key={idx}
             data={it}
             onClick={() => {

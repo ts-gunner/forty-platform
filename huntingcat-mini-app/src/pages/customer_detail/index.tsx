@@ -1,6 +1,6 @@
 import { View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AtIcon } from "taro-ui";
 import { THEME_CONFIG } from "@/constant/global";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
@@ -18,7 +18,9 @@ function CustomerDetailPage() {
   const selectedEntityValue = useSelector((state: RootState) => state.crmModel.selectedEntityValue)
   const tableFields = useSelector((state: RootState) => state.crmModel.tableFields)
   const [valueObject, setValueObject] = useState<any>(JSON.parse(selectedEntityValue.values))
-
+  useEffect(() => {
+    setValueObject(JSON.parse(selectedEntityValue.values))
+  }, [selectedEntityValue])
   return (
     <HeaderBodyFooterLayout
       FooterRender={
@@ -88,9 +90,11 @@ function CustomerDetailPage() {
               }
             </View>
             <View className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center shadow-sm" onClick={() => {
-
+              dispatch.crmModel.handleFavoriteCustomer({
+                value: selectedEntityValue
+              })
             }}>
-              <AtIcon value={valueObject["is_favorite"] ? "star-2": "star"} size="24" className="text-yellow-500"/>
+              <AtIcon value={valueObject["is_favorite"] ? "star-2" : "star"} size="24" className="text-yellow-500" />
             </View>
           </View>
         </View>
@@ -118,14 +122,14 @@ function CustomerDetailPage() {
           {/* Section: 备注 */}
           <DetailSection title={dispatch.crmModel.getFieldName("remark")} iconColor="bg-green-400">
             <View className="p-3 bg-gray-50/50 rounded-lg">
-            {
+              {
                 isEdit ? <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "remark")} valueObject={valueObject} setValueObject={setValueObject} /> : (
-                 <Text className="text-sm text-gray-600 leading-relaxed">
-                {valueObject["remark"] || "暂无备注信息..."}
-              </Text>
+                  <Text className="text-sm text-gray-600 leading-relaxed">
+                    {valueObject["remark"] || "暂无备注信息..."}
+                  </Text>
                 )
               }
-          
+
             </View>
           </DetailSection>
         </View>

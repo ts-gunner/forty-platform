@@ -22,7 +22,6 @@ function UserProfilePage() {
   // 处理头像选择
   const onChooseAvatar = async (e: any) => {
     const { avatarUrl } = e.detail;
-
     setAvatar(avatarUrl);
   };
 
@@ -32,9 +31,11 @@ function UserProfilePage() {
   };
 
   const handleSave = async () => {
+    Notify.loading("保存中...")
     // {avatar: "http://tmp/9G76GjfCgMNb6a133fdc51c20dde1707efc0ecbf5299.jpeg", nickname: "🚴🏻"}
     let resp: ApiResult;
-    if (avatar.startsWith("http://tmp")) {
+    
+    if (avatar.startsWith("http://tmp") || avatar.startsWith("wxfile")) {
       resp = await updateUserProfile(
         {
           nickName: nickname,

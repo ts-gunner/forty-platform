@@ -5,10 +5,10 @@ import {
   getFieldsByEntityId,
   getFieldsByEntityKey,
 } from "@/services/steins-admin/crmEntityFieldController";
-import { CRM_TABLE_CODE, DEFAULT_PAGE_SIZE } from "@/constant/global";
+import { CRM_TABLE_CODE, DEFAULT_PAGE_SIZE, FAVORITE_FIELD_KEY } from "@/constant/global";
 import { handleResponse, Notify } from "@/utils/common";
 import { getEntityByKey } from "@/services/steins-admin/crmEntityController";
-import { getEntityValueList, getEntityValueListBySelf } from "@/services/steins-admin/crmEntityValueController";
+import { getEntityValueList, getEntityValueListBySelf, updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
 
 const initState: ReduxModel.CrmModelType = {
   entityVo: undefined,
@@ -153,6 +153,42 @@ export const crmModel = createModel<RootModel>()({
       } else {
         dispatch.crmModel.setAllCustomerData(payload.list)
       }
+    },
+    handleFavoriteCustomer: async (payload: {
+      mode?: "mine" | "all"
+      value: API.CrmEntityValueVo
+    }) => {
+      let valueObject = JSON.parse(payload.value.values)
+      let currentIsFavorite = valueObject[FAVORITE_FIELD_KEY]
+      let result = currentIsFavorite ? false : true
+      let updateValue = {
+        ...valueObject,
+        [FAVORITE_FIELD_KEY]: result
+      }
+      Notify.loading("更新中...")
+      const resp = await updateEntityValue({
+        id: payload.value.id,
+        customerName: payload.value.customerName,
+        remark: payload.value.remark,
+        values: JSON.stringify(updateValue)
+      })
+      handleResponse({
+        resp,
+        onSuccess: () => {
+          Notify.ok(result ?"收藏成功": "取消收藏")
+          if (payload.mode) {
+            dispatch.crmModel.getEntityValues({ mode: payload.mode })
+          }else {
+            dispatch.crmModel.setSelectedEntityValue({
+              ...payload.value,
+              values: JSON.stringify(updateValue)
+            })
+          }
+        },
+        onError: () => {
+          Notify.fail("收藏失败：" + resp.msg)
+        }
+      })
     }
   }),
 });

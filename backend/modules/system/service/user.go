@@ -220,6 +220,7 @@ func (s UserService) GetUserDetail(userId int64) (*systemResponse.UserVo, error)
 }
 
 func (s UserService) UploadUserProfile(ctx context.Context, req request.UpdateUserProfileRequest) (string, error) {
+	operatorId := utils.GetLoginUserId(ctx)
 	updateMap := make(map[string]any)
 	if req.Avatar != nil {
 		vo, err := SystemService.SystemResourceService.UploadAvatar(ctx, req.Avatar)
@@ -237,28 +238,31 @@ func (s UserService) UploadUserProfile(ctx context.Context, req request.UpdateUs
 	}
 	token := ""
 	err := global.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&entity.SysUser{}).Where("user_id = ? and is_delete = 0", utils.GetLoginUserId(ctx)).Updates(updateMap).Error; err != nil {
+		if err := tx.Model(&entity.SysUser{}).Where("user_id = ? and is_delete = 0", operatorId).Updates(updateMap).Error; err != nil {
 			return err
 		}
-		user, err := userMapper.GetUserById(tx, utils.GetLoginUserId(ctx))
+		user, err := userMapper.GetUserById(tx, operatorId)
 		if err != nil {
 			return err
 		}
-		resource, err := resourceMapper.GetResourceById(tx, user.AvatarId)
-		if err != nil {
-			return err
-		}
+		url := ""
+		if user.AvatarId != 0 {
+			resource, err := resourceMapper.GetResourceById(tx, user.AvatarId)
+			if err != nil {
+				return err
+			}
 
-		policy, err := storage.GetPolicyByMode(global.Store, storage.StorageMode(resource.StorageType))
-		if err != nil {
-			return err
-		}
-		url, err := policy.GetAccessUrl(storage.StorageVo{
-			RelativePath: resource.RelPath,
-			DirectUrl:    resource.PreviewUrl,
-		})
-		if err != nil {
-			return err
+			policy, err := storage.GetPolicyByMode(global.Store, storage.StorageMode(resource.StorageType))
+			if err != nil {
+				return err
+			}
+			url, err = policy.GetAccessUrl(storage.StorageVo{
+				RelativePath: resource.RelPath,
+				DirectUrl:    resource.PreviewUrl,
+			})
+			if err != nil {
+				return err
+			}
 		}
 
 		claim := systemResponse.LoginUserClaim{

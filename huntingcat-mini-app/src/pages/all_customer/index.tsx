@@ -5,7 +5,7 @@ import Taro, { useReachBottom } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { ROUTERS } from "@/constant/menus";
 import HeaderBodyLayout from "@/components/layout/HeaderBodyLayout";
-import { AllCustomerCard } from "@/components/crm/CustomerCard";
+import { CustomerCard } from "@/components/crm/CustomerCard";
 import { SearchHeader } from "@/components/crm/SearchBox";
 import { getEntityValueList } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
@@ -55,7 +55,8 @@ function AllCustomerPage() {
     >
       <View className="p-3 flex flex-col gap-2">
         {allCustomerData.map((it, idx) => (
-          <AllCustomerCard
+          <CustomerCard
+            mode="all"
             key={idx}
             data={it}
             onClick={() => {
