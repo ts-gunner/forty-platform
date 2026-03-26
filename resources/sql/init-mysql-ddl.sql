@@ -154,3 +154,12 @@ CREATE TABLE IF NOT EXISTS crm_customer_values (
   `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `delete_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间'
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户信息数据表';
+
+DROP TABLE IF EXISTS crm_customer_favorite;
+CREATE TABLE IF NOT EXISTS crm_customer_favorite (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `entity_id`BIGINT UNSIGNED NOT NULL COMMENT '所属逻辑表ID',
+  `value_id` BIGINT UNSIGNED NOT NULL COMMENT '客户数据表ID',
+  `user_id` BIGINT NOT NULL COMMENT '用户id'
+
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户信息收藏表';
