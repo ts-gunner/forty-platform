@@ -141,7 +141,6 @@ function CustomerDetailPage() {
                     resp,
                     onSuccess: () => {
                       setIsFavorite(true);
-                      Notify.ok("收藏成功");
                     },
                     onError: () => {
                       Notify.fail("收藏失败");
