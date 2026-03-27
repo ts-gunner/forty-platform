@@ -11,6 +11,7 @@ import Taro from "@tarojs/taro";
 import { insertEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
 import { ROUTERS } from "@/constant/menus";
+const CURRENT_PAGE = ROUTERS.createCustomer;
 const GROUP_INFO = {
   基本信息: [
     "customer_name",
@@ -37,10 +38,10 @@ function CreateCustomerPage() {
   const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
   const dispatch = useDispatch<Dispatch>();
   const [createData, setCreateData] = useState<Record<string, string>>({});
- 
+
   // 提交逻辑：组合原本的数据结构
   const handleSubmit = async () => {
-    console.log("提交的数据:", createData,entityVo);
+    console.log("提交的数据:", createData, entityVo);
     let errorMsg = validateValue();
     if (errorMsg) {
       Notify.fail(errorMsg);
@@ -60,7 +61,7 @@ function CreateCustomerPage() {
       resp,
       onSuccess: () => {
         Notify.ok("创建成功!");
-        dispatch.routerModel.switchTab({url: ROUTERS.customer})
+        dispatch.routerModel.switchTab({ url: ROUTERS.customer });
       },
       onError: () => {
         Notify.fail("创建失败:" + resp.msg);
@@ -78,7 +79,7 @@ function CreateCustomerPage() {
         let idx = tableFields.findIndex((it) => it.fieldKey === field);
         if (idx === -1) {
           errorMsg = `【${field}】字段找不到`;
-          return
+          return;
         }
         let fieldName = tableFields[idx].fieldName;
         let isRequired = tableFields[idx].isRequired;

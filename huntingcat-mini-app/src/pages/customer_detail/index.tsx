@@ -2,7 +2,6 @@ import { View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React, { useEffect, useState } from "react";
 import { AtIcon } from "taro-ui";
-import { THEME_CONFIG } from "@/constant/global";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +12,8 @@ import "./index.scss"
 import { updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { addCustomerFavorite, checkCustomerFavorite, removeCustomerFavorite } from "@/services/steins-admin/crmCustomerFavoriteController";
 import { handleResponse, Notify } from "@/utils/common";
+import { ROUTERS } from "@/constant/menus";
+const CURRENT_PAGE = ROUTERS.customerDetail;
 function CustomerDetailPage() {
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [isFavorite, setIsFavorite] = useState<boolean>(false)

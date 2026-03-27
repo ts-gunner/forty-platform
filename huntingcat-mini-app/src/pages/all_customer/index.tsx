@@ -7,44 +7,53 @@ import { ROUTERS } from "@/constant/menus";
 import HeaderBodyLayout from "@/components/layout/HeaderBodyLayout";
 import { CustomerCard } from "@/components/crm/CustomerCard";
 import { SearchHeader } from "@/components/crm/SearchBox";
-import { getEntityValueList } from "@/services/steins-admin/crmEntityValueController";
-import { handleResponse, Notify } from "@/utils/common";
-import { CRM_TABLE_CODE, DEFAULT_PAGE_SIZE } from "@/constant/global";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
-
+import EmptyComponent from "@/components/EmptyComponent";
+import { ICON_MAP } from "@/constant/global";
+const CURRENT_PAGE = ROUTERS.allCustomer;
 function AllCustomerPage() {
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
   const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
-  const allCustomerData = useSelector((state: RootState) => state.crmModel.allCustomerData);
+  const allCustomerData = useSelector(
+    (state: RootState) => state.crmModel.allCustomerData,
+  );
   const activeRoute = useSelector(
     (state: RootState) => state.routerModel.activeRoute,
   );
   const dispatch = useDispatch<Dispatch>();
-  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    if (tableFields === undefined) {
-      dispatch.crmModel.getCrmFields();
-    }
-    if (entityVo === undefined) {
-      dispatch.crmModel.getEntityObject();
-    }
-    getAllCrmData();
+      if (tableFields === undefined) {
+        dispatch.crmModel.getCrmFields();
+      }
+      if (entityVo === undefined) {
+        dispatch.crmModel.getEntityObject();
+      }
+      if (!activeRoute) {
+        return
+      }
+      if (CURRENT_PAGE === activeRoute) {
+        getAllCrmData();
+      } else {
+        // 跳转到其他页面时，注销数据
+        dispatch.crmModel.initAllCustomerData();
+      }
   }, [activeRoute]);
   // 4. 触底加载更多
   useReachBottom(() => {
-    console.log("触碰底部");
-    setCurrentPage((prev) => prev + 1);
+    dispatch.crmModel.setAllCustomerData({
+      ...allCustomerData,
+      current: allCustomerData.current + 1,
+    });
   });
-  const getAllCrmData = async (pageNum?: number, pageSize?: number) => {
-    await dispatch.crmModel.getEntityValues({
-      mode: "all",
-      pageNum,
-      pageSize
-    })
+  useEffect(() => {
+    getAllCrmData();
+  }, [allCustomerData.current]);
+  const getAllCrmData = async () => {
+    await dispatch.crmModel.getEntityValues({ mode: "all" });
   };
   return (
     <HeaderBodyLayout
@@ -53,18 +62,31 @@ function AllCustomerPage() {
       bodyClassName="pb-16 mesh-gradient rounded-t-2xl pt-2"
       headerComponent={<SearchHeader mode="all" />}
     >
-      <View className="p-3 flex flex-col gap-2">
-        {allCustomerData.map((it, idx) => (
-          <CustomerCard
-            mode="all"
-            key={idx}
-            data={it}
-            onClick={() => {
-              dispatch.crmModel.setSelectedEntityValue(it);
-              dispatch.routerModel.navigateTo({ url: ROUTERS.customerDetail });
+      <View className="p-3 flex flex-col gap-2 w-full">
+        {Object.keys(allCustomerData.data).length === 0 && (
+          <EmptyComponent
+            btnText="刷新"
+            icon={ICON_MAP.EmptyIcon}
+            onBtnClick={() => {
+              getAllCrmData();
             }}
           />
-        ))}
+        )}
+        {Object.entries(allCustomerData.data).map(([cur, list], idx) => {
+          return list.map((it) => (
+            <CustomerCard
+              mode="all"
+              key={idx}
+              data={it}
+              onClick={() => {
+                dispatch.crmModel.setSelectedEntityValue(it);
+                dispatch.routerModel.navigateTo({
+                  url: ROUTERS.customerDetail,
+                });
+              }}
+            />
+          ));
+        })}
       </View>
     </HeaderBodyLayout>
   );

@@ -14,7 +14,7 @@ interface ActionItem {
 }
 
 export const CustomerCard: React.FC<{
-  mode: "mine" | "all"
+  mode: "mine" | "all";
   data: API.CrmEntityValueVo;
   onClick: (key: string) => void;
 }> = ({ mode, data, onClick }) => {
@@ -27,9 +27,9 @@ export const CustomerCard: React.FC<{
       icon: "menu",
       onClick: () => {
         Taro.showActionSheet({
-          itemList: ['移入'],
-        })
-      }
+          itemList: ["移入"],
+        });
+      },
     },
     // {
     //   title: "收藏",
@@ -48,28 +48,27 @@ export const CustomerCard: React.FC<{
       icon: "trash",
       onClick: () => {
         Taro.showActionSheet({
-          itemList: ['删除内容'],
-          itemColor: '#ff4d4f', // 危险操作设为红色
+          itemList: ["删除内容"],
+          itemColor: "#ff4d4f", // 危险操作设为红色
           success: async (res) => {
             if (res.tapIndex === 0) {
               const resp = await deleteEntityValue({
-                id: data.id
-              })
+                id: data.id,
+              });
               handleResponse({
                 resp,
                 onSuccess: () => {
-                  Notify.ok("删除成功!")
-                  dispatch.crmModel.getEntityValues({ mode: "mine" })
+                  Notify.ok("删除成功!");
+                  dispatch.crmModel.getEntityValues({ mode: "mine" });
                 },
                 onError: () => {
-                  Notify.fail("删除失败：" + resp.msg)
-                }
-              })
+                  Notify.fail("删除失败：" + resp.msg);
+                },
+              });
             }
-          }
-        })
-
-      }
+          },
+        });
+      },
     },
   ];
   const CustomerBaseInfo = BaseCustomerCard(actions)(() => {
@@ -89,43 +88,39 @@ export const CustomerCard: React.FC<{
             value={dataObject["detail_addr"]}
           />
         </View>
-        {
-          mode === "all" && (
-            <>
-              {/* 分隔虚线或细线 */}
-              <View className="h-[1px] w-full border-t border-dashed border-gray-200 mb-3" />
+        {mode === "all" && (
+          <>
+            {/* 分隔虚线或细线 */}
+            <View className="h-[1px] w-full border-t border-dashed border-gray-200 mb-3" />
 
-              {/* 底部：归属业务员信息 */}
-              <View className="flex flex-row items-center justify-between">
-                <View className="flex flex-row items-center">
-                  {/* 业务员头像占位/图标 */}
-                  <View className="w-6 h-6 rounded-full bg-active flex items-center justify-center mr-2">
-                    <Text className="text-[18rpx] text-white font-bold">责</Text>
-                  </View>
-                  <View>
-                    <Text className="text-[20rpx] text-gray-400">业务员:</Text>
-                    <Text className="text-[24rpx] font-semibold text-gray-700">
-                      {data.userName}
-                    </Text>
-                  </View>
+            {/* 底部：归属业务员信息 */}
+            <View className="flex flex-row items-center justify-between">
+              <View className="flex flex-row items-center">
+                {/* 业务员头像占位/图标 */}
+                <View className="w-6 h-6 rounded-full bg-active flex items-center justify-center mr-2">
+                  <Text className="text-[18rpx] text-white font-bold">责</Text>
+                </View>
+                <View>
+                  <Text className="text-[20rpx] text-gray-400">业务员:</Text>
+                  <Text className="text-[24rpx] font-semibold text-gray-700">
+                    {data.userName}
+                  </Text>
                 </View>
               </View>
-            </>
-          )
-        }
-
+            </View>
+          </>
+        )}
       </>
-
     );
   });
 
   return (
     <View
-
+      onClick={() => onClick(data.id)}
       className="relative overflow-hidden rounded-2xl border border-white/30 bg-white/90 p-4 shadow-xl backdrop-blur-md mb-1"
     >
       {/* 顶部：公司名与状态标签 */}
-      <View className="flex flex-row justify-between items-start mb-3" onClick={() => onClick(data.id)}>
+      <View className="flex flex-row justify-between items-start mb-3">
         <View className="flex-1">
           <Text className="text-[20rpx] text-gray-400 block mb-0.5">
             {dispatch.crmModel.getFieldName("customer_name")}
@@ -211,7 +206,10 @@ function BaseCustomerCard(actions: ActionItem[]) {
               {actions.map((it) => (
                 <View
                   key={it.title}
-                  onClick={it.onClick}
+                  onClick={(e: any) => {
+                    e.stopPropagation()
+                    it.onClick()
+                  }}
                   className={cn(
                     "h-full flex flex-col items-center justify-center gap-1 transition-opacity",
                     it.bg,

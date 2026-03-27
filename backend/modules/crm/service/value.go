@@ -92,7 +92,10 @@ func FindEntityValuePageList(db *gorm.DB, entityId int64, req request.GetCrmEnti
 
 	pageNum := utils.GetCurrentPage(req.PageNum)
 	pageSize := utils.GetPageSize(req.PageSize)
-
+	var dataLength int64
+	if err := db.Count(&dataLength).Error; err != nil {
+		return nil, err
+	}
 	offset := (pageNum - 1) * pageSize
 	if err := db.Order("create_time DESC").Offset(offset).Limit(pageSize).Find(&vos).Error; err != nil {
 		return nil, err
@@ -100,7 +103,7 @@ func FindEntityValuePageList(db *gorm.DB, entityId int64, req request.GetCrmEnti
 	return &crmResponse.CrmEntityValueObjectVo{
 		EntityValue: response.PageResult[crmResponse.CrmEntityValueVo]{
 			List:     vos,
-			Total:    int64(len(vos)),
+			Total:    dataLength,
 			PageNum:  pageNum,
 			PageSize: pageSize,
 		},

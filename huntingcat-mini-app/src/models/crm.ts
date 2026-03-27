@@ -1,23 +1,27 @@
 import { createModel } from "@rematch/core";
 import type { RootModel } from "../models";
-import { ReduxModel } from "@/typing";
+import { Crm, ReduxModel } from "@/typing";
+import { getFieldsByEntityKey } from "@/services/steins-admin/crmEntityFieldController";
 import {
-  getFieldsByEntityId,
-  getFieldsByEntityKey,
-} from "@/services/steins-admin/crmEntityFieldController";
-import { CRM_TABLE_CODE, DEFAULT_PAGE_SIZE, FAVORITE_FIELD_KEY } from "@/constant/global";
+  CRM_TABLE_CODE,
+  DEFAULT_CUSTOMER_DATA,
+  DEFAULT_PAGE_SIZE,
+} from "@/constant/global";
 import { handleResponse, Notify } from "@/utils/common";
 import { getEntityByKey } from "@/services/steins-admin/crmEntityController";
-import { getEntityValueList, getEntityValueListBySelf, updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
-import { checkCustomerFavorite } from "@/services/steins-admin/crmCustomerFavoriteController";
+import {
+  getEntityValueList,
+  getEntityValueListBySelf,
+  updateEntityValue,
+} from "@/services/steins-admin/crmEntityValueController";
 
 const initState: ReduxModel.CrmModelType = {
   entityVo: undefined,
   tableFields: undefined,
   selectedEntityValue: undefined,
   filterParams: {},
-  myCustomerData: [],
-  allCustomerData: [],
+  myCustomerData: DEFAULT_CUSTOMER_DATA,
+  allCustomerData: DEFAULT_CUSTOMER_DATA,
 };
 
 export const crmModel = createModel<RootModel>()({
@@ -39,13 +43,21 @@ export const crmModel = createModel<RootModel>()({
       ...state,
       selectedEntityValue: payload,
     }),
-    setMyCustomerData: (state, payload: API.CrmEntityValueVo[]) => ({
+    setMyCustomerData: (state, payload: Crm.CustomerData) => ({
       ...state,
       myCustomerData: payload,
     }),
-    setAllCustomerData: (state, payload: API.CrmEntityValueVo[]) => ({
+    setAllCustomerData: (state, payload: Crm.CustomerData) => ({
       ...state,
       allCustomerData: payload,
+    }),
+    initMyCustomerData: (state) => ({
+      ...state,
+      myCustomerData: DEFAULT_CUSTOMER_DATA,
+    }),
+    initAllCustomerData: (state) => ({
+      ...state,
+      allCustomerData: DEFAULT_CUSTOMER_DATA,
     }),
   },
   effects: (dispatch) => ({
@@ -90,24 +102,25 @@ export const crmModel = createModel<RootModel>()({
       return "未知";
     },
 
-    getEntityValues: async (payload: {
-      mode: "mine" | "all";
-      pageNum?: number
-      pageSize?: number
-    }, state) => {
+    getEntityValues: async (
+      payload: {
+        mode: "mine" | "all";
+      },
+      state,
+    ) => {
       Notify.loading("数据加载中....");
       let resp: API.ApiResultCrmCrmEntityValueObjectVo;
       if (payload.mode === "mine") {
         resp = await getEntityValueListBySelf({
-          pageNum: payload.pageNum || 1,
-          pageSize: payload.pageSize || DEFAULT_PAGE_SIZE,
+          pageNum: state.crmModel.myCustomerData.current,
+          pageSize: state.crmModel.myCustomerData.pageSize,
           entityKey: CRM_TABLE_CODE,
           filterParams: state.crmModel.filterParams || {},
         });
       } else {
         resp = await getEntityValueList({
-          pageNum: payload.pageNum || 1,
-          pageSize: payload.pageSize || DEFAULT_PAGE_SIZE,
+          pageNum: state.crmModel.allCustomerData.current,
+          pageSize: state.crmModel.allCustomerData.pageSize,
           entityKey: CRM_TABLE_CODE,
           filterParams: state.crmModel.filterParams || {},
         });
@@ -118,49 +131,65 @@ export const crmModel = createModel<RootModel>()({
           if (data.entityValue.list.length === 0) {
             dispatch.crmModel.updateCustomerDataState({
               mode: payload.mode,
-              list: data.entityValue.list
-            })
+              list: data.entityValue.list,
+            });
             Notify.ok("没有更多数据了");
           } else {
             dispatch.crmModel.updateCustomerDataState({
               mode: payload.mode,
-              list: data.entityValue.list
-            })
+              list: data.entityValue.list,
+            });
             Notify.clear();
           }
         },
         onError: () => {
           Notify.fail("获取客户数据失败:" + resp.msg);
         },
-      })
+      });
     },
-    handleSearchData: async (payload: {
-      mode: "mine" | "all"
-      text: string
-    }, state) => {
+    handleSearchData: async (
+      payload: {
+        mode: "mine" | "all";
+        text: string;
+      },
+      state,
+    ) => {
       dispatch.crmModel.setFilterParams({
         ...state.crmModel.filterParams,
-        "customer_name": payload.text,
-      })
+        customer_name: payload.text,
+      });
 
-      await dispatch.crmModel.getEntityValues({ mode: payload.mode })
+      await dispatch.crmModel.getEntityValues({ mode: payload.mode });
     },
-    updateCustomerDataState: (payload: {
-      mode: "mine" | "all",
-      list: API.CrmEntityValueVo[]
-    }) => {
+    updateCustomerDataState: (
+      payload: {
+        mode: "mine" | "all";
+        list: API.CrmEntityValueVo[];
+      },
+      state,
+    ) => {
+      const { myCustomerData, allCustomerData } = state.crmModel;
       if (payload.mode === "mine") {
-        dispatch.crmModel.setMyCustomerData(payload.list)
+        dispatch.crmModel.setMyCustomerData({
+          ...myCustomerData,
+          data: {
+            ...myCustomerData.data,
+            [myCustomerData.current]: payload.list,
+          },
+        });
       } else {
-        dispatch.crmModel.setAllCustomerData(payload.list)
+        dispatch.crmModel.setAllCustomerData({
+          ...allCustomerData,
+          data: {
+            ...allCustomerData.data,
+            [allCustomerData.current]: payload.list,
+          },
+        });
       }
     },
     handleFavoriteCustomer: async (payload: {
-      mode?: "mine" | "all"
-      value: API.CrmEntityValueVo
-    }) => {
-
-    }
-
+      mode?: "mine" | "all";
+      value: API.CrmEntityValueVo;
+    }) => {},
   }),
 });

@@ -2,7 +2,6 @@ import { View, Text, Input } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import { useNavbar } from "@/context/NavbarContext";
 import { withGlobalLayout } from "@/components/AppLayout";
-import { MockData } from "@/typing";
 import { AtIcon, AtToast } from "taro-ui";
 import Taro from "@tarojs/taro";
 import { ROUTERS } from "@/constant/menus";
@@ -10,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import { getCustomerFavoriteList, removeCustomerFavorite } from "@/services/steins-admin/crmCustomerFavoriteController";
 import { handleResponse, Notify } from "@/utils/common";
-
+const CURRENT_PAGE = ROUTERS.collection;
 function FavoriteCustomerPage() {
   const dispatch = useDispatch<Dispatch>()
   const activeRoute = useSelector((state: RootState) => state.routerModel.activeRoute)

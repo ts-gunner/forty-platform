@@ -1,4 +1,4 @@
-import { View } from "@tarojs/components";
+import { ScrollView, View } from "@tarojs/components";
 import "./index.scss";
 import { useCallback, useEffect, useState } from "react";
 import Taro, { useReachBottom } from "@tarojs/taro";
@@ -11,18 +11,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import { ICON_MAP } from "@/constant/global";
 import EmptyComponent from "@/components/EmptyComponent";
-
+const CURRENT_PAGE = ROUTERS.customer;
 function MyCustomerPage() {
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
   const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
-  const myCustomerData = useSelector((state: RootState) => state.crmModel.myCustomerData);
+  const myCustomerData = useSelector(
+    (state: RootState) => state.crmModel.myCustomerData,
+  );
   const activeRoute = useSelector(
     (state: RootState) => state.routerModel.activeRoute,
   );
   const dispatch = useDispatch<Dispatch>();
-  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (tableFields === undefined) {
@@ -31,20 +32,33 @@ function MyCustomerPage() {
     if (entityVo === undefined) {
       dispatch.crmModel.getEntityObject();
     }
-    getCrmDataBySelf();
+    if (!activeRoute) {
+      return;
+    }
+
+    if (CURRENT_PAGE === activeRoute) {
+      getCrmDataBySelf();
+    } else {
+      console.log("my customer注销数据");
+      // 跳转到其他页面时，注销数据
+      dispatch.crmModel.initMyCustomerData();
+    }
   }, [activeRoute]);
-  const getCrmDataBySelf = async (pageNum?: number, pageSize?: number) => {
-    await dispatch.crmModel.getEntityValues({
-      mode: "mine",
-      pageNum,
-      pageSize
-    })
+  const getCrmDataBySelf = async () => {
+    await dispatch.crmModel.getEntityValues({ mode: "mine" });
   };
 
   // 4. 触底加载更多
   useReachBottom(() => {
-    setCurrentPage((prev) => prev + 1);
+    dispatch.crmModel.setMyCustomerData({
+      ...myCustomerData,
+      current: myCustomerData.current + 1,
+    });
   });
+
+  useEffect(() => {
+    getCrmDataBySelf();
+  }, [myCustomerData.current]);
 
   return (
     <HeaderBodyLayout
@@ -53,8 +67,8 @@ function MyCustomerPage() {
       bodyClassName="pb-16 mesh-gradient rounded-t-2xl pt-2"
       headerComponent={<SearchHeader mode="mine" />}
     >
-      <View className="p-3 flex flex-col gap-2">
-        {myCustomerData.length === 0 && (
+      <View className="p-3 flex flex-col gap-2 w-full">
+        {Object.keys(myCustomerData.data).length === 0 && (
           <EmptyComponent
             btnText="刷新"
             icon={ICON_MAP.EmptyIcon}
@@ -63,17 +77,21 @@ function MyCustomerPage() {
             }}
           />
         )}
-        {myCustomerData.map((it, idx) => (
-          <CustomerCard
-            mode="mine"
-            key={idx}
-            data={it}
-            onClick={() => {
-              dispatch.crmModel.setSelectedEntityValue(it);
-              dispatch.routerModel.navigateTo({ url: ROUTERS.customerDetail });
-            }}
-          />
-        ))}
+        {Object.entries(myCustomerData.data).map(([cur, list], idx) => {
+          return list.map((it) => (
+            <CustomerCard
+              mode="mine"
+              key={idx}
+              data={it}
+              onClick={() => {
+                dispatch.crmModel.setSelectedEntityValue(it);
+                dispatch.routerModel.navigateTo({
+                  url: ROUTERS.customerDetail,
+                });
+              }}
+            />
+          ));
+        })}
       </View>
     </HeaderBodyLayout>
   );

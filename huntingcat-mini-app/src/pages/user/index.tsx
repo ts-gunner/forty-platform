@@ -1,4 +1,3 @@
-import Taro from "@tarojs/taro";
 import { Image, Text, View } from "@tarojs/components";
 import { useNavbar } from "@/context/NavbarContext";
 import { ICON_MAP, IMAGE_MAP, THEME_CONFIG } from "@/constant/global";
@@ -7,7 +6,7 @@ import { ROUTERS } from "@/constant/menus";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
-
+const CURRENT_PAGE = ROUTERS.mine;
 function UserPage() {
   const dispatch = useDispatch<Dispatch>()
   const { navBarHeight } = useNavbar();

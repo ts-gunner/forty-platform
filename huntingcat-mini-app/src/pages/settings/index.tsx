@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "@/store";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { ROUTERS } from "@/constant/menus";
-
+const CURRENT_PAGE = ROUTERS.settings;
 // 定义列表项类型
 interface SettingItem {
   id: string;
