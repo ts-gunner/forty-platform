@@ -1,4 +1,35 @@
 definitions:
+  crm.AddCustomerFavoriteRequest:
+    properties:
+      entityId:
+        example: "0"
+        type: string
+      valueId:
+        example: "0"
+        type: string
+    required:
+    - entityId
+    - valueId
+    type: object
+  crm.CrmCustomerFavoriteVo:
+    properties:
+      createTime:
+        type: string
+      customerName:
+        type: string
+      entityId:
+        type: integer
+      entityName:
+        type: string
+      id:
+        type: integer
+      remark:
+        type: string
+      valueId:
+        type: integer
+      values:
+        type: string
+    type: object
   crm.CrmEntityField:
     properties:
       dataType:
@@ -142,18 +173,15 @@ definitions:
     type: object
   crm.GetCrmEntityValueListRequest:
     properties:
-      entityKey:
-        type: string
       filterParams:
         additionalProperties: {}
         type: object
+      'json:':
+        type: string
       pageNum:
         type: integer
       pageSize:
         type: integer
-    required:
-    - entityKey
-    - filterParams
     type: object
   crm.InsertCrmEntityValueRequest:
     properties:
@@ -167,6 +195,18 @@ definitions:
     required:
     - data
     - entityId
+    type: object
+  crm.RemoveCustomerFavoriteRequest:
+    properties:
+      entityId:
+        example: "0"
+        type: string
+      valueId:
+        example: "0"
+        type: string
+    required:
+    - entityId
+    - valueId
     type: object
   crm.RestoreCrmEntityFieldRequest:
     properties:
@@ -279,6 +319,17 @@ definitions:
         example: 成功
         type: string
     type: object
+  response.ApiResult-bool:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        type: boolean
+      msg:
+        example: 成功
+        type: string
+    type: object
   response.ApiResult-crm_CrmEntityValueObjectVo:
     properties:
       code:
@@ -308,6 +359,17 @@ definitions:
         type: integer
       data:
         $ref: '#/definitions/crm.CrmEntityVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-response_PageResult-crm_CrmCustomerFavoriteVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/response.PageResult-crm_CrmCustomerFavoriteVo'
       msg:
         example: 成功
         type: string
@@ -410,6 +472,19 @@ definitions:
       msg:
         example: 成功
         type: string
+    type: object
+  response.PageResult-crm_CrmCustomerFavoriteVo:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/crm.CrmCustomerFavoriteVo'
+        type: array
+      pageNum:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
     type: object
   response.PageResult-crm_CrmEntityValueVo:
     properties:
@@ -909,6 +984,100 @@ paths:
       summary: 更新客户实体
       tags:
       - CrmEntityController
+  /crm/favorite/add:
+    post:
+      consumes:
+      - application/json
+      operationId: addCustomerFavorite
+      parameters:
+      - description: 添加收藏参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.AddCustomerFavoriteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 添加客户信息收藏
+      tags:
+      - CrmCustomerFavoriteController
+  /crm/favorite/check:
+    get:
+      operationId: checkCustomerFavorite
+      parameters:
+      - description: 实体表id
+        in: query
+        name: entityId
+        required: true
+        type: string
+      - description: 数据id
+        in: query
+        name: valueId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-bool'
+      summary: 检查是否已收藏
+      tags:
+      - CrmCustomerFavoriteController
+  /crm/favorite/list:
+    get:
+      operationId: getCustomerFavoriteList
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 实体表id
+        in: query
+        name: entityId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-response_PageResult-crm_CrmCustomerFavoriteVo'
+      summary: 获取收藏列表
+      tags:
+      - CrmCustomerFavoriteController
+  /crm/favorite/remove:
+    post:
+      consumes:
+      - application/json
+      operationId: removeCustomerFavorite
+      parameters:
+      - description: 取消收藏参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.RemoveCustomerFavoriteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 取消客户信息收藏
+      tags:
+      - CrmCustomerFavoriteController
   /crm/field/getDeletedFieldsByEntityId:
     get:
       operationId: getDeletedFieldsByEntityId

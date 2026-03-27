@@ -8,6 +8,7 @@ type ServiceGroup struct {
 	EntityService
 	EntityFieldService
 	EntityValueService
+	CustomerFavoriteService
 }
 
 var (

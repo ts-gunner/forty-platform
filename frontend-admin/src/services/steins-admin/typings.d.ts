@@ -509,4 +509,56 @@ declare namespace API {
   type WechatCodeLoginRequest = {
     code?: string;
   };
+
+  // 收藏功能类型定义
+  type ApiResultBoolean = {
+    code?: number;
+    data?: boolean;
+    msg?: string;
+  };
+
+  type ApiResultResponsePageResultCrmCrmCustomerFavoriteVo = {
+    code?: number;
+    data?: PageResultCrmCrmCustomerFavoriteVo;
+    msg?: string;
+  };
+
+  type PageResultCrmCrmCustomerFavoriteVo = {
+    list?: CrmCustomerFavoriteVo[];
+    pageNum?: number;
+    pageSize?: number;
+    total?: number;
+  };
+
+  type CrmCustomerFavoriteVo = {
+    id?: string;
+    entityId?: string;
+    entityName?: string;
+    valueId?: string;
+    customerName?: string;
+    remark?: string;
+    values?: string;
+    createTime?: string;
+  };
+
+  type AddCustomerFavoriteRequest = {
+    entityId: string;
+    valueId: string;
+  };
+
+  type RemoveCustomerFavoriteRequest = {
+    entityId: string;
+    valueId: string;
+  };
+
+  type getCustomerFavoriteListParams = {
+    pageNum?: number;
+    pageSize?: number;
+    entityId?: string;
+  };
+
+  type checkCustomerFavoriteParams = {
+    entityId: string;
+    valueId: string;
+  };
 }

@@ -13,16 +13,19 @@ type RouterGroup struct {
 	EntityRouter
 	EntityFieldRouter
 	EntityValueRouter
+	CustomerFavoriteRouter
 }
 
 func (rg *RouterGroup) InitCrmRouter(r *gin.RouterGroup) {
 	rg.InitEntityRouter(MODULE_NAME, r)
 	rg.InitEntityFieldRouter(MODULE_NAME, r)
 	rg.InitEntityValueRouter(MODULE_NAME, r)
+	rg.InitCustomerFavoriteRouter(MODULE_NAME, r)
 }
 
 var (
-	entityService      = service.CrmService.EntityService
-	entityFieldService = service.CrmService.EntityFieldService
-	entityValueService = service.CrmService.EntityValueService
+	entityService            = service.CrmService.EntityService
+	entityFieldService       = service.CrmService.EntityFieldService
+	entityValueService       = service.CrmService.EntityValueService
+	customerFavoriteService  = service.CrmService.CustomerFavoriteService
 )

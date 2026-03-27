@@ -220,6 +220,150 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/favorite/add": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmCustomerFavoriteController"
+                ],
+                "summary": "添加客户信息收藏",
+                "operationId": "addCustomerFavorite",
+                "parameters": [
+                    {
+                        "description": "添加收藏参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.AddCustomerFavoriteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/favorite/check": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmCustomerFavoriteController"
+                ],
+                "summary": "检查是否已收藏",
+                "operationId": "checkCustomerFavorite",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "实体表id",
+                        "name": "entityId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "数据id",
+                        "name": "valueId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-bool"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/favorite/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmCustomerFavoriteController"
+                ],
+                "summary": "获取收藏列表",
+                "operationId": "getCustomerFavoriteList",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageNum",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "实体表id",
+                        "name": "entityId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-response_PageResult-crm_CrmCustomerFavoriteVo"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/favorite/remove": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmCustomerFavoriteController"
+                ],
+                "summary": "取消客户信息收藏",
+                "operationId": "removeCustomerFavorite",
+                "parameters": [
+                    {
+                        "description": "取消收藏参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.RemoveCustomerFavoriteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/field/getDeletedFieldsByEntityId": {
             "get": {
                 "produces": [
@@ -1574,6 +1718,52 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "crm.AddCustomerFavoriteRequest": {
+            "type": "object",
+            "required": [
+                "entityId",
+                "valueId"
+            ],
+            "properties": {
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "valueId": {
+                    "type": "string",
+                    "example": "0"
+                }
+            }
+        },
+        "crm.CrmCustomerFavoriteVo": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "customerName": {
+                    "type": "string"
+                },
+                "entityId": {
+                    "type": "integer"
+                },
+                "entityName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "valueId": {
+                    "type": "integer"
+                },
+                "values": {
+                    "type": "string"
+                }
+            }
+        },
         "crm.CrmEntityField": {
             "type": "object",
             "required": [
@@ -1785,17 +1975,13 @@ const docTemplate = `{
         },
         "crm.GetCrmEntityValueListRequest": {
             "type": "object",
-            "required": [
-                "entityKey",
-                "filterParams"
-            ],
             "properties": {
-                "entityKey": {
-                    "type": "string"
-                },
                 "filterParams": {
                     "type": "object",
                     "additionalProperties": {}
+                },
+                "json:": {
+                    "type": "string"
                 },
                 "pageNum": {
                     "type": "integer"
@@ -1819,6 +2005,23 @@ const docTemplate = `{
                     }
                 },
                 "entityId": {
+                    "type": "string",
+                    "example": "0"
+                }
+            }
+        },
+        "crm.RemoveCustomerFavoriteRequest": {
+            "type": "object",
+            "required": [
+                "entityId",
+                "valueId"
+            ],
+            "properties": {
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "valueId": {
                     "type": "string",
                     "example": "0"
                 }
@@ -1986,6 +2189,22 @@ const docTemplate = `{
                 }
             }
         },
+        "response.ApiResult-bool": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "boolean"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
         "response.ApiResult-crm_CrmEntityValueObjectVo": {
             "type": "object",
             "properties": {
@@ -2027,6 +2246,22 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/crm.CrmEntityVo"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "response.ApiResult-response_PageResult-crm_CrmCustomerFavoriteVo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/response.PageResult-crm_CrmCustomerFavoriteVo"
                 },
                 "msg": {
                     "type": "string",
@@ -2175,6 +2410,26 @@ const docTemplate = `{
                 "msg": {
                     "type": "string",
                     "example": "成功"
+                }
+            }
+        },
+        "response.PageResult-crm_CrmCustomerFavoriteVo": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/crm.CrmCustomerFavoriteVo"
+                    }
+                },
+                "pageNum": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },
