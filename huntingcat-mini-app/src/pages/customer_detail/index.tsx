@@ -11,16 +11,40 @@ import { handleCrmValueByField } from "@/utils/crm";
 import ValueBoxGenerator from "@/components/crm/ValueBoxGenerator";
 import "./index.scss"
 import { updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
+import { addCustomerFavorite, checkCustomerFavorite, removeCustomerFavorite } from "@/services/steins-admin/crmCustomerFavoriteController";
 import { handleResponse, Notify } from "@/utils/common";
 function CustomerDetailPage() {
   const [isEdit, setIsEdit] = useState<boolean>(false)
+  const [isFavorite, setIsFavorite] = useState<boolean>(false)
   const dispatch = useDispatch<Dispatch>()
   const selectedEntityValue = useSelector((state: RootState) => state.crmModel.selectedEntityValue)
   const tableFields = useSelector((state: RootState) => state.crmModel.tableFields)
   const [valueObject, setValueObject] = useState<any>(JSON.parse(selectedEntityValue.values))
+  
+  // 检查收藏状态
   useEffect(() => {
     setValueObject(JSON.parse(selectedEntityValue.values))
+    checkFavoriteStatus();
   }, [selectedEntityValue])
+  
+  // 检查收藏状态
+  const checkFavoriteStatus = async () => {
+    if (selectedEntityValue.id && selectedEntityValue.entityId) {
+      const resp = await checkCustomerFavorite({
+        entityId: selectedEntityValue.entityId,
+        valueId: selectedEntityValue.id,
+      });
+      handleResponse({
+        resp,
+        onSuccess: (data) => {
+          setIsFavorite(data);
+        },
+        onError: () => {
+          console.error("检查收藏状态失败");
+        },
+      });
+    }
+  };
   return (
     <HeaderBodyFooterLayout
       FooterRender={
@@ -89,12 +113,44 @@ function CustomerDetailPage() {
                 )
               }
             </View>
-            <View className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center shadow-sm" onClick={() => {
-              dispatch.crmModel.handleFavoriteCustomer({
-                value: selectedEntityValue
-              })
+            <View className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center shadow-sm" onClick={async () => {
+              if (selectedEntityValue.id && selectedEntityValue.entityId) {
+                if (isFavorite) {
+                  // 取消收藏
+                  const resp = await removeCustomerFavorite({
+                    entityId: selectedEntityValue.entityId,
+                    valueId: selectedEntityValue.id,
+                  });
+                  handleResponse({
+                    resp,
+                    onSuccess: () => {
+                      setIsFavorite(false);
+                      Notify.ok("已取消收藏");
+                    },
+                    onError: () => {
+                      Notify.fail("取消收藏失败");
+                    },
+                  });
+                } else {
+                  // 添加收藏
+                  const resp = await addCustomerFavorite({
+                    entityId: selectedEntityValue.entityId,
+                    valueId: selectedEntityValue.id,
+                  });
+                  handleResponse({
+                    resp,
+                    onSuccess: () => {
+                      setIsFavorite(true);
+                      Notify.ok("收藏成功");
+                    },
+                    onError: () => {
+                      Notify.fail("收藏失败");
+                    },
+                  });
+                }
+              }
             }}>
-              <AtIcon value={valueObject["is_favorite"] ? "star-2" : "star"} size="24" className="text-yellow-500" />
+              <AtIcon value={isFavorite ? "star-2" : "star"} size="24" className="text-yellow-500" />
             </View>
           </View>
         </View>

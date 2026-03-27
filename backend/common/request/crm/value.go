@@ -4,7 +4,7 @@ type GetCrmEntityValueListRequest struct {
 	PageNum      int            `json:"pageNum"`
 	PageSize     int            `json:"pageSize"`
 	FilterParams map[string]any `json:"filterParams"`
-	EntityKey    string         `form:"json:"entityKey" binding:"required"`
+	EntityKey    string         `json:"entityKey" binding:"required"`
 }
 
 type GetCrmEntityValueDetailRequest struct {

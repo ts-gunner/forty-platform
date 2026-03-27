@@ -31,17 +31,17 @@ export const CustomerCard: React.FC<{
         })
       }
     },
-    {
-      title: "收藏",
-      bg: "bg-amber-700",
-      icon: "star",
-      onClick: () => {
-        dispatch.crmModel.handleFavoriteCustomer({
-          mode: "mine",
-          value: data
-        })
-      }
-    },
+    // {
+    //   title: "收藏",
+    //   bg: "bg-amber-700",
+    //   icon: "star",
+    //   onClick: () => {
+    //     dispatch.crmModel.handleFavoriteCustomer({
+    //       mode: "mine",
+    //       value: data
+    //     })
+    //   }
+    // },
     {
       title: "删除",
       bg: "bg-red-500",

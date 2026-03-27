@@ -6,40 +6,66 @@ import { MockData } from "@/typing";
 import { AtIcon, AtToast } from "taro-ui";
 import Taro from "@tarojs/taro";
 import { ROUTERS } from "@/constant/menus";
-import { useDispatch } from "react-redux";
-import { Dispatch } from "@/store";
+import { useDispatch, useSelector } from "react-redux";
+import { Dispatch, RootState } from "@/store";
+import { getCustomerFavoriteList, removeCustomerFavorite } from "@/services/steins-admin/crmCustomerFavoriteController";
+import { handleResponse, Notify } from "@/utils/common";
 
 function FavoriteCustomerPage() {
   const dispatch = useDispatch<Dispatch>()
+  const activeRoute = useSelector((state: RootState) => state.routerModel.activeRoute)
   const { navBarHeight } = useNavbar();
   const [keyword, setKeyword] = useState("");
-  const [favorites, setFavorites] = useState<MockData.CustomerDataType[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [favorites, setFavorites] = useState<API.CrmCustomerFavoriteVo[]>([]);
 
-  // 模拟获取收藏列表
+  // 获取收藏列表
   useEffect(() => {
-    setLoading(true);
-    // 实际业务逻辑：从 API 获取或从本地筛选标记了 favorite 的数据
-    // const res = CUSTOMER_INFO_LIST.filter(item => item.isFavorite); 
-    // setFavorites(res);
-    setLoading(false);
-  }, []);
+    getFavorites()
+  }, [activeRoute]);
+  const getFavorites = async () => {
+    Notify.loading("加载中")
+    const resp = await getCustomerFavoriteList({
+      pageNum: 1,
+      pageSize: 999,
+    });
+    handleResponse({
+      resp,
+      onSuccess: (data) => {
+        setFavorites(data.list || []);
+        Notify.clear()
+      },
+      onError: () => {
+        Notify.fail("获取收藏列表失败");
+      },
 
+    });
+  }
   // 搜索过滤
-  const displayData = favorites.filter(item => 
-    item.companyName.includes(keyword) || item.contractName.includes(keyword)
+  const displayData = favorites.filter(item =>
+    item.customerName?.includes(keyword) ||
+    (item.values ? JSON.parse(item.values).contractName?.includes(keyword) : false)
   );
 
   // 处理取消收藏
-  const handleToggleFavorite = (id: string) => {
-    // 实际应调用后端接口
+  const handleToggleFavorite = (entityId: string, valueId: string) => {
     Taro.showModal({
       title: '提示',
       content: '确定取消收藏该客户吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          setFavorites(prev => prev.filter(item => item.key !== id));
-          Taro.showToast({ title: '已取消', icon: 'none' });
+          const resp = await removeCustomerFavorite({
+            entityId: entityId,
+            valueId: valueId,
+          });
+          handleResponse({
+            resp,
+            onSuccess: () => {
+              getFavorites()
+            },
+            onError: () => {
+              Notify.fail("取消收藏失败");
+            },
+          });
         }
       }
     });
@@ -47,8 +73,7 @@ function FavoriteCustomerPage() {
 
   return (
     <View className="mesh-gradient min-h-screen pb-10">
-      <AtToast isOpened={loading} status="loading" text="加载中" />
-      
+
       {/* 顶部搜索 - 固定 */}
       <View className="sticky top-0 z-50 bg-white/80 backdrop-blur-md p-3" style={{ paddingTop: `${navBarHeight}px` }}>
         <View className="flex flex-col gap-2">
@@ -60,16 +85,31 @@ function FavoriteCustomerPage() {
       {/* 列表区域 */}
       <View className="p-3 flex flex-col gap-3">
         {displayData.length > 0 ? (
-          displayData.map((item) => (
-            <FavoriteCustomerCard 
-              key={item.key} 
-              data={item} 
-              onClick={() => {
-                dispatch.routerModel.navigateTo({url: ROUTERS.customerDetail})
-              }}
-              onUnfavorite={() => handleToggleFavorite(item.key)} 
-            />
-          ))
+          displayData.map((item) => {
+            let values = {};
+            try {
+              values = item.values ? JSON.parse(item.values) : {};
+            } catch (e) {
+              values = {};
+            }
+            return (
+              <FavoriteCustomerCard
+                key={item.valueId}
+                data={{ ...item, ...values }}
+                onClick={() => {
+                  dispatch.crmModel.setSelectedEntityValue({
+                    id: item.valueId,
+                    entityId: item.entityId,
+                    customerName: item.customerName,
+                    remark: item.remark,
+                    values: item.values,
+                  });
+                  dispatch.routerModel.navigateTo({ url: ROUTERS.customerDetail });
+                }}
+                onUnfavorite={() => handleToggleFavorite(item.entityId as string, item.valueId as string)}
+              />
+            );
+          })
         ) : (
           <EmptyState keyword={keyword} />
         )}
@@ -88,7 +128,7 @@ const SearchComponent: React.FC<{
       </View>
       <Input
         className="flex-1 text-sm text-gray-800"
-        placeholder="搜索企业、联系人或电话..."
+        placeholder="搜索企业..."
         placeholderStyle="color: rgba(0,0,0,0.3)"
         value={value}
         onInput={(e) => onInput(e.detail.value)}
@@ -105,32 +145,33 @@ const SearchComponent: React.FC<{
 /**
  * 专供收藏页使用的卡片，带有取消收藏按钮
  */
-const FavoriteCustomerCard: React.FC<{ 
-  data: MockData.CustomerDataType, 
-  onUnfavorite: () => void 
+const FavoriteCustomerCard: React.FC<{
+  data: any,
+  onUnfavorite: () => void
   onClick?: () => void
-  
-}> = ({ data, onUnfavorite,onClick }) => {
+
+}> = ({ data, onUnfavorite, onClick }) => {
+  const dispatch = useDispatch<Dispatch>()
   return (
     <View className="relative overflow-hidden rounded-2xl border border-white/40 bg-white/70 p-4 shadow-lg backdrop-blur-md active:scale-[0.98] transition-transform">
       <View className="flex justify-between items-start mb-3">
         <View className="flex-1" onClick={onClick}>
-          <Text className="text-xs text-gray-400 mb-1 block">企业客户</Text>
-          <Text className="font-bold text-gray-800 text-lg leading-tight">{data.companyName}</Text>
+          <Text className="text-xs text-gray-400 mb-1 block">{dispatch.crmModel.getFieldName("customer_name")}</Text>
+          <Text className="font-bold text-gray-800 text-lg leading-tight">{data["customer_name"]}</Text>
         </View>
         <View onClick={onUnfavorite} className="p-2 -mr-2">
-          <AtIcon value='star-2' size='20' color='#FBBF24' /> {/* 黄色实心星 */}
+          <AtIcon value='star-2' size='20' color='#FBBF24' />
         </View>
       </View>
 
       <View className="grid grid-cols-1 gap-2 border-t border-gray-100/50 pt-3">
         <View className="flex items-center text-sm">
-          <Text className="text-gray-400 w-16">联系人</Text>
-          <Text className="text-gray-700 font-medium">{data.contractName}</Text>
+          <Text className="text-gray-400 w-16">{dispatch.crmModel.getFieldName("contract_name")}</Text>
+          <Text className="text-gray-700 font-medium">{data["customer_name"]}</Text>
         </View>
         <View className="flex items-center text-sm">
-          <Text className="text-gray-400 w-16">手机号</Text>
-          <Text className="text-blue-600 font-medium">{data.contractPhone}</Text>
+          <Text className="text-gray-400 w-16">{dispatch.crmModel.getFieldName("contract_phone")}</Text>
+          <Text className="text-blue-600 font-medium">{data["contract_phone"]}</Text>
         </View>
       </View>
 

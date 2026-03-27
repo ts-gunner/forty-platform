@@ -18,15 +18,18 @@ definitions:
       customerName:
         type: string
       entityId:
-        type: integer
+        example: "0"
+        type: string
       entityName:
         type: string
       id:
-        type: integer
+        example: "0"
+        type: string
       remark:
         type: string
       valueId:
-        type: integer
+        example: "0"
+        type: string
       values:
         type: string
     type: object
@@ -173,15 +176,17 @@ definitions:
     type: object
   crm.GetCrmEntityValueListRequest:
     properties:
+      entityKey:
+        type: string
       filterParams:
         additionalProperties: {}
         type: object
-      'json:':
-        type: string
       pageNum:
         type: integer
       pageSize:
         type: integer
+    required:
+    - entityKey
     type: object
   crm.InsertCrmEntityValueRequest:
     properties:

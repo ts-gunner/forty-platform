@@ -2,6 +2,7 @@
 /* eslint-disable */
 // API 更新时间：
 // API 唯一标识：
+import * as crmCustomerFavoriteController from "./crmCustomerFavoriteController";
 import * as crmEntityController from "./crmEntityController";
 import * as crmEntityFieldController from "./crmEntityFieldController";
 import * as crmEntityValueController from "./crmEntityValueController";
@@ -14,6 +15,7 @@ import * as systemUserController from "./systemUserController";
 import * as systemUserRoleRelController from "./systemUserRoleRelController";
 export default {
   crmEntityController,
+  crmCustomerFavoriteController,
   crmEntityFieldController,
   crmEntityValueController,
   systemAuthController,

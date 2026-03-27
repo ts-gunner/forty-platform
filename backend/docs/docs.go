@@ -1745,19 +1745,22 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "entityId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "entityName": {
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "remark": {
                     "type": "string"
                 },
                 "valueId": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "values": {
                     "type": "string"
@@ -1975,13 +1978,16 @@ const docTemplate = `{
         },
         "crm.GetCrmEntityValueListRequest": {
             "type": "object",
+            "required": [
+                "entityKey"
+            ],
             "properties": {
+                "entityKey": {
+                    "type": "string"
+                },
                 "filterParams": {
                     "type": "object",
                     "additionalProperties": {}
-                },
-                "json:": {
-                    "type": "string"
                 },
                 "pageNum": {
                     "type": "integer"

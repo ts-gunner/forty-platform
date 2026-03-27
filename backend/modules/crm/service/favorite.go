@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/samber/lo"
 	"github.com/ts-gunner/forty-platform/common/entity"
@@ -116,6 +117,7 @@ func (CustomerFavoriteService) GetFavoriteList(ctx context.Context, req request.
 			CustomerName: customerValue.CustomerName,
 			Remark:       customerValue.Remark,
 			Values:       customerValue.Values.String(),
+			CreateTime:   fav.CreateTime.Format(time.DateTime),
 		}
 		favoriteVos = append(favoriteVos, favoriteVo)
 	}

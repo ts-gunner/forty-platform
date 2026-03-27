@@ -1,6 +1,10 @@
 package entity
 
-import "gorm.io/datatypes"
+import (
+	"time"
+
+	"gorm.io/datatypes"
+)
 
 type CrmCustomerEntity struct {
 	Id          int64  `gorm:"primary_key;column:id;AUTO_INCREMENT"`
@@ -42,10 +46,11 @@ type CrmCustomerValues struct {
 func (CrmCustomerValues) TableName() string { return "crm_customer_values" }
 
 type CrmCustomerFavorite struct {
-	Id       int64 `gorm:"primary_key;column:id;AUTO_INCREMENT"`
-	EntityId int64 `gorm:"column:entity_id;not null;comment:客户实体定义表id"`
-	ValueId  int64 `gorm:"column:value_id;not null; comment:数据id"`
-	UserId   int64 `gorm:"column:user_id;not null;comment:用户id"`
+	Id         int64     `gorm:"primary_key;column:id;AUTO_INCREMENT"`
+	EntityId   int64     `gorm:"column:entity_id;not null;comment:客户实体定义表id"`
+	ValueId    int64     `gorm:"column:value_id;not null; comment:数据id"`
+	UserId     int64     `gorm:"column:user_id;not null;comment:用户id"`
+	CreateTime time.Time `json:"createTime" gorm:"column:create_time;autoCreateTime:milli"`
 }
 
 func (CrmCustomerFavorite) TableName() string { return "crm_customer_favorite" }

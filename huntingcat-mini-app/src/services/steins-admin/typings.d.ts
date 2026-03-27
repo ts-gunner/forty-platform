@@ -1,4 +1,9 @@
 declare namespace API {
+  type AddCustomerFavoriteRequest = {
+    entityId: string;
+    valueId: string;
+  };
+
   type ApiResultAny = {
     code?: number;
     data?: any;
@@ -35,6 +40,12 @@ declare namespace API {
     msg?: string;
   };
 
+  type ApiResultBool = {
+    code?: number;
+    data?: boolean;
+    msg?: string;
+  };
+
   type ApiResultCrmCrmEntityValueObjectVo = {
     code?: number;
     data?: CrmEntityValueObjectVo;
@@ -50,6 +61,12 @@ declare namespace API {
   type ApiResultCrmCrmEntityVo = {
     code?: number;
     data?: CrmEntityVo;
+    msg?: string;
+  };
+
+  type ApiResultResponsePageResultCrmCrmCustomerFavoriteVo = {
+    code?: number;
+    data?: PageResultCrmCrmCustomerFavoriteVo;
     msg?: string;
   };
 
@@ -105,6 +122,24 @@ declare namespace API {
     code?: number;
     data?: UserVo;
     msg?: string;
+  };
+
+  type checkCustomerFavoriteParams = {
+    /** 实体表id */
+    entityId: string;
+    /** 数据id */
+    valueId: string;
+  };
+
+  type CrmCustomerFavoriteVo = {
+    createTime?: string;
+    customerName?: string;
+    entityId?: string;
+    entityName?: string;
+    id?: string;
+    remark?: string;
+    valueId?: string;
+    values?: string;
   };
 
   type CrmEntityField = {
@@ -181,9 +216,18 @@ declare namespace API {
 
   type GetCrmEntityValueListRequest = {
     entityKey: string;
-    filterParams: Record<string, any>;
+    filterParams?: Record<string, any>;
     pageNum?: number;
     pageSize?: number;
+  };
+
+  type getCustomerFavoriteListParams = {
+    /** 页码 */
+    pageNum?: number;
+    /** 每页数量 */
+    pageSize?: number;
+    /** 实体表id */
+    entityId?: string;
   };
 
   type getDeletedFieldsByEntityIdParams = {
@@ -315,6 +359,13 @@ declare namespace API {
     userId?: string;
   };
 
+  type PageResultCrmCrmCustomerFavoriteVo = {
+    list?: CrmCustomerFavoriteVo[];
+    pageNum?: number;
+    pageSize?: number;
+    total?: number;
+  };
+
   type PageResultCrmCrmEntityValueVo = {
     list?: CrmEntityValueVo[];
     pageNum?: number;
@@ -379,6 +430,11 @@ declare namespace API {
   type PwdLoginRequest = {
     password?: string;
     username?: string;
+  };
+
+  type RemoveCustomerFavoriteRequest = {
+    entityId: string;
+    valueId: string;
   };
 
   type RestoreCrmEntityFieldRequest = {
