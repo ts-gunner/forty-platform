@@ -281,3 +281,63 @@ func (s UserService) UploadUserProfile(ctx context.Context, req request.UpdateUs
 
 	return token, nil
 }
+
+func (UserService) GetUserListByRoleKey(req request.GetUserListByRoleKeyRequest) (*response.PageResult[systemResponse.UserVo], error) {
+	var list []systemResponse.UserVo
+	var total int64
+
+	// 先根据 roleKey 找到角色ID
+	var role entity.SysRole
+	if err := global.DB.Where("role_key = ? and is_delete = 0", req.RoleKey).First(&role).Error; err != nil {
+		return nil, errors.New("角色不存在")
+	}
+
+	// 构建查询
+	db := global.DB.Table("sys_user u").
+		Joins("JOIN sys_user_role_rel surr ON u.user_id = surr.user_id").
+		Where("u.is_delete = ? AND surr.role_id = ?", 0, role.RoleId)
+
+	// 获取总数
+	if err := db.Count(&total).Error; err != nil {
+		return nil, err
+	}
+
+	// 分页参数处理
+	if req.PageNum <= 0 {
+		req.PageNum = 1
+	}
+	if req.PageSize <= 0 {
+		req.PageSize = 10
+	}
+
+	// 查询用户列表
+	selectQuery := `
+	u.user_id AS user_id,
+	u.nickname AS nick_name,
+	u.account AS account,
+	u.openid AS open_id,
+	u.nickname AS nick_name,
+	u.phone AS phone,
+	u.email AS email,
+	u.avatar_id AS avatar_id,
+	u.status AS status,
+	u.create_time AS create_time,
+	u.update_time AS update_time,
+	(
+        SELECT GROUP_CONCAT(sr.role_name SEPARATOR ',') 
+        FROM sys_user_role_rel surr
+        LEFT JOIN sys_role sr ON sr.role_id = surr.role_id AND sr.is_delete = 0
+        WHERE surr.user_id = u.user_id
+    ) AS role_names`
+	offset := (req.PageNum - 1) * req.PageSize
+	if err := db.Select(selectQuery).Order("u.create_time DESC").Offset(offset).Limit(req.PageSize).Find(&list).Error; err != nil {
+		return nil, err
+	}
+
+	return &response.PageResult[systemResponse.UserVo]{
+		List:     list,
+		Total:    total,
+		PageNum:  req.PageNum,
+		PageSize: req.PageSize,
+	}, nil
+}

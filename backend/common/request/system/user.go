@@ -46,3 +46,9 @@ type UpdateUserProfileRequest struct {
 	Avatar   *multipart.FileHeader `form:"avatar" json:"avatar"`
 	NickName string                `form:"nickName" json:"nickName"`
 }
+
+type GetUserListByRoleKeyRequest struct {
+	RoleKey  string `form:"roleKey" json:"roleKey" binding:"required"`
+	PageNum  int    `form:"pageNum" json:"pageNum"`
+	PageSize int    `form:"pageSize" json:"pageSize"`
+}

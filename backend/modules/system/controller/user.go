@@ -23,6 +23,7 @@ func (UserRouter) InitUserRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup.PUT("/resetPwd", updatePassword)
 	routerGroup.DELETE("/delete", deleteUser)
 	routerGroup.POST("/updateUserProfile", updateUserProfile)
+	routerGroup.POST("/getUserListByRoleKey", getUserListByRoleKey)
 }
 
 // @Tags SystemUserController
@@ -200,4 +201,30 @@ func updateUserProfile(c *gin.Context) {
 	// 保存访问的token
 	response.Data[string](token, c)
 
+}
+
+// @Tags SystemUserController
+// @ID getUserListByRoleKey
+// @Router /system/user/getUserListByRoleKey [post]
+// @Summary 根据角色key获取用户列表
+// @Accept json
+// @Produce json
+// @Param request body request.GetUserListByRoleKeyRequest true "根据角色key获取用户列表参数"
+// @Success 200 {object} response.ApiResult[response.PageResult[systemResponse.UserVo]]
+func getUserListByRoleKey(c *gin.Context) {
+	var req request.GetUserListByRoleKeyRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		global.Logger.Error("参数校验异常", zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	result, err := userService.GetUserListByRoleKey(req)
+	if err != nil {
+		global.Logger.Error("根据角色key获取用户列表失败", zap.Error(err))
+		response.Fail(http.StatusInternalServerError, fmt.Sprintf("根据角色key获取用户列表失败: %v", err), c)
+		return
+	}
+
+	response.Data[response.PageResult[systemResponse.UserVo]](*result, c)
 }
