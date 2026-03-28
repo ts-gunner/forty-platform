@@ -33,7 +33,7 @@ function UserPage() {
             />
           </View>
         </View>
-        <StatsSection />
+        {/* <StatsSection /> */}
         <MyServiceComponent />
       </View>
     </View>

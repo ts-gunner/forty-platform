@@ -1,43 +1,41 @@
 import { Button, ScrollView, Text, View } from "@tarojs/components";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AtIcon } from "taro-ui";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import { findFieldByFieldKey } from "@/utils/crm";
 import { CrmDataTypeEnum } from "@/constant/enums";
-import { cn } from "@/utils/common";
+import { cn, handleResponse, Notify } from "@/utils/common";
+import { getUserListByRoleKey } from "@/services/steins-admin/systemUserController";
+import { CRM_ROLE_NAME } from "@/constant/global";
 
 const ALL_COMMON_FILTER = ["business_worker", "customer_type"];
 const MY_COMMON_FILTER = ["customer_type"];
 
-// 额外字段解释
-const EXTRA_FIELD_MAP = {
-  business_worker: {
-    fieldName: "业务员",
-    getOptions: () => {
-      return [
-        {
-          label: "张三",
-          value: "zhangsan",
-        },
-        {
-          label: "李四",
-          value: "lisi",
-        },
-      ];
-    },
-  },
-};
+
 
 // 目前只对Picker类型的筛选
 export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
+  // 额外字段解释
+  const EXTRA_FIELD_MAP = {
+    business_worker: {
+      fieldName: "业务员",
+      getOptions: () => {
+        return buinessUserList
+      },
+    },
+  };
   const dispatch = useDispatch<Dispatch>()
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
-   const filterParams = useSelector(
+  const activeRoute = useSelector(
+    (state: RootState) => state.routerModel.activeRoute,
+  );
+  const filterParams = useSelector(
     (state: RootState) => state.crmModel.filterParams,
   );
+  const [buinessUserList, setBusinessUserList] = useState<{ label: string; value: string }[]>([])
   const [activeMenu, setActiveMenu] = useState<string | null>(null); // 控制哪个菜单展开
 
   const commonFilters = mode === "mine" ? MY_COMMON_FILTER : ALL_COMMON_FILTER;
@@ -57,6 +55,29 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
     })
     setActiveMenu(null);
   };
+  useEffect(() => {
+    if (mode === "all") {
+      getBusinessWorkerOptions()
+    }
+  }, [activeRoute, mode])
+  const getBusinessWorkerOptions = async () => {
+    const resp = await getUserListByRoleKey({
+      roleKey: CRM_ROLE_NAME
+    })
+    handleResponse({
+      resp,
+      onSuccess: (data) => {
+        let userList = data.list.map(it => ({
+          label: it.nickName,
+          value: it.userId
+        }))
+        setBusinessUserList(userList)
+      },
+      onError: () => {
+        Notify.fail("获取业务员信息失败：" + resp.msg)
+      }
+    })
+  }
 
   const getFieldNameByKey = (key: string) => {
     let field = findFieldByFieldKey(tableFields, key);
@@ -93,17 +114,17 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
       (it) => it.dataType === CrmDataTypeEnum.Picker,
     );
     dispatch.crmModel.setFilterParams({});
-    dispatch.crmModel.getEntityValues({mode})
+    dispatch.crmModel.getEntityValues({ mode })
     setActiveMenu(null)
   };
-  const handlePickerSelect = (fieldKey: string ,val:string) => {
+  const handlePickerSelect = (fieldKey: string, val: string) => {
     let paramValue = filterParams?.[fieldKey]
     if (paramValue) {
       let options = paramValue.split(",")
 
       if (options.includes(val)) {
         options = options.filter(it => it !== val)
-      }else {
+      } else {
         options = [...options, val]
       }
 
@@ -111,17 +132,17 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
         ...filterParams,
         [fieldKey]: options.join(",")
       })
-    }else {
+    } else {
       dispatch.crmModel.setFilterParams({
-         ...filterParams,
+        ...filterParams,
         [fieldKey]: val
       })
     }
-    
+
   };
   // 全局搜索
-  const searchFilter =async () => {
-    await dispatch.crmModel.getEntityValues({mode})
+  const searchFilter = async () => {
+    await dispatch.crmModel.getEntityValues({ mode })
     setActiveMenu(null);
   }
   return (
@@ -168,7 +189,7 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
             })}
             {activeMenu === "filter" && (
               <AllFilterMenu
-              searchFilter={searchFilter}
+                searchFilter={searchFilter}
                 filterParams={filterParams}
                 handlePickerSelect={handlePickerSelect}
                 resetPickerSelect={resetPickerSelect}
@@ -222,7 +243,7 @@ const AllFilterMenu: React.FC<{
   handlePickerSelect: (fieldKey: string, val: string) => void;
   resetPickerSelect: () => void;
   searchFilter: () => void
-}> = ({ filterParams, resetPickerSelect,handlePickerSelect,searchFilter }) => {
+}> = ({ filterParams, resetPickerSelect, handlePickerSelect, searchFilter }) => {
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
@@ -276,12 +297,12 @@ const AllFilterMenu: React.FC<{
               <View className="grid grid-cols-3 gap-2 mt-2">
                 {it.options.split(",").map((opt) => {
                   let val = filterParams?.[it.fieldKey]
-                  let selectedValues = val?.split(",")  || []
+                  let selectedValues = val?.split(",") || []
                   return (
                     <View
                       className={cn(
                         "text-sm  flex justify-center items-center py-2 rounded-lg",
-                        selectedValues.includes(opt) ? "bg-active text-white": "bg-gray-100"
+                        selectedValues.includes(opt) ? "bg-active text-white" : "bg-gray-100"
                       )}
                       key={opt}
                       onClick={() => handlePickerSelect(it.fieldKey, opt)}

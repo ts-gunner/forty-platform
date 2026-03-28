@@ -185,6 +185,9 @@ definitions:
         type: integer
       pageSize:
         type: integer
+      userId:
+        example: "0"
+        type: string
     required:
     - entityKey
     type: object
@@ -555,6 +558,17 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  system.GetUserListByRoleKeyRequest:
+    properties:
+      pageNum:
+        type: integer
+      pageSize:
+        type: integer
+      roleKey:
+        type: string
+    required:
+    - roleKey
     type: object
   system.LoginUserVo:
     properties:
@@ -1772,6 +1786,28 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-system_UserVo'
       summary: 获取用户详情
+      tags:
+      - SystemUserController
+  /system/user/getUserListByRoleKey:
+    post:
+      consumes:
+      - application/json
+      operationId: getUserListByRoleKey
+      parameters:
+      - description: 根据角色key获取用户列表参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.GetUserListByRoleKeyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-response_PageResult-system_UserVo'
+      summary: 根据角色key获取用户列表
       tags:
       - SystemUserController
   /system/user/list:

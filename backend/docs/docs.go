@@ -1427,6 +1427,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/system/user/getUserListByRoleKey": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SystemUserController"
+                ],
+                "summary": "根据角色key获取用户列表",
+                "operationId": "getUserListByRoleKey",
+                "parameters": [
+                    {
+                        "description": "根据角色key获取用户列表参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.GetUserListByRoleKeyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-response_PageResult-system_UserVo"
+                        }
+                    }
+                }
+            }
+        },
         "/system/user/list": {
             "get": {
                 "produces": [
@@ -1994,6 +2028,10 @@ const docTemplate = `{
                 },
                 "pageSize": {
                     "type": "integer"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -2536,6 +2574,23 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "system.GetUserListByRoleKeyRequest": {
+            "type": "object",
+            "required": [
+                "roleKey"
+            ],
+            "properties": {
+                "pageNum": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "roleKey": {
+                    "type": "string"
                 }
             }
         },

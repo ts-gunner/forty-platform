@@ -47,6 +47,24 @@ export async function getUserDetail(
   });
 }
 
+/** 根据角色key获取用户列表 POST /system/user/getUserListByRoleKey */
+export async function getUserListByRoleKey(
+  body: API.GetUserListByRoleKeyRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultResponsePageResultSystemUserVo>(
+    "/system/user/getUserListByRoleKey",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: body,
+      ...(options || {}),
+    }
+  );
+}
+
 /** 获取用户列表 GET /system/user/list */
 export async function getUserList(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)

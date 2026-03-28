@@ -219,6 +219,7 @@ declare namespace API {
     filterParams?: Record<string, any>;
     pageNum?: number;
     pageSize?: number;
+    userId?: string;
   };
 
   type getCustomerFavoriteListParams = {
@@ -323,6 +324,12 @@ declare namespace API {
   type getUserDetailParams = {
     /** 用户ID */
     userId: string;
+  };
+
+  type GetUserListByRoleKeyRequest = {
+    pageNum?: number;
+    pageSize?: number;
+    roleKey: string;
   };
 
   type getUserListParams = {

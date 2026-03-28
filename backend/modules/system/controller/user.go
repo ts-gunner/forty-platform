@@ -222,7 +222,7 @@ func getUserListByRoleKey(c *gin.Context) {
 	result, err := userService.GetUserListByRoleKey(req)
 	if err != nil {
 		global.Logger.Error("根据角色key获取用户列表失败", zap.Error(err))
-		response.Fail(http.StatusInternalServerError, fmt.Sprintf("根据角色key获取用户列表失败: %v", err), c)
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("根据角色key获取用户列表失败: %v", err), c)
 		return
 	}
 

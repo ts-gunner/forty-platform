@@ -89,6 +89,9 @@ func FindEntityValuePageList(db *gorm.DB, entityId int64, req request.GetCrmEnti
 			}
 		}
 	}
+	if req.UserId != 0 {
+		db = db.Where("c.user_id = ?", req.UserId)
+	}
 
 	pageNum := utils.GetCurrentPage(req.PageNum)
 	pageSize := utils.GetPageSize(req.PageSize)

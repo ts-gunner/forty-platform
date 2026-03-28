@@ -37,4 +37,6 @@ export const THEME_CONFIG = {
 
 export const CRM_TABLE_CODE = "huntingcat_customer";
 
+export const CRM_ROLE_NAME = "wechat_crm_user";
+
 export const FAVORITE_FIELD_KEY = "is_favorite";

@@ -109,6 +109,7 @@ export const crmModel = createModel<RootModel>()({
       state,
     ) => {
       Notify.loading("数据加载中....");
+      console.log("filterParams", state.crmModel.filterParams)
       let resp: API.ApiResultCrmCrmEntityValueObjectVo;
       if (payload.mode === "mine") {
         resp = await getEntityValueListBySelf({
@@ -123,6 +124,7 @@ export const crmModel = createModel<RootModel>()({
           pageSize: state.crmModel.allCustomerData.pageSize,
           entityKey: CRM_TABLE_CODE,
           filterParams: state.crmModel.filterParams || {},
+          userId: state.crmModel.filterParams?.["business_worker"] || "0"
         });
       }
       handleResponse({
