@@ -1,62 +1,19 @@
 package core
 
 import (
-	"bytes"
 	"fmt"
+	"os"
+
 	"github.com/casbin/casbin/v3"
 	"github.com/casbin/casbin/v3/model"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
-	"github.com/drone/envsubst"
-	"github.com/fsnotify/fsnotify"
 	"github.com/sony/sonyflake/v2"
-	"github.com/spf13/viper"
-	"github.com/ts-gunner/forty-platform/common/constant"
 	"github.com/ts-gunner/forty-platform/common/global"
 	"github.com/ts-gunner/forty-platform/common/utils"
 	"github.com/ts-gunner/forty-platform/core/internal"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"os"
-	"strings"
 )
-
-// 初始化读取配置
-func InitViperConfig() *viper.Viper {
-
-	v := viper.New()
-
-	content, err := os.ReadFile(constant.CONFIG_FILEPATH)
-	if err != nil {
-		panic(fmt.Errorf("无法读取配置文件: %w", err))
-	}
-	renderedContent, err := envsubst.EvalEnv(string(content))
-	if err != nil {
-		panic(fmt.Errorf("环境变量渲染失败: %w", err))
-	}
-	v.SetConfigType("yaml")
-	if err := v.ReadConfig(bytes.NewBufferString(renderedContent)); err != nil {
-		panic(fmt.Errorf("解析配置文件失败: %w", err))
-	}
-
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
-	v.AutomaticEnv()
-	v.AllowEmptyEnv(true)
-	if err = v.Unmarshal(&global.Config); err != nil {
-		panic(fmt.Errorf("解析配置文件失败: %w", err))
-	}
-
-	// 监听配置
-	v.WatchConfig()
-	v.OnConfigChange(func(e fsnotify.Event) {
-		fmt.Println("配置文件发生改动:", e.Name)
-		if err = v.Unmarshal(&global.Config); err != nil {
-			fmt.Printf("动态更新失败: %s\n", err)
-		}
-		// 重新设置logger
-		//Logger = InitZapLogger()
-	})
-	return v
-}
 
 // 初始化日志模块
 func InitZapLogger() (logger *zap.Logger) {

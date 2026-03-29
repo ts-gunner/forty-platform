@@ -44,7 +44,7 @@ npm run build
 
 ## 部署
 
-
+`docker network create platform-shared-net`
 ### 通过docker-compose部署
 
 1. 服务器上拉取代码
@@ -118,3 +118,4 @@ windows解决方案:  预装electron和electron-builder
 ### 上传文件适配umijs的openapi插件
 
 file类型需要转成`{uri: "微信的临时地址"} as any`, 参考`user_profile`的上传头像和昵称
+

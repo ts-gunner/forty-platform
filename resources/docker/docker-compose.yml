@@ -1,7 +1,7 @@
-name: platform-${ACTIVE_ENV:-prod}
+name: platform-application
 services:
   frontend-admin:
-    container_name: frontend-admin-${ACTIVE_ENV:-prod}
+    container_name: frontend-adminx
     image: frontend-admin:0.0.1
     build:
       context: ../../
@@ -10,20 +10,20 @@ services:
     networks:
       - default-network
   platform-backend:
-    container_name: platform-backend-${ACTIVE_ENV:-prod}
+    container_name: platform-backend
     image: platform-backend:0.0.1
     build:
       context: ../../
       dockerfile: resources/docker/Dockerfile.backend
     restart: unless-stopped
     environment:
-      - FORTY_APP_MYSQL_HOST: forty-mysql
-      # - FORTY_APP_REDIS_HOST: forty-mysql
+      - FORTY_APP_MYSQL_HOST=forty-mysql
+      - FORTY_APP_PORT=8080
     networks:
       - default-network
   
   platform-nginx:
-    container_name: platform-nginx-${ACTIVE_ENV:-prod}
+    container_name: platform-nginx
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/library/nginx:1.18.0-alpine
     command: ["nginx", "-c", "/etc/nginx/nginx.conf", "-g", "daemon off;"]
     ports:
