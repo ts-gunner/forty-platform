@@ -18,7 +18,7 @@ func main() {
 func initializeSystem() {
 	global.Viper = core.InitViperConfig()
 	global.Logger = core.InitZapLogger()
-	global.Redis = core.InitRedis()
+	// global.Redis = core.InitRedis()
 	global.IdCreator = core.InitIDCreator()
 	if db, err := core.InitGorm(); err != nil {
 		panic(fmt.Sprintf("数据库初始化异常: %v", err))
