@@ -12,6 +12,7 @@ services:
       - ${MYSQL_VOLUME_CONF:-./data/mysql/conf}:/etc/mysql/conf.d
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-123456}
+    restart: always
     networks:
       - middle-network
 

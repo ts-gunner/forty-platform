@@ -1,11 +1,16 @@
 
 all: middleware-up up
 
+# 启动容器
 up:
 	docker-compose --env-file .env up -d
 
-rebuild-up:
+# 重新打包启动
+build-up:
 	docker-compose --env-file .env up -d --build
+
+# 删除容器并重新打包启动
+rebuild-up: down build-up
 	
 down:
 	docker-compose --env-file .env down 
