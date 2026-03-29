@@ -1,6 +1,8 @@
 
-all: middleware-up up
+all: network middleware-up up
 
+network:
+	docker network create platform-shared-net
 # 启动容器
 up:
 	docker compose --env-file .env up -d
