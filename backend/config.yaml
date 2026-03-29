@@ -1,9 +1,9 @@
 mysql:
     path: ${FORTY_APP_MYSQL_HOST:=127.0.0.1}
     port: "3306"
-    db-name: forty_dev
-    username: root
-    password: "123456"
+    db-name: ${FORTY_APP_MYSQL_DB:=forty_dev}
+    username: ${FORTY_APP_MYSQL_USER:=root}
+    password: ${FORTY_APP_MYSQL_PASSWORD:=123456}
     max-idle-conns: 10
     max-open-conns: 100
 
