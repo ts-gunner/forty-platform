@@ -30,4 +30,5 @@ services:
 
 networks:
   middle-network:
-    driver: bridge
+    external: true
+    name: platform-shared-net

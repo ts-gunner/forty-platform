@@ -9,25 +9,18 @@ services:
     restart: unless-stopped
     networks:
       - default-network
-  # steins-app:
-  #   container_name: steins-app-${SPRING_ACTIVE:-prod}
-  #   image: steins-app:0.0.4
-  #   build:
-  #     context: ../../
-  #     dockerfile: resources/docker/Dockerfile.backend
-  #   environment:
-  #     - NACOS_SERVER_ADDR=${NACOS_SERVER_ADDR:-host.docker.internal}
-  #     - NACOS_USERNAME=${NACOS_USERNAME:-nacos}
-  #     - NACOS_PASSWORD=${NACOS_PASSWORD:-nacos}
-  #     - SW_AGENT_COLLECTOR_BACKEND_SERVICES=${SW_AGENT_COLLECTOR_BACKEND_SERVICES:-host.docker.internal:11800}
-  #     - SW_AGENT_NAME=${SW_AGENT_NAME:-prod_steins_admin}
-  #     - JAVA_OPTS=${JAVA_OPTS}
-  #     - SPRING_ACTIVE=${SPRING_ACTIVE:-prod}
-  #   restart: unless-stopped
-  #   ports:
-  #     - ${STEINS_APP_PORT:-18001}:18001
-  #   networks:
-  #     - default-network
+  platform-backend:
+    container_name: platform-backend-${ACTIVE_ENV:-prod}
+    image: platform-backend:0.0.1
+    build:
+      context: ../../
+      dockerfile: resources/docker/Dockerfile.backend
+    restart: unless-stopped
+    environment:
+      - FORTY_APP_MYSQL_HOST: forty-mysql
+      # - FORTY_APP_REDIS_HOST: forty-mysql
+    networks:
+      - default-network
   
   platform-nginx:
     container_name: platform-nginx-${ACTIVE_ENV:-prod}
@@ -42,5 +35,5 @@ services:
       - default-network
 networks:
   default-network:
-    name: platform-network-${SPRING_ACTIVE:-prod}
-    driver: bridge
+    external: true
+    name: platform-shared-net
