@@ -1,6 +1,9 @@
 FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/library/golang:1.25.8-alpine AS builder
 
-RUN apk update && apk add --no-cache git tzdata
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk update && \
+    apk add --no-cache git tzdata
+
 
 WORKDIR /app
 
