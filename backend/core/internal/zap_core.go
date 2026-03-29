@@ -1,11 +1,11 @@
 package internal
 
 import (
+	"os"
+
 	"github.com/ts-gunner/forty-platform/common/global"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"os"
-	"time"
 )
 
 type CustomZapCore struct {
@@ -28,7 +28,7 @@ func (c *CustomZapCore) WriteSyncer() zapcore.WriteSyncer {
 	cutter := NewCutter(
 		global.Config.Zap.Director,
 		global.Config.Zap.Level,
-		CutterWithLayout(time.DateOnly),
+		CutterWithLayout("2006-01"),
 		CutterWithFormat(),
 	)
 	if global.Config.Zap.LogInConsole {

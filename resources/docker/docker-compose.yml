@@ -1,7 +1,7 @@
 name: platform-application
 services:
   frontend-admin:
-    container_name: frontend-adminx
+    container_name: frontend-admin
     image: frontend-admin:0.0.1
     build:
       context: ../../
@@ -15,10 +15,15 @@ services:
     build:
       context: ../../
       dockerfile: resources/docker/Dockerfile.backend
+    volumes:
+      - ${BACKEND_LOG:-./logs/server}:/app/logs
     restart: unless-stopped
     environment:
       - FORTY_APP_MYSQL_HOST=forty-mysql
       - FORTY_APP_PORT=8080
+      - WECHAT_APP_ID=${WECHAT_APP_ID}
+      - WECHAT_APP_SECRET=${WECHAT_APP_SECRET}
+      - SUPER_BED_TOKEN=${SUPER_BED_TOKEN}
     networks:
       - default-network
   
