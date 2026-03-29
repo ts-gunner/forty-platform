@@ -62,7 +62,8 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
   }, [activeRoute, mode])
   const getBusinessWorkerOptions = async () => {
     const resp = await getUserListByRoleKey({
-      roleKey: CRM_ROLE_NAME
+      roleKey: CRM_ROLE_NAME,
+      pageSize: 9999
     })
     handleResponse({
       resp,
