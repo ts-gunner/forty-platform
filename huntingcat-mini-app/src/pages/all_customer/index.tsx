@@ -63,7 +63,7 @@ function AllCustomerPage() {
       headerComponent={<SearchHeader mode="all" />}
     >
       <View className="p-3 flex flex-col gap-2 w-full">
-        {Object.keys(allCustomerData.data).length === 0 && (
+        {Object.values(allCustomerData.data).flat().length === 0 && (
           <EmptyComponent
             btnText="刷新"
             icon={ICON_MAP.EmptyIcon}

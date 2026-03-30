@@ -59,7 +59,6 @@ function MyCustomerPage() {
   useEffect(() => {
     getCrmDataBySelf();
   }, [myCustomerData.current]);
-
   return (
     <HeaderBodyLayout
       headerHeight={230}
@@ -68,7 +67,7 @@ function MyCustomerPage() {
       headerComponent={<SearchHeader mode="mine" />}
     >
       <View className="p-3 flex flex-col gap-2 w-full">
-        {Object.keys(myCustomerData.data).length === 0 && (
+        {Object.values(myCustomerData.data).flat().length === 0 && (
           <EmptyComponent
             btnText="刷新"
             icon={ICON_MAP.EmptyIcon}
