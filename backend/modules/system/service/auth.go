@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/ts-gunner/forty-platform/common/storage"
 	"strings"
 	"time"
 
@@ -121,6 +122,25 @@ func (s *AuthService) WechatCrmLogin(code string) (string, error) {
 			return "", err
 		}
 	}
+	if sysUser.AvatarId != 0 {
+		resource, err := resourceMapper.GetResourceById(global.DB, sysUser.AvatarId)
+		if err != nil {
+			return "", err
+		}
+
+		policy, err := storage.GetPolicyByMode(global.Store, storage.StorageMode(resource.StorageType))
+		if err != nil {
+			return "", err
+		}
+		url, err := policy.GetAccessUrl(storage.StorageVo{
+			RelativePath: resource.RelPath,
+			DirectUrl:    resource.PreviewUrl,
+		})
+		if err != nil {
+			return "", err
+		}
+		claim.Avatar = url
+	}
 	roleList, err := roleMapper.GetRoleListByUserId(global.DB, claim.UserId)
 	if err != nil {
 		return "", err
@@ -129,6 +149,7 @@ func (s *AuthService) WechatCrmLogin(code string) (string, error) {
 		return item.RoleKey
 	})
 	claim.RoleIds = strings.Join(roleKeys, ",")
+
 	token := utils.CreateToken(claim, constant.SALT)
 	return token, nil
 }
