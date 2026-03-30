@@ -1,5 +1,7 @@
 package constant
 
+import "github.com/ts-gunner/forty-platform/common/models"
+
 const (
 	PROJECT_BANNER = `
  .----------------.  .----------------.  .----------------.  .----------------.  .----------------. 
@@ -36,7 +38,18 @@ const (
 
 // 初始角色
 const (
-	ROLE_ADMIN      = "admin"           // 运营端角色
-	ROLE_WECHAT_CRM = "wechat_crm_user" // 微信CRM用户角色
+	ROLE_ADMIN            = "admin"            // 运营端角色
+	ROLE_WECHAT_CRM       = "wechat_crm_user"  // 微信CRM用户角色
+	ROLE_WECHAT_CRM_ADMIN = "wechat_crm_admin" // 微信CRM管理员角色
 
+)
+
+var (
+	CASBIN_INIT_MAP = []models.CasbinRule{
+		models.CasbinRule{
+			Subject: ROLE_WECHAT_CRM_ADMIN,
+			Object:  "/ft/crm/value/list",
+			Action:  "POST",
+		},
+	}
 )

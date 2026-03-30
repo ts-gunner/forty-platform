@@ -90,6 +90,10 @@ func (s *AuthService) WechatCrmLogin(code string) (string, error) {
 			if err != nil {
 				return err
 			}
+			if role.RoleId == 0 {
+				return errors.New("角色不存在")
+			}
+
 			// 绑定用户跟微信小程序角色
 			rel := &entity.SysUserRoleRel{
 				UserId: userId,

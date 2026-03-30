@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/ts-gunner/forty-platform/common/entity"
 	"github.com/ts-gunner/forty-platform/common/global"
@@ -75,9 +76,13 @@ func (RoleService) GetRoleList(req request.RoleListRequest) (*response.PageResul
 }
 
 func (s RoleService) CreateRole(ctx context.Context, req request.RoleCreateRequest) error {
-	existRole, _ := roleMapper.GetRoleByRoleKey(global.DB, req.RoleKey)
-	if existRole != nil {
+	existRole, err := roleMapper.GetRoleByRoleKey(global.DB, req.RoleKey)
+	if err != nil {
+		return fmt.Errorf("创建角色失败: %v", err)
+	}
+	if existRole.RoleId != 0 {
 		return errors.New("角色标识已存在")
+
 	}
 	roleId, _ := global.IdCreator.NextID()
 	role := entity.SysRole{

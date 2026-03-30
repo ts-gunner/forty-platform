@@ -28,6 +28,7 @@ func initRouter() *gin.Engine {
 				"/auth/wechatCrmLogin",
 			},
 		}),
+		handler.RoleCheckHandlerFunc(),
 	)
 	initSwagger(swaggerGroup)
 	systemController.SystemRouter.InitSystemRouter(contextGroup)

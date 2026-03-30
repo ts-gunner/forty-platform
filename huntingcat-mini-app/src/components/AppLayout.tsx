@@ -10,9 +10,8 @@ import { AtToast } from "taro-ui";
 
 export function withGlobalLayout<T>(WrappedComponent: React.ComponentType<T>) {
   return (props: T) => {
-    const router = Taro.useRouter();
     const dispatch = useDispatch<Dispatch>();
-      const activeRoute = useSelector(
+    const activeRoute = useSelector(
       (state: RootState) => state.routerModel.activeRoute,
     );
     const notifyOpen = useSelector(
@@ -31,6 +30,10 @@ export function withGlobalLayout<T>(WrappedComponent: React.ComponentType<T>) {
       if (activeRoute !== ROUTERS.login) {
         getLoginUser();
       }
+      Taro.pageScrollTo({
+        scrollTop: 0,
+        duration: 0, // 立即回到顶部，无动画
+      });
     }, [activeRoute]);
 
     const getLoginUser = async () => {

@@ -8,11 +8,12 @@ import (
 type RoleMapper struct{}
 
 func (RoleMapper) GetRoleByRoleKey(tx *gorm.DB, roleKey string) (*entity.SysRole, error) {
-	var role entity.SysRole
-	if err := tx.Where("role_key = ? and is_delete=0", roleKey).Find(&role).Error; err != nil {
+	var role *entity.SysRole
+	if err := tx.Where("role_key = ? and is_delete=0", roleKey).First(&role).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
-	return &role, nil
+
+	return role, nil
 }
 
 /*

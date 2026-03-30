@@ -6,7 +6,8 @@ INSERT INTO sys_user(`user_id`, `account`, `pwd`, `nickname`, `email`, `phone`, 
 
 INSERT INTO `sys_role` (`role_id`, `role_name`, `role_key`, `creator_id`) VALUES
 (1001, "运营端用户", "admin", 0),
-(1002, "微信用户(CRM)", "wechat_crm_user", 0);
+(1002, "微信CRM用户", "wechat_crm_user", 0),
+(1003, "微信CRM管理员", "wechat_crm_admin", 0);
 
 
 INSERT INTO `crm_customer_entity` (`id`, `entity_name`, `entity_code`, `description`, `creator_id`) VALUES

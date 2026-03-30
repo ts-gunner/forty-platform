@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/casbin/casbin/v3"
-	"github.com/casbin/casbin/v3/model"
-	gormadapter "github.com/casbin/gorm-adapter/v3"
 	"github.com/sony/sonyflake/v2"
 	"github.com/ts-gunner/forty-platform/common/global"
 	"github.com/ts-gunner/forty-platform/common/utils"
@@ -45,40 +42,4 @@ func InitIDCreator() *sonyflake.Sonyflake {
 		panic("创建id生成器失败: " + err.Error())
 	}
 	return sf
-}
-
-func InitCasbinEnforcer() *casbin.Enforcer {
-	if global.DB == nil {
-		db, _ := InitGorm()
-		global.DB = db
-	}
-	adapter, err := gormadapter.NewAdapterByDB(global.DB)
-	if err != nil {
-		panic("创建casbin适配器失败: " + err.Error())
-	}
-	// RBAC模型
-	m, err := model.NewModelFromString(`
-[request_definition]
-r = sub, obj, act
-
-[policy_definition]
-p = sub, obj, act
-
-[role_definition]
-g = _, _
-
-[policy_effect]
-e = some(where (p.eft == allow))
-
-[matchers]
-m = g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act
-`)
-	enforcer, err := casbin.NewEnforcer(m, adapter)
-	if err != nil {
-		panic("创建casbin校验器失败: " + err.Error())
-	}
-	if err = enforcer.LoadPolicy(); err != nil {
-		panic("加载权限配置失败: " + err.Error())
-	}
-	return enforcer
 }
