@@ -10,4 +10,5 @@ const (
 	CrmDataTypePicker   CrmFieldDataType = "picker"   // 选择器
 	CrmDataTypeDate     CrmFieldDataType = "date"     // 日期
 	CrmDataTypeRegion   CrmFieldDataType = "region"   // 行政区划
+	CrmDataTypeLocation CrmFieldDataType = "location" // 定位
 )

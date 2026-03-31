@@ -18,6 +18,7 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 	routerGroup := router.Group(fmt.Sprintf("/%s/value", moduleName))
 	routerGroup.POST("/list", getEntityValueList)
 	routerGroup.POST("/listBySelf", getEntityValueListBySelf)
+	routerGroup.POST("/listByAdmin", getEntityValueListByAdmin)
 	routerGroup.GET("/detail", getEntityValueDetail)
 	routerGroup.POST("/insert", insertEntityValue)
 	routerGroup.POST("/update", updateEntityValue)
@@ -53,7 +54,7 @@ func getEntityValueListBySelf(c *gin.Context) {
 // @Tags CrmEntityValueController
 // @ID getEntityValueList
 // @Router /crm/value/list [post]
-// @Summary 运营端 - 获取对应的实体表数据
+// @Summary 客户端 - 获取对应的实体表数据
 // @Accept json
 // @Produce json
 // @Param request body request.GetCrmEntityValueListRequest true "查询实体数据参数"
@@ -67,6 +68,32 @@ func getEntityValueList(c *gin.Context) {
 	}
 
 	result, err := entityValueService.GetEntityValuePageList(req)
+	if err != nil {
+		global.Logger.Error("获取客户实体表数据失败", zap.Error(err))
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("获取客户实体表数据失败: %v", err), c)
+		return
+	}
+
+	response.Data[crmResponse.CrmEntityValueObjectVo](*result, c)
+}
+
+// @Tags CrmEntityValueController
+// @ID getEntityValueListByAdmin
+// @Router /crm/value/listByAdmin [post]
+// @Summary 运营端 - 获取对应的实体表数据
+// @Accept json
+// @Produce json
+// @Param request body request.AdminGetCrmEntityValueListRequest true "查询实体数据参数"
+// @Success 200 {object} response.ApiResult[crmResponse.CrmEntityValueObjectVo]
+func getEntityValueListByAdmin(c *gin.Context) {
+	var req request.AdminGetCrmEntityValueListRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	result, err := entityValueService.AdminGetEntityValuePageList(req)
 	if err != nil {
 		global.Logger.Error("获取客户实体表数据失败", zap.Error(err))
 		response.Fail(http.StatusBadRequest, fmt.Sprintf("获取客户实体表数据失败: %v", err), c)

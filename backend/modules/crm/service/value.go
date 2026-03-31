@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ts-gunner/forty-platform/common/models"
 	"strings"
 	"time"
 
@@ -39,7 +40,12 @@ func (EntityValueService) GetEntityValuePageListBySelf(ctx context.Context, req 
 		Select("c.*, s.nickname as user_name").
 		Joins("LEFT JOIN sys_user s ON c.user_id = s.user_id").
 		Where("c.entity_id = ? and c.user_id = ? and c.is_delete = 0", entityObject.Id, utils.GetLoginUserId(ctx))
-	return FindEntityValuePageList(db, entityObject.Id, req)
+	return FindEntityValuePageList(db, entityObject.Id, models.FindCrmValueParams{
+		FilterParams: req.FilterParams,
+		PageNum:      req.PageNum,
+		PageSize:     req.PageSize,
+		UserId:       0,
+	})
 }
 func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueListRequest) (*crmResponse.CrmEntityValueObjectVo, error) {
 	entityObject, err := entityMapper.GetEntityByKey(req.EntityKey)
@@ -54,9 +60,42 @@ func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueLi
 		Joins("LEFT JOIN sys_user s ON c.user_id = s.user_id").
 		Where("c.entity_id = ? and c.is_delete = 0", entityObject.Id)
 
-	return FindEntityValuePageList(db, entityObject.Id, req)
+	return FindEntityValuePageList(db, entityObject.Id, models.FindCrmValueParams{
+		FilterParams: req.FilterParams,
+		PageNum:      req.PageNum,
+		PageSize:     req.PageSize,
+		UserId:       req.UserId,
+	})
 }
-func FindEntityValuePageList(db *gorm.DB, entityId int64, req request.GetCrmEntityValueListRequest) (*crmResponse.CrmEntityValueObjectVo, error) {
+
+func (EntityValueService) AdminGetEntityValuePageList(req request.AdminGetCrmEntityValueListRequest) (*crmResponse.CrmEntityValueObjectVo, error) {
+	entityObject, err := entityMapper.GetEntityById(req.EntityId)
+	if err != nil {
+		return nil, err
+	}
+	if entityObject == nil {
+		return nil, errors.New("该实体不存在")
+	}
+	db := global.DB.Table("crm_customer_values c").
+		Select("c.*, s.nickname as user_name").
+		Joins("LEFT JOIN sys_user s ON c.user_id = s.user_id").
+		Where("c.entity_id = ?", entityObject.Id)
+	if req.IsDelete != nil {
+		if *req.IsDelete == 0 {
+			db = db.Where("c.is_delete = 0")
+		} else if *req.IsDelete == 1 {
+			db = db.Where("c.is_delete = 1")
+		}
+	}
+
+	return FindEntityValuePageList(db, entityObject.Id, models.FindCrmValueParams{
+		FilterParams: req.FilterParams,
+		PageNum:      req.PageNum,
+		PageSize:     req.PageSize,
+		UserId:       req.UserId,
+	})
+}
+func FindEntityValuePageList(db *gorm.DB, entityId int64, req models.FindCrmValueParams) (*crmResponse.CrmEntityValueObjectVo, error) {
 	var vos []crmResponse.CrmEntityValueVo
 	fields, err := entityFieldMapper.GetEntityFieldsByEntityId(global.DB, entityId)
 	if err != nil {
@@ -203,6 +242,8 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 
 			result[field.FieldKey] = val
 		default:
+			val := lo.ValueOr(dict, field.FieldKey, "").(string)
+			result[field.FieldKey] = val
 		}
 
 	}

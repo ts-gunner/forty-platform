@@ -4,6 +4,15 @@ declare namespace API {
     valueId: string;
   };
 
+  type AdminGetCrmEntityValueListRequest = {
+    entityId: string;
+    filterParams?: Record<string, any>;
+    isDelete?: number;
+    pageNum?: number;
+    pageSize?: number;
+    userId?: string;
+  };
+
   type ApiResultAny = {
     code?: number;
     data?: any;
@@ -178,6 +187,7 @@ declare namespace API {
     customerName?: string;
     entityId?: string;
     id?: string;
+    isDelete?: number;
     remark?: string;
     userId?: string;
     userName?: string;

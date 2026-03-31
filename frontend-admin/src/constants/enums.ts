@@ -35,4 +35,5 @@ export enum CrmDataTypeEnum {
   Picker = "picker", // 选择器
   Date = "date", // 日期
   Region = "region", // 行政区划
+  Location = "location", // 定位器
 }

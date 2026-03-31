@@ -51,5 +51,10 @@ var (
 			Object:  "/ft/crm/value/list",
 			Action:  "POST",
 		},
+		models.CasbinRule{
+			Subject: ROLE_ADMIN,
+			Object:  "/ft/crm/value/listByAdmin",
+			Action:  "POST",
+		},
 	}
 )

@@ -1,6 +1,6 @@
 import { getEntityList } from "@/services/steins-admin/crmEntityController";
 import { getFieldsByEntityId } from "@/services/steins-admin/crmEntityFieldController";
-import { deleteEntityValue, getEntityValueList, insertEntityValue, updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
+import { deleteEntityValue, getEntityValueListByAdmin, insertEntityValue, updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
 import { generateCrmValueColumns } from "@/utils/crm";
 import { PlusOutlined } from "@ant-design/icons";
@@ -103,10 +103,23 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         align: "center",
       },
       {
+        title: "是否删除",
+        dataIndex: "isDelete",
+        key: "isDelete",
+        align: "center",
+        valueType: "select",
+        order: 1,
+        valueEnum: {
+          0: { text: "存在", status: "Success" },
+          1: { text: "已删除", status: "Error" },
+        },
+      },
+      {
         title: "操作",
         dataIndex: "action",
         key: "action",
         align: "center",
+        hideInSearch: true,
         render: (_, record: any) => {
           return (
             <div className="flex justify-center items-center gap-3">
@@ -169,10 +182,11 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
           </Button>,
         ]}
         request={async (params) => {
-          const resp = await getEntityValueList({
+          const resp = await getEntityValueListByAdmin({
             pageNum: params.current,
             pageSize: params.pageSize,
-            entityKey: entity.entityCode,
+            entityId: entity.entityId as string,
+            isDelete: Number.parseInt(params.isDelete),
           });
           let tableData: any[] = [];
           let total = 0;

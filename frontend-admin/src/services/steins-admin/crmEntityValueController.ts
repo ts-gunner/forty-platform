@@ -47,7 +47,7 @@ export async function insertEntityValue(
   });
 }
 
-/** 运营端 - 获取对应的实体表数据 POST /crm/value/list */
+/** 客户端 - 获取对应的实体表数据 POST /crm/value/list */
 export async function getEntityValueList(
   body: API.GetCrmEntityValueListRequest,
   options?: { [key: string]: any }
@@ -60,6 +60,24 @@ export async function getEntityValueList(
     data: body,
     ...(options || {}),
   });
+}
+
+/** 运营端 - 获取对应的实体表数据 POST /crm/value/listByAdmin */
+export async function getEntityValueListByAdmin(
+  body: API.AdminGetCrmEntityValueListRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultCrmCrmEntityValueObjectVo>(
+    "/crm/value/listByAdmin",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: body,
+      ...(options || {}),
+    }
+  );
 }
 
 /** 客户端 - 获取自己创建的客户信息 POST /crm/value/listBySelf */

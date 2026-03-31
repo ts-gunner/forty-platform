@@ -618,7 +618,7 @@
                 "tags": [
                     "CrmEntityValueController"
                 ],
-                "summary": "运营端 - 获取对应的实体表数据",
+                "summary": "客户端 - 获取对应的实体表数据",
                 "operationId": "getEntityValueList",
                 "parameters": [
                     {
@@ -628,6 +628,40 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/crm.GetCrmEntityValueListRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-crm_CrmEntityValueObjectVo"
+                        }
+                    }
+                }
+            }
+        },
+        "/crm/value/listByAdmin": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityValueController"
+                ],
+                "summary": "运营端 - 获取对应的实体表数据",
+                "operationId": "getEntityValueListByAdmin",
+                "parameters": [
+                    {
+                        "description": "查询实体数据参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.AdminGetCrmEntityValueListRequest"
                         }
                     }
                 ],
@@ -1761,6 +1795,35 @@
                 }
             }
         },
+        "crm.AdminGetCrmEntityValueListRequest": {
+            "type": "object",
+            "required": [
+                "entityId"
+            ],
+            "properties": {
+                "entityId": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "filterParams": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "isDelete": {
+                    "type": "integer"
+                },
+                "pageNum": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "0"
+                }
+            }
+        },
         "crm.CrmCustomerFavoriteVo": {
             "type": "object",
             "properties": {
@@ -1899,6 +1962,9 @@
                 "id": {
                     "type": "string",
                     "example": "0"
+                },
+                "isDelete": {
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"

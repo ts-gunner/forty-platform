@@ -11,6 +11,26 @@ definitions:
     - entityId
     - valueId
     type: object
+  crm.AdminGetCrmEntityValueListRequest:
+    properties:
+      entityId:
+        example: "0"
+        type: string
+      filterParams:
+        additionalProperties: {}
+        type: object
+      isDelete:
+        type: integer
+      pageNum:
+        type: integer
+      pageSize:
+        type: integer
+      userId:
+        example: "0"
+        type: string
+    required:
+    - entityId
+    type: object
   crm.CrmCustomerFavoriteVo:
     properties:
       createTime:
@@ -106,6 +126,8 @@ definitions:
       id:
         example: "0"
         type: string
+      isDelete:
+        type: integer
       remark:
         type: string
       userId:
@@ -1272,6 +1294,28 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/crm.GetCrmEntityValueListRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-crm_CrmEntityValueObjectVo'
+      summary: 客户端 - 获取对应的实体表数据
+      tags:
+      - CrmEntityValueController
+  /crm/value/listByAdmin:
+    post:
+      consumes:
+      - application/json
+      operationId: getEntityValueListByAdmin
+      parameters:
+      - description: 查询实体数据参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.AdminGetCrmEntityValueListRequest'
       produces:
       - application/json
       responses:

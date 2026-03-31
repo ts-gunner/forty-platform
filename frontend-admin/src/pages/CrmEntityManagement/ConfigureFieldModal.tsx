@@ -60,6 +60,10 @@ const DATA_TYPE_OPIONS = [
     label: "行政区划",
     value: "region",
   },
+    {
+    label: "定位",
+    value: "location",
+  },
 ];
 export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubmit, value }: ModalProps) {
   const [btnLoading, setBtnLoading] = useState<boolean>(false);

@@ -8,6 +8,15 @@ type GetCrmEntityValueListRequest struct {
 	UserId       int64          `json:"userId,string"`
 }
 
+type AdminGetCrmEntityValueListRequest struct {
+	PageNum      int            `json:"pageNum"`
+	PageSize     int            `json:"pageSize"`
+	FilterParams map[string]any `json:"filterParams"`
+	EntityId     int64          `json:"entityId,string" binding:"required"`
+	UserId       int64          `json:"userId,string"`
+	IsDelete     *int8          `json:"isDelete"`
+}
+
 type GetCrmEntityValueDetailRequest struct {
 	EntityValueId int64 `form:"entityValueId" json:"entityValueId" binding:"required"`
 }
