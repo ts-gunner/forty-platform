@@ -42,6 +42,7 @@ export default function SignIn() {
       <PageMeta title={`${config.title} | 登录`} description={config.description} />
       <AuthLayout>
         <SignInForm pwdLogin={pwdLogin} loading={btnLoading} />
+
       </AuthLayout>
     </>
   );

@@ -27,6 +27,17 @@ const LayoutContent: React.FC = () => {
         <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
           <Outlet />
         </div>
+
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
+          <a
+            href="https://beian.miit.gov.cn"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-500 hover:text-gray-400 transition-colors"
+          >
+            粤ICP备2021141816号
+          </a>
+        </div>
       </div>
     </div>
   );
