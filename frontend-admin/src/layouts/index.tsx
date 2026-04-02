@@ -24,11 +24,11 @@ const LayoutContent: React.FC = () => {
         className={`flex-1 transition-all duration-300 ease-in-out ${isExpanded || isHovered ? "lg:ml-[290px]" : "lg:ml-[90px]"} ${isMobileOpen ? "ml-0" : ""}`}
       >
         <AppHeader />
-        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+        <div className=" mx-auto max-w-(--breakpoint-2xl) p-4">
           <Outlet />
         </div>
 
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10">
           <a
             href="https://beian.miit.gov.cn"
             target="_blank"

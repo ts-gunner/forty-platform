@@ -1,7 +1,8 @@
 import { CrmDataTypeEnum } from "@/constant/enums";
 import { findSelectedNodes } from "@/utils/region";
-import { Picker, Text, View } from "@tarojs/components";
-import { AtInput, AtListItem, AtTextarea } from "taro-ui";
+import { Input, Picker, Text, View } from "@tarojs/components";
+import React, { useEffect, useState } from "react";
+import { AtIcon, AtInput, AtListItem, AtTextarea } from "taro-ui";
 
 export default function ValueBoxGenerator({
   field,
@@ -12,6 +13,7 @@ export default function ValueBoxGenerator({
   [key: string]: any;
 }) {
   const { dataType, fieldName, fieldKey, options, isRequired } = field;
+  const selectOptions = options ? options.split(",") : [];
 
   switch (dataType) {
     case CrmDataTypeEnum.Number:
@@ -79,7 +81,6 @@ export default function ValueBoxGenerator({
         </Picker>
       );
     case CrmDataTypeEnum.Picker:
-      const selectOptions = options ? options.split(",") : [];
       return (
         <Picker
           value={value || "未选择"}
@@ -101,6 +102,11 @@ export default function ValueBoxGenerator({
           />
         </Picker>
       );
+    case CrmDataTypeEnum.PickerOrOther:
+      return <PickerOrOther
+        value={value} onChange={onChange} options={selectOptions} fieldName={fieldName} isRequired={isRequired}
+        fieldKey={fieldKey}
+      />
     case CrmDataTypeEnum.Date:
       return (
         <Picker
@@ -164,4 +170,111 @@ export default function ValueBoxGenerator({
         />
       );
   }
+}
+
+// 选择器或自定义值
+const PickerOrOther: React.FC<{
+  value: any;
+  onChange: any;
+  options: string[];
+  isRequired: boolean;
+  fieldName: string
+  fieldKey: string
+}> = ({ value, onChange, options, isRequired, fieldName, fieldKey }) => {
+  const [localValue, setLocalValue] = useState<any>(value)
+  const [isInputMode, setIsInputMode] = useState(false) // true=输入框模式 false=选择器模式
+  const [customInputVal, setCustomInputVal] = useState('')
+
+  // 同步外部 value 变化
+  useEffect(() => {
+    setLocalValue(value)
+    if (value && !options.includes(value)) {
+      setIsInputMode(true)
+      setCustomInputVal(value)
+    }
+  }, [value, options])
+
+  // 3. 拼接完整选项：预设选项 + 自定义输入选项
+  const fullOptions = [...options, '其他']
+
+  // 4. Picker 选择回调
+  const handlePickerChange = (e: any) => {
+    const idx = parseInt(e.detail.value)
+    const selected = fullOptions[idx]
+
+    if (selected === '其他') {
+      // 选择【其他】→ 切换为输入框模式
+      setIsInputMode(true)
+      setLocalValue('')
+      onChange('')
+    } else {
+      setIsInputMode(false)
+      setLocalValue(selected)
+      onChange(selected)
+    }
+  }
+  // 🔑 输入框变化
+  const handleInputChange = (e: any) => {
+    setCustomInputVal(e)
+    onChange(e)
+  }
+
+  // 🔑 切回 Picker 选择器
+  const switchToPicker = () => {
+    setIsInputMode(false)
+    setCustomInputVal('')
+  }
+
+  return (
+    <View className="w-full">
+      {/* ====================== */}
+      {/* 模式 1：Picker 选择器（默认） */}
+      {/* ====================== */}
+      {!isInputMode && (
+        <Picker
+          value={localValue || "未选择"}
+          onChange={handlePickerChange}
+          range={fullOptions}
+        >
+          <AtListItem
+            title={
+              <View className="flex items-center gap-1">
+                {isRequired && <Text className="text-red-600">*</Text>}
+                {fieldName}
+              </View>
+            }
+            extraText={localValue || '请选择'}
+            arrow="right"
+          />
+        </Picker>
+      )}
+
+      {/* ====================== */}
+      {/* 模式 2：Input 输入框（选择其他后显示） */}
+      {/* ====================== */}
+      {isInputMode && (
+       <View className="flex items-center justify-between pr-4">
+         <AtInput
+          cursor={-1}
+          name={fieldKey}
+          title={fieldName}
+          required={isRequired}
+          placeholder={"请输入" + fieldName}
+          value={customInputVal}
+          onChange={handleInputChange}
+        />
+           <AtIcon
+                value="repeat-play"
+                size="24"
+                color="#999"
+                onClick={switchToPicker}
+                className="cursor-pointer"
+              />
+       </View>
+      
+
+      )}
+    </View>
+  )
+
 }
