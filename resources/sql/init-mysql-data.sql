@@ -24,7 +24,7 @@ INSERT INTO `crm_customer_fields`(`id`, `entity_id`, `field_key`, `field_name`, 
 (1007, 1, "project_name", "主营项目", "text", null, 1, 5, 1001),
 (1008, 1, "region", "区域地址", "region", null, 1, 6, 1001),
 (1009, 1, "detail_addr", "详细地址", "location", null, 1, 7, 1001),
-(1010, 1, "cooperate_type", "合作类型", "picker", '["成品厂", "配件厂", "贸易商", "代理商", "其他"]', 1, 8, 1001),
-(1011, 1, "customer_type", "客户类型", "picker", '["杂志客户", "网络客户", "会员客户", "普通客户", "其他"]', 1, 9, 1001),
-(1012, 1, "customer_category", "客户分类", "picker", '["音响", "专业音响","舞台灯光", "其他"]', 1, 10, 1001),
-(1013, 1, "customer_source", "客户来源", "picker", '["抖音", "微信", "小红书", "其他"]', 1, 11, 1001);
+(1010, 1, "cooperate_type", "合作类型", "picker_or_other", '["成品厂", "配件厂", "贸易商", "代理商"]', 1, 8, 1001),
+(1011, 1, "customer_type", "客户类型", "picker_or_other", '["杂志客户", "网络客户", "会员客户", "普通客户"]', 1, 9, 1001),
+(1012, 1, "customer_category", "客户分类", "picker_or_other", '["音响", "专业音响","舞台灯光"]', 1, 10, 1001),
+(1013, 1, "customer_source", "客户来源", "picker_or_other", '["抖音", "微信", "小红书"]', 1, 11, 1001);

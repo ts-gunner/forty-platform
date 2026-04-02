@@ -3,9 +3,9 @@ import { regionOptions } from "@/utils/region";
 import { Cascader, DatePicker, Input, InputNumber, Select } from "antd";
 import dayjs from "dayjs";
 
-export default function ValueBoxGenerator({ field, value, onChange }: { field: API.CrmEntityFieldVo; [key: string]: any }) {
+export default function ValueBoxGenerator({ field, value, onChange }: { field: API.CrmEntityFieldVo;[key: string]: any }) {
   const { dataType, fieldName, options } = field;
-  console.log("dataType, fieldName, options", dataType, fieldName, options);
+  let selectOptions = options ? options.split(",") : [];
   switch (dataType) {
     case CrmDataTypeEnum.Number:
       return <InputNumber value={value} onChange={onChange} className="w-full" placeholder={`请输入${fieldName}`} />;
@@ -29,12 +29,33 @@ export default function ValueBoxGenerator({ field, value, onChange }: { field: A
         ></Select>
       );
     case CrmDataTypeEnum.Picker:
-      const selectOptions = options ? options.split(",") : [];
+
       return (
         <Select
           value={value || "未选择"}
           allowClear
           onChange={onChange}
+          placeholder={`请选择${fieldName}`}
+          options={selectOptions.map((opt: any) => ({
+            label: opt,
+            value: opt,
+          }))}
+        ></Select>
+      );
+    case CrmDataTypeEnum.PickerOrOther:
+      return (
+        <Select
+          mode="tags"
+          maxCount={1}
+          value={value ? [value] : []}
+          allowClear
+          onChange={(val) => {
+            if (val.length > 0) {
+              onChange(val[0])
+            } else {
+              onChange("")
+            }
+          }}
           placeholder={`请选择${fieldName}`}
           options={selectOptions.map((opt: any) => ({
             label: opt,

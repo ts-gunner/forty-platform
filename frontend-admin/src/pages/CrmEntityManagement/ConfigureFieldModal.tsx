@@ -64,6 +64,10 @@ const DATA_TYPE_OPIONS = [
     label: "定位",
     value: "location",
   },
+      {
+    label: "选择或自定义",
+    value: "picker_or_other",
+  },
 ];
 export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubmit, value }: ModalProps) {
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
@@ -248,7 +252,7 @@ export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubm
                           >
                             {({ getFieldValue }) => {
                               const dataType = getFieldValue(["customers", name, "dataType"]);
-                              return dataType === CrmDataTypeEnum.Picker ? (
+                              return [CrmDataTypeEnum.Picker, CrmDataTypeEnum.PickerOrOther].includes(dataType)  ? (
                                 <Form.Item {...restField} name={[name, "options"]} rules={[{ required: true, message: "请输入选项内容" }]}>
                                   <Input placeholder="选项(用逗号隔开，如: A,B,C)" />
                                 </Form.Item>

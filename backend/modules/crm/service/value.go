@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/ts-gunner/forty-platform/common/models"
 	"strings"
 	"time"
+
+	"github.com/ts-gunner/forty-platform/common/models"
 
 	"gorm.io/gorm"
 
@@ -183,7 +184,7 @@ func (EntityValueService) GetEntityValueDetailBySelf(ctx context.Context, entity
 func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues string) (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 
-	// 解析 values
+	// 解析并校验 values
 	var dict map[string]interface{}
 	if err := json.Unmarshal([]byte(entityValues), &dict); err != nil {
 		return nil, err
@@ -191,12 +192,6 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 
 	for _, field := range fieldList {
 		switch enums.CrmFieldDataType(field.DataType) {
-		case enums.CrmDataTypeText:
-			val := lo.ValueOr(dict, field.FieldKey, "").(string)
-			if field.IsRequired && val == "" {
-				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-			}
-			result[field.FieldKey] = val
 		case enums.CrmDataTypeNumber:
 			val := lo.ValueOr(dict, field.FieldKey, -1).(int)
 			if field.IsRequired && val == -1 {
@@ -217,13 +212,6 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 					return nil, errors.New(fmt.Sprintf("[%s]日期格式不正确，应为 YYYY-MM-DD", field.FieldName))
 				}
 			}
-
-			result[field.FieldKey] = val
-		case enums.CrmDataTypeRegion:
-			val := lo.ValueOr(dict, field.FieldKey, "").(string)
-			if field.IsRequired && val == "" {
-				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-			}
 			result[field.FieldKey] = val
 		case enums.CrmDataTypePicker:
 			val := lo.ValueOr(dict, field.FieldKey, "").(string)
@@ -239,10 +227,12 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 			if val != "" && !lo.Contains(options, val) {
 				return nil, errors.New(fmt.Sprintf("【%s】 不在[%s]该字段的选择范围内", val, field.FieldName))
 			}
-
 			result[field.FieldKey] = val
 		default:
 			val := lo.ValueOr(dict, field.FieldKey, "").(string)
+			if field.IsRequired && val == "" {
+				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			}
 			result[field.FieldKey] = val
 		}
 
