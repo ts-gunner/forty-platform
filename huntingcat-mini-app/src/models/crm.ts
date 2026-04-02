@@ -14,6 +14,7 @@ import {
   getEntityValueListBySelf,
   updateEntityValue,
 } from "@/services/steins-admin/crmEntityValueController";
+import { addCustomerFavorite, removeCustomerFavorite } from "@/services/steins-admin/crmCustomerFavoriteController";
 
 const initState: ReduxModel.CrmModelType = {
   entityVo: undefined,
@@ -189,9 +190,43 @@ export const crmModel = createModel<RootModel>()({
         });
       }
     },
-    handleFavoriteCustomer: async (payload: {
-      mode?: "mine" | "all";
-      value: API.CrmEntityValueVo;
-    }) => {},
+    handleChangeFavorite: async (payload: {
+      mode: "mine" | "all"
+      isFavorite: boolean
+      entityId: string
+      valueId: string
+    }) => {
+      if (payload.isFavorite) {
+        // 取消收藏
+        const resp = await removeCustomerFavorite({
+          entityId: payload.entityId,
+          valueId: payload.valueId,
+        });
+        handleResponse({
+          resp,
+          onSuccess: () => {
+            dispatch.crmModel.getEntityValues({mode: payload.mode})
+          },
+          onError: () => {
+            Notify.fail("取消收藏失败");
+          },
+        });
+      } else {
+        // 添加收藏
+        const resp = await addCustomerFavorite({
+          entityId: payload.entityId,
+          valueId: payload.valueId,
+        });
+        handleResponse({
+          resp,
+          onSuccess: () => {
+             dispatch.crmModel.getEntityValues({mode: payload.mode})
+          },
+          onError: () => {
+            Notify.fail("收藏失败");
+          },
+        });
+      }
+    },
   }),
 });

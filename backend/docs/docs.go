@@ -1974,6 +1974,9 @@ const docTemplate = `{
                 "isDelete": {
                     "type": "integer"
                 },
+                "isFavorite": {
+                    "type": "integer"
+                },
                 "remark": {
                     "type": "string"
                 },

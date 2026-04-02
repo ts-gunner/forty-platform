@@ -1,7 +1,7 @@
 import { deleteEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { Dispatch } from "@/store";
 import { cn, handleResponse, Notify } from "@/utils/common";
-import { Text, View } from "@tarojs/components";
+import { Button, Text, View } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -31,17 +31,19 @@ export const CustomerCard: React.FC<{
         });
       },
     },
-    // {
-    //   title: "收藏",
-    //   bg: "bg-amber-700",
-    //   icon: "star",
-    //   onClick: () => {
-    //     dispatch.crmModel.handleFavoriteCustomer({
-    //       mode: "mine",
-    //       value: data
-    //     })
-    //   }
-    // },
+    {
+      title: "收藏",
+      bg: "bg-yellow-500",
+      icon: data.isFavorite ? "star-2" : "star",
+      onClick: () => {
+        dispatch.crmModel.handleChangeFavorite({
+          mode,
+          isFavorite: data.isFavorite === 1,
+          entityId: data.entityId,
+          valueId: data.id
+        })
+      }
+    },
     {
       title: "删除",
       bg: "bg-red-500",
@@ -74,20 +76,36 @@ export const CustomerCard: React.FC<{
   const CustomerBaseInfo = BaseCustomerCard(actions)(() => {
     return (
       <>
-        <View className="space-y-2">
-          <InfoItem
-            label={dispatch.crmModel.getFieldName("contract_name")}
-            value={dataObject["contract_name"]}
-          />
-          <InfoItem
-            label={dispatch.crmModel.getFieldName("contract_phone")}
-            value={dataObject["contract_phone"]}
-          />
-          <InfoItem
-            label={dispatch.crmModel.getFieldName("detail_addr")}
-            value={dataObject["detail_addr"]}
-          />
+        <View className="flex justify-between pr-4">
+          <View className="space-y-2">
+            <InfoItem
+              label={dispatch.crmModel.getFieldName("contract_name")}
+              value={dataObject["contract_name"]}
+            />
+            <InfoItem
+              label={dispatch.crmModel.getFieldName("contract_phone")}
+              value={dataObject["contract_phone"]}
+            />
+            <InfoItem
+              label={dispatch.crmModel.getFieldName("detail_addr")}
+              value={dataObject["detail_addr"]}
+            />
+          </View>
+          {/* <View onClick={(e) => {
+            e.stopPropagation()
+            dispatch.crmModel.handleChangeFavorite({
+              mode,
+              isFavorite: data.isFavorite === 1,
+              entityId: data.entityId,
+              valueId: data.id
+            })
+          }}>
+            <AtIcon value={data.isFavorite ? "star-2" : "star"} size="24" className="text-yellow-500" />
+          </View> */}
+
+
         </View>
+
         {mode === "all" && (
           <>
             {/* 分隔虚线或细线 */}
@@ -136,7 +154,6 @@ export const CustomerCard: React.FC<{
           </Text>
         </View>
       </View>
-
       <CustomerBaseInfo />
     </View>
   );

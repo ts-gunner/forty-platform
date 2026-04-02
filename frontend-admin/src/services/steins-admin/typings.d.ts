@@ -188,6 +188,7 @@ declare namespace API {
     entityId?: string;
     id?: string;
     isDelete?: number;
+    isFavorite?: number;
     remark?: string;
     userId?: string;
     userName?: string;

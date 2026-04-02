@@ -16,6 +16,7 @@ type CrmEntityValueVo struct {
 	UserName     string    `json:"userName"`
 	CreateTime   time.Time `json:"createTime"`
 	IsDelete     int8      `json:"isDelete"`
+	IsFavorite   int8      `json:"isFavorite"`
 }
 
 type CrmEntityValueObjectVo struct {

@@ -38,8 +38,9 @@ func (EntityValueService) GetEntityValuePageListBySelf(ctx context.Context, req 
 		return nil, errors.New("该实体不存在")
 	}
 	db := global.DB.Table("crm_customer_values c").
-		Select("c.*, s.nickname as user_name").
+		Select("c.*, s.nickname as user_name, IF(f.id is not null, 1, 0) as is_favorite").
 		Joins("LEFT JOIN sys_user s ON c.user_id = s.user_id").
+		Joins("LEFT JOIN crm_customer_favorite f ON f.entity_id = c.entity_id AND f.value_id = c.id").
 		Where("c.entity_id = ? and c.user_id = ? and c.is_delete = 0", entityObject.Id, utils.GetLoginUserId(ctx))
 	return FindEntityValuePageList(db, entityObject.Id, models.FindCrmValueParams{
 		FilterParams: req.FilterParams,
