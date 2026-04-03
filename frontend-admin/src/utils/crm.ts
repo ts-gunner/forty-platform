@@ -53,7 +53,7 @@ export const handleCrmValueByField = (field: API.CrmEntityFieldVo, data: any) =>
       let addr = "";
       try {
         let loc = JSON.parse(data?.[field.fieldKey]);
-        addr = loc?.address + `(${loc?.longitude}, ${loc.latitude})`
+        addr = loc?.address 
       } catch {
         addr = data?.[field.fieldKey];
       }
