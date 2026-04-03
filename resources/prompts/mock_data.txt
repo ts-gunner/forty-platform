@@ -7,14 +7,14 @@ INSERT INTO `crm_customer_fields`(`id`, `entity_id`, `field_key`, `field_name`, 
 (1006, 1, "origin_addr", "籍贯", "text", null, 1, 4, 1001),
 (1007, 1, "project_name", "主营项目", "text", null, 1, 5, 1001),
 (1008, 1, "region", "区域地址", "region", null, 1, 6, 1001),
-(1009, 1, "detail_addr", "详细地址", "text", null, 1, 7, 1001),
-(1010, 1, "cooperate_type", "合作类型", "picker", '["成品厂", "配件厂", "贸易商", "代理商"]', 1, 8, 1001),
-(1011, 1, "customer_type", "客户类型", "picker", '["杂志客户", "网络客户", "会员客户", "普通客户"]', 1, 9, 1001),
-(1012, 1, "customer_category", "客户分类", "picker", '["3C数码", "电子烟"]', 1, 10, 1001),
-(1013, 1, "customer_source", "客户来源", "picker", '["抖音", "微信", "小红书"]', 1, 11, 1001);
+(1009, 1, "detail_addr", "详细地址", "location", null, 1, 7, 1001),
+(1010, 1, "cooperate_type", "合作类型", "picker_or_other", '["成品厂", "配件厂", "贸易商", "代理商"]', 1, 8, 1001),
+(1011, 1, "customer_type", "客户类型", "picker_or_other", '["杂志客户", "网络客户", "会员客户", "普通客户"]', 1, 9, 1001),
+(1012, 1, "customer_category", "客户分类", "picker_or_other", '["3C数码", "电子烟"]', 1, 10, 1001),
+(1013, 1, "customer_source", "客户来源", "picker_or_other", '["抖音", "微信", "小红书"]', 1, 11, 1001);
 
 values的字段解释如上， 我需要你理解字段解释，并且mock40条假数据，以SQL形式返回。格式如下
 
 
 INSERT INTO crm_customer_values(`entity_id`, `customer_name`, `user_id`, `values`, `creator_id`) VALUES
-(1, '', 1001, '{"email": "22222", "region": "11,1101,110105", "remark": "", "job_title": "CEO", "setup_date": "", "detail_addr": "小米汽车之家", "origin_addr": "湖北", "is_long_time": true, "project_name": "小米汽车", "contract_name": "雷军", "customer_name": "北京小米科技有限公司", "customer_type": "会员客户", "contract_phone": "1355522112", "cooperate_type": "成品厂", "customer_source": "抖音", "customer_category": "电子烟"}',1001),
+(1, '深圳恒信数码科技有限公司', 1001, '{"region": "11,1101,110101", "remark": "", "job_title": "dda", "detail_addr": "{\\"latitude\\":23.099091,\\"longitude\\":113.315132,\\"address\\":\\"广州大道368大厦\\"}", "origin_addr": "add", "project_name": "ss", "contract_name": "sdd", "customer_name": "asdasd", "customer_type": "杂志客户", "contract_phone": "ss", "cooperate_type": "成品厂", "customer_source": "抖音", "customer_category": "3C数码"}',1001)

@@ -9,6 +9,7 @@ INSERT INTO `sys_role` (`role_id`, `role_name`, `role_key`, `creator_id`) VALUES
 (1002, "微信CRM用户", "wechat_crm_user", 0),
 (1003, "微信CRM管理员", "wechat_crm_admin", 0);
 
+INSERT INTO `casbin_rule` (`ptype`, `v0`, `v1`) VALUES ('g', '1001', 'admin');
 
 INSERT INTO `crm_customer_entity` (`id`, `entity_name`, `entity_code`, `description`, `creator_id`) VALUES
 (1, "猎猫客户信息表", "huntingcat_customer", "", 1001);
