@@ -60,6 +60,7 @@ func (EntityValueService) GetEntityValuePageList(req request.GetCrmEntityValueLi
 	db := global.DB.Table("crm_customer_values c").
 		Select("c.*, s.nickname as user_name").
 		Joins("LEFT JOIN sys_user s ON c.user_id = s.user_id").
+		Joins("LEFT JOIN crm_customer_favorite f ON f.entity_id = c.entity_id AND f.value_id = c.id").
 		Where("c.entity_id = ? and c.is_delete = 0", entityObject.Id)
 
 	return FindEntityValuePageList(db, entityObject.Id, models.FindCrmValueParams{
@@ -227,6 +228,15 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 			}
 			if val != "" && !lo.Contains(options, val) {
 				return nil, errors.New(fmt.Sprintf("【%s】 不在[%s]该字段的选择范围内", val, field.FieldName))
+			}
+			result[field.FieldKey] = val
+		case enums.CrmDataTypeLocation:
+			val := lo.ValueOr(dict, field.FieldKey, "").(string)
+			var location models.LocationData
+			if err := json.Unmarshal([]byte(val), &location); err != nil {
+				errorMsg := fmt.Sprintf("[%s]该字段的值反序列化异常", field.FieldName)
+				global.Logger.Error(errorMsg, zap.Any("location", location))
+				return nil, errors.New(errorMsg)
 			}
 			result[field.FieldKey] = val
 		default:

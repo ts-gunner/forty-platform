@@ -135,6 +135,7 @@ function CreateCustomerPage() {
                         field={tableFields[idx]}
                         value={createData[fieldKey]}
                         onChange={(val: any) => {
+                          console.log("val", val)
                           setCreateData((prev) => ({
                             ...prev,
                             [fieldKey]: val,

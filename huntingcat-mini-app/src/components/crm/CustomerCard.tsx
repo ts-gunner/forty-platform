@@ -1,10 +1,12 @@
 import { deleteEntityValue } from "@/services/steins-admin/crmEntityValueController";
-import { Dispatch } from "@/store";
+import { Dispatch, RootState } from "@/store";
 import { cn, handleResponse, Notify } from "@/utils/common";
+import { handleCrmValueByField, handleCrmValueByFieldKey } from "@/utils/crm";
+import { findSelectedNodes } from "@/utils/region";
 import { Button, Text, View } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AtIcon } from "taro-ui";
 interface ActionItem {
   title: string;
@@ -19,6 +21,7 @@ export const CustomerCard: React.FC<{
   onClick: (key: string) => void;
 }> = ({ mode, data, onClick }) => {
   const dispatch = useDispatch<Dispatch>();
+  const tableFields = useSelector((state: RootState) => state.crmModel.tableFields)
   const dataObject = JSON.parse(data.values);
   const actions = [
     {
@@ -40,9 +43,9 @@ export const CustomerCard: React.FC<{
           mode,
           isFavorite: data.isFavorite === 1,
           entityId: data.entityId,
-          valueId: data.id
-        })
-      }
+          valueId: data.id,
+        });
+      },
     },
     {
       title: "删除",
@@ -80,30 +83,55 @@ export const CustomerCard: React.FC<{
           <View className="space-y-2">
             <InfoItem
               label={dispatch.crmModel.getFieldName("contract_name")}
-              value={dataObject["contract_name"]}
+              value={handleCrmValueByFieldKey(tableFields, "contract_name", dataObject)}
             />
             <InfoItem
               label={dispatch.crmModel.getFieldName("contract_phone")}
-              value={dataObject["contract_phone"]}
+              value={handleCrmValueByFieldKey(tableFields, "contract_phone", dataObject)}
             />
-            <InfoItem
-              label={dispatch.crmModel.getFieldName("detail_addr")}
-              value={dataObject["detail_addr"]}
+            <View className="flex items-center gap-2">
+              <InfoItem
+                label={dispatch.crmModel.getFieldName("detail_addr")}
+                value={handleCrmValueByFieldKey(tableFields, "detail_addr", dataObject)}
+              />
+              <View
+                onClick={(e) => {
+                  e.stopPropagation();
+                  try {
+                    let addr = JSON.parse(dataObject["detail_addr"])
+                     Taro.openLocation({
+                        latitude: addr?.latitude,
+                        longitude: addr?.longitude,
+                        scale: 18,
+                        address: addr?.address,
+                      });
+                  }catch {
+                    Notify.fail("地址异常, 无法查询位置")
+                  }
+                 
+                }}
+              >
+                <AtIcon value="map-pin" size="20" />
+              </View>
+            </View>
+          </View>
+          <View
+            onClick={(e) => {
+              e.stopPropagation();
+              dispatch.crmModel.handleChangeFavorite({
+                mode,
+                isFavorite: data.isFavorite === 1,
+                entityId: data.entityId,
+                valueId: data.id,
+              });
+            }}
+          >
+            <AtIcon
+              value={data.isFavorite ? "star-2" : "star"}
+              size="24"
+              className="text-yellow-500"
             />
           </View>
-          {/* <View onClick={(e) => {
-            e.stopPropagation()
-            dispatch.crmModel.handleChangeFavorite({
-              mode,
-              isFavorite: data.isFavorite === 1,
-              entityId: data.entityId,
-              valueId: data.id
-            })
-          }}>
-            <AtIcon value={data.isFavorite ? "star-2" : "star"} size="24" className="text-yellow-500" />
-          </View> */}
-
-
         </View>
 
         {mode === "all" && (
@@ -223,18 +251,21 @@ function BaseCustomerCard(actions: ActionItem[]) {
               {actions.map((it) => (
                 <View
                   key={it.title}
-                  onClick={(e: any) => {
-                    e.stopPropagation()
-                    it.onClick()
-                  }}
-                  className={cn(
-                    "h-full flex flex-col items-center justify-center gap-1 transition-opacity",
-                    it.bg,
-                  )}
+                  className="flex"
                   style={{ width: `${actionWidth}px` }}
                 >
-                  <AtIcon value={it.icon} className="text-white" size={16} />
-                  <Text className="text-white text-[0.9em]">{it.title}</Text>
+                  <View
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      it.onClick();
+                    }}
+                    className={cn(
+                      "h-full flex items-center justify-center gap-1 rounded-full p-2",
+                      it.bg,
+                    )}
+                  >
+                    <AtIcon value={it.icon} className="text-white" size={16} />
+                  </View>
                 </View>
               ))}
             </View>

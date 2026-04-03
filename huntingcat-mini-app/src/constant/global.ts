@@ -3,7 +3,7 @@ export const APP_CONFIG = {
 };
 
 // 后端前缀url
-export const API_PREFIX_URL = "http://192.168.5.61:18888/ft";
+export const API_PREFIX_URL = "http://192.168.3.198:18888/ft";
 // export const API_PREFIX_URL = "https://www.huntingcat.top/ft";
 // export const API_PREFIX_URL = "http://8.163.58.128/ft";
 

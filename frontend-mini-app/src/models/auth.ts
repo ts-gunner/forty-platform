@@ -45,8 +45,6 @@ export const authModel = createModel<RootModel>()({
     effects: (dispatch) => ({
         userLogin: (code: string) => {
             dispatch.authModel.setAuthLoading(true)
-            console.log("code", code)
-           
 
             setTimeout(() => {
                 dispatch.authModel.setUserInfo({

@@ -39,7 +39,6 @@ function MyCustomerPage() {
     if (CURRENT_PAGE === activeRoute) {
       getCrmDataBySelf();
     } else {
-      console.log("my customer注销数据");
       // 跳转到其他页面时，注销数据
       dispatch.crmModel.initMyCustomerData();
     }

@@ -49,6 +49,15 @@ export const handleCrmValueByField = (field: API.CrmEntityFieldVo, data: any) =>
       return data?.[field.fieldKey] === true ? "是" : "否";
     case CrmDataTypeEnum.Region:
       return findSelectedNodes(data?.[field.fieldKey])
+    case CrmDataTypeEnum.Location:
+      let addr = "";
+      try {
+        let loc = JSON.parse(data?.[field.fieldKey]);
+        addr = loc?.address + `(${loc?.longitude}, ${loc.latitude})`
+      } catch {
+        addr = data?.[field.fieldKey];
+      }
+      return addr;
     default:
       return data?.[field.fieldKey];
   }

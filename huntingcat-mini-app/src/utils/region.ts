@@ -20,7 +20,7 @@ const formatOptions = (data: DataNode[]): CascaderOption[] => {
   }));
 };
 
-export const findSelectedNodes = (valueStr: string) => {
+export const findSelectedNodes = (valueStr: string, sep: string=" / ") => {
   if (!valueStr) return "";
 
   // 1. 分割字符串
@@ -39,7 +39,7 @@ export const findSelectedNodes = (valueStr: string) => {
   ].filter(Boolean); // 过滤掉 undefined
 
   // 4. 返回拼接后的字符串
-  return names.join(' / ');
+  return names.join(sep);
 };
 
 

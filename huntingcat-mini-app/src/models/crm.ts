@@ -110,7 +110,6 @@ export const crmModel = createModel<RootModel>()({
       state,
     ) => {
       Notify.loading("数据加载中....");
-      console.log("filterParams", state.crmModel.filterParams)
       let resp: API.ApiResultCrmCrmEntityValueObjectVo;
       if (payload.mode === "mine") {
         resp = await getEntityValueListBySelf({
