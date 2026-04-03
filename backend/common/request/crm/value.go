@@ -1,5 +1,7 @@
 package crm
 
+import "mime/multipart"
+
 type GetCrmEntityValueListRequest struct {
 	PageNum      int            `json:"pageNum"`
 	PageSize     int            `json:"pageSize"`
@@ -41,4 +43,9 @@ type UpdateCrmEntityValueRequest struct {
 
 type DeleteCrmEntityValueRequest struct {
 	Id int64 `json:"id,string" binding:"required"`
+}
+
+type UploadCrmValueRequest struct {
+	File     *multipart.FileHeader `form:"file" json:"file"`
+	EntityId int64                 `form:"entityId,string" json:"entityId,string"`
 }

@@ -23,6 +23,7 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 	routerGroup.POST("/insert", insertEntityValue)
 	routerGroup.POST("/update", updateEntityValue)
 	routerGroup.POST("/delete", deleteEntityValue)
+	routerGroup.POST("/uploadCrmExcel", uploadCrmExcel)
 
 }
 
@@ -199,6 +200,26 @@ func deleteEntityValue(c *gin.Context) {
 	if err != nil {
 		global.Logger.Error("删除客户实体表数据失败", zap.Error(err))
 		response.Fail(http.StatusBadRequest, fmt.Sprintf("删除客户实体表数据失败: %v", err), c)
+		return
+	}
+
+	response.Ok(c)
+}
+
+// @Tags CrmEntityValueController
+// @ID uploadCrmExcel
+// @Router /crm/value/uploadCrmExcel [post]
+// @Summary 上传表格，添加客户数据
+// @Accept mpfd
+// @Produce json
+// @Param file formData file false "上传的表格数据"
+// @Param entityId formData string false "实体表id"
+// @Success 200 {object} response.ApiResult[any]
+func uploadCrmExcel(c *gin.Context) {
+	var req request.UploadCrmValueRequest
+	if err := c.ShouldBind(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return
 	}
 

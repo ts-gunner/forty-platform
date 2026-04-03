@@ -743,6 +743,43 @@
                 }
             }
         },
+        "/crm/value/uploadCrmExcel": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityValueController"
+                ],
+                "summary": "上传表格，添加客户数据",
+                "operationId": "uploadCrmExcel",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "上传的表格数据",
+                        "name": "file",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "实体表id",
+                        "name": "entityId",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/system/auth/adminPwdLogin": {
             "post": {
                 "consumes": [

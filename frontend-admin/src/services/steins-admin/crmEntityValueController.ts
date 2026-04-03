@@ -112,3 +112,45 @@ export async function updateEntityValue(
     ...(options || {}),
   });
 }
+
+/** 上传表格，添加客户数据 POST /crm/value/uploadCrmExcel */
+export async function uploadCrmExcel(
+  body: {
+    /** 实体表id */
+    entityId?: string;
+  },
+  file?: File,
+  options?: { [key: string]: any }
+) {
+  const formData = new FormData();
+
+  if (file) {
+    formData.append("file", file);
+  }
+
+  Object.keys(body).forEach((ele) => {
+    const item = (body as any)[ele];
+
+    if (item !== undefined && item !== null) {
+      if (typeof item === "object" && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ""));
+        } else {
+          formData.append(
+            ele,
+            new Blob([JSON.stringify(item)], { type: "application/json" })
+          );
+        }
+      } else {
+        formData.append(ele, item);
+      }
+    }
+  });
+
+  return request<API.ApiResultAny>("/crm/value/uploadCrmExcel", {
+    method: "POST",
+    data: formData,
+    requestType: "form",
+    ...(options || {}),
+  });
+}

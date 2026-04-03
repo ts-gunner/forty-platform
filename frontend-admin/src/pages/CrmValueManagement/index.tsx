@@ -1,11 +1,17 @@
 import { getEntityList } from "@/services/steins-admin/crmEntityController";
 import { getFieldsByEntityId } from "@/services/steins-admin/crmEntityFieldController";
-import { deleteEntityValue, getEntityValueListByAdmin, insertEntityValue, updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
+import {
+  deleteEntityValue,
+  getEntityValueListByAdmin,
+  insertEntityValue,
+  updateEntityValue,
+  uploadCrmExcel,
+} from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
 import { generateCrmValueColumns } from "@/utils/crm";
-import { PlusOutlined } from "@ant-design/icons";
+import { CloudUploadOutlined, PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
-import { Button, Popconfirm, Tabs } from "antd";
+import { Button, Popconfirm, Tabs, Upload } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { history } from "umi";
 import CreateEntityValueModal from "./CreateEntityValueModal";
@@ -171,6 +177,32 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         columns={columns}
         key={"id"}
         toolBarRender={() => [
+          <Upload
+            maxCount={1}
+            showUploadList={false}
+            customRequest={async ({ file, onSuccess, onError }) => {
+              const resp = await uploadCrmExcel(
+                {
+                  entityId: entity.entityId,
+                },
+                file as File,
+              );
+              handleResponse({
+                resp,
+                onSuccess: () => {
+                  Notify.ok("插入数据成功:" + resp.msg);
+                  onSuccess?.(null)
+                },
+                onError: () => {
+                  Notify.fail("录入数据失败:" + resp.msg);
+                },
+              });
+            }}
+          >
+            <Button key="upload_excel">
+              <CloudUploadOutlined /> 上传表格
+            </Button>
+          </Upload>,
           <Button
             type="primary"
             key="primary"
