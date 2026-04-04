@@ -31,9 +31,10 @@ backend
 |    casbin    |    github.com/casbin/casbin/v3    |      权限校验       |
 | gorm-adapter | github.com/casbin/gorm-adapter/v3 |    权限校验的适配器     |
 |  go-swagger  |   github.com/swaggo/gin-swagger   |      api文档      |
-|      lo      |  	github.com/samber/lo   | go工具包，类似lodash	 |
+|      lo      |       	github.com/samber/lo       | go工具包，类似lodash	 |
 |    redis     |   	github.com/go-redis/redis/v8   |     redis	      |
 |     gmsm     |      	github.com/tjfoc/gmsm       |      国密算法	      |
+|   excelize   |   github.com/xuri/excelize/v2     |    处理excel表格    |
 
 
 # 系统存储策略

@@ -222,6 +222,11 @@ func uploadCrmExcel(c *gin.Context) {
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return
 	}
-
+	err := entityValueService.HandleUploadExcel(c.Request.Context(), req)
+	if err != nil {
+		global.Logger.Error("上传实体表数据失败", zap.Error(err))
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("上传实体表数据失败: %v", err), c)
+		return
+	}
 	response.Ok(c)
 }

@@ -152,7 +152,8 @@ CREATE TABLE IF NOT EXISTS crm_customer_values (
     `is_delete` TINYINT DEFAULT 0 NOT NULL COMMENT '是否删除',
     `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
     `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `delete_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间'
+    `delete_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间',
+    UNIQUE KEY verify_unique_field(`entity_id`, `customer_name`, `user_id`,`is_delete`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '客户信息数据表';
 
 DROP TABLE IF EXISTS crm_customer_favorite;

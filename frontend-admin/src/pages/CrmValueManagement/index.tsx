@@ -179,8 +179,11 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         toolBarRender={() => [
           <Upload
             maxCount={1}
+            accept={".xlsx,.xls"}
+            multiple={false}
             showUploadList={false}
             customRequest={async ({ file, onSuccess, onError }) => {
+              setPageLoading(true);
               const resp = await uploadCrmExcel(
                 {
                   entityId: entity.entityId,
@@ -192,10 +195,14 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
                 onSuccess: () => {
                   Notify.ok("插入数据成功:" + resp.msg);
                   onSuccess?.(null)
+                  actionRef.current?.reload()
                 },
                 onError: () => {
                   Notify.fail("录入数据失败:" + resp.msg);
                 },
+                onFinish: () => {
+                  setPageLoading(false);
+                }
               });
             }}
           >

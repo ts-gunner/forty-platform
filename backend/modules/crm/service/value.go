@@ -5,10 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/ts-gunner/forty-platform/common/models"
+	"github.com/xuri/excelize/v2"
+	"gorm.io/gorm/clause"
 
 	"gorm.io/gorm"
 
@@ -193,62 +196,74 @@ func handleValueByFieldList(fieldList []entity.CrmCustomerFields, entityValues s
 	}
 
 	for _, field := range fieldList {
-		switch enums.CrmFieldDataType(field.DataType) {
-		case enums.CrmDataTypeNumber:
-			val := lo.ValueOr(dict, field.FieldKey, -1).(int)
-			if field.IsRequired && val == -1 {
-				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-			}
-			result[field.FieldKey] = val
-		case enums.CrmDataTypeBoolean:
-			val := lo.ValueOr(dict, field.FieldKey, false).(bool)
-			result[field.FieldKey] = val
-		case enums.CrmDataTypeDate:
-			val := lo.ValueOr(dict, field.FieldKey, "").(string)
-			if field.IsRequired && val == "" {
-				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-			}
-			if val != "" {
-				_, err := time.Parse(time.DateOnly, val)
-				if err != nil {
-					return nil, errors.New(fmt.Sprintf("[%s]日期格式不正确，应为 YYYY-MM-DD", field.FieldName))
-				}
-			}
-			result[field.FieldKey] = val
-		case enums.CrmDataTypePicker:
-			val := lo.ValueOr(dict, field.FieldKey, "").(string)
-			if field.IsRequired && val == "" {
-				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-			}
-			var options []string
-			if err := json.Unmarshal(*field.Options, &options); err != nil {
-				errorMsg := fmt.Sprintf("[%s]该字段的值反序列化异常", field.FieldName)
-				global.Logger.Error(errorMsg, zap.Any("field options", field.Options))
-				return nil, errors.New(errorMsg)
-			}
-			if val != "" && !lo.Contains(options, val) {
-				return nil, errors.New(fmt.Sprintf("【%s】 不在[%s]该字段的选择范围内", val, field.FieldName))
-			}
-			result[field.FieldKey] = val
-		case enums.CrmDataTypeLocation:
-			val := lo.ValueOr(dict, field.FieldKey, "").(string)
-			var location models.LocationData
-			if err := json.Unmarshal([]byte(val), &location); err != nil {
-				errorMsg := fmt.Sprintf("[%s]该字段的值反序列化异常", field.FieldName)
-				global.Logger.Error(errorMsg, zap.Any("location", location))
-				return nil, errors.New(errorMsg)
-			}
-			result[field.FieldKey] = val
-		default:
-			val := lo.ValueOr(dict, field.FieldKey, "").(string)
-			if field.IsRequired && val == "" {
-				return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
-			}
-			result[field.FieldKey] = val
+		val, err := validateValue(field, dict)
+		if err != nil {
+			return nil, err
 		}
+		result[field.FieldKey] = val
 
 	}
 	return result, nil
+}
+
+/*
+*
+校验并返回处理后的值
+*/
+func validateValue(field entity.CrmCustomerFields, values map[string]any) (any, error) {
+	switch enums.CrmFieldDataType(field.DataType) {
+	case enums.CrmDataTypeNumber:
+		val := lo.ValueOr(values, field.FieldKey, -1).(int)
+		if field.IsRequired && val == -1 {
+			return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+		}
+		return val, nil
+	case enums.CrmDataTypeBoolean:
+		val := lo.ValueOr(values, field.FieldKey, false).(bool)
+		return val, nil
+	case enums.CrmDataTypeDate:
+		val := lo.ValueOr(values, field.FieldKey, "").(string)
+		if field.IsRequired && val == "" {
+			return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+		}
+		if val != "" {
+			_, err := time.Parse(time.DateOnly, val)
+			if err != nil {
+				return nil, errors.New(fmt.Sprintf("[%s]日期格式不正确，应为 YYYY-MM-DD", field.FieldName))
+			}
+		}
+		return val, nil
+	case enums.CrmDataTypePicker:
+		val := lo.ValueOr(values, field.FieldKey, "").(string)
+		if field.IsRequired && val == "" {
+			return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+		}
+		var options []string
+		if err := json.Unmarshal(*field.Options, &options); err != nil {
+			errorMsg := fmt.Sprintf("[%s]该字段的值反序列化异常", field.FieldName)
+			global.Logger.Error(errorMsg, zap.Any("field options", field.Options))
+			return nil, errors.New(errorMsg)
+		}
+		if val != "" && !lo.Contains(options, val) {
+			return nil, errors.New(fmt.Sprintf("【%s】 不在[%s]该字段的选择范围内", val, field.FieldName))
+		}
+		return val, nil
+	case enums.CrmDataTypeLocation:
+		val := lo.ValueOr(values, field.FieldKey, "").(string)
+		var location models.LocationData
+		if err := json.Unmarshal([]byte(val), &location); err != nil {
+			errorMsg := fmt.Sprintf("[%s]该字段的值反序列化异常", field.FieldName)
+			global.Logger.Error(errorMsg, zap.Any("location", location))
+			return nil, errors.New(errorMsg)
+		}
+		return val, nil
+	default:
+		val := lo.ValueOr(values, field.FieldKey, "").(string)
+		if field.IsRequired && val == "" {
+			return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+		}
+		return val, nil
+	}
 }
 func (EntityValueService) InsertEntityValueData(ctx context.Context, req request.InsertCrmEntityValueRequest) error {
 	entityObject, err := entityMapper.GetEntityById(req.EntityId)
@@ -360,4 +375,98 @@ func (EntityValueService) DeleteEntityValueData(ctx context.Context, id int64) e
 		return nil
 	})
 
+}
+
+func (EntityValueService) HandleUploadExcel(ctx context.Context, req request.UploadCrmValueRequest) error {
+	ext := filepath.Ext(req.File.Filename)
+	if !lo.Contains([]string{".xlsx", ".xls"}, ext) {
+		return fmt.Errorf("不支持上传%s", ext)
+	}
+	file, _ := req.File.Open()
+	defer file.Close()
+	f, err := excelize.OpenReader(file)
+	if err != nil {
+		global.Logger.Error("读取excel表错误", zap.Error(err))
+		return fmt.Errorf("读取excel表错误")
+	}
+	defer f.Close()
+	name := f.GetSheetName(0)
+	rows, err := f.GetRows(name)
+	if err != nil {
+		return fmt.Errorf("读取excel表数据错误")
+	}
+	fields, err := entityFieldMapper.GetEntityFieldsByEntityId(global.DB, req.EntityId)
+	if err != nil {
+		return err
+	}
+	isMatch := false
+	// 客户名称匹配结果
+	customerNameMatch := false
+	fieldMap := make(map[int]entity.CrmCustomerFields)
+	// 拿表第一行作为字段匹配
+	for idx, column := range rows[0] {
+		field, ok := lo.Find(fields, func(item entity.CrmCustomerFields) bool {
+			return item.FieldName == column
+		})
+		if ok {
+			isMatch = true
+			fieldMap[idx] = field
+		}
+		if field.FieldKey == constant.CRM_CUSTOMER_NAME {
+			customerNameMatch = true
+		}
+
+	}
+	if !isMatch || !customerNameMatch {
+		f, _ := lo.Find(fields, func(item entity.CrmCustomerFields) bool {
+			return item.FieldKey == constant.CRM_CUSTOMER_NAME
+		})
+		return fmt.Errorf("跟实体表字段没有任何匹配项或者缺少[%s]字段", f.FieldName)
+	}
+	valueData := make([]entity.CrmCustomerValues, 0)
+	// 整理数据
+	for _, row := range rows[1:] {
+		data := make(map[string]interface{})
+		userId := utils.GetLoginUserId(ctx)
+		value := entity.CrmCustomerValues{
+			EntityId: req.EntityId,
+			UserId:   userId,
+			BaseRecordField: entity.BaseRecordField{
+				CreatorId: userId,
+				UpdaterId: &userId,
+			},
+		}
+		for idx, col := range row {
+			field, ok := fieldMap[idx]
+			if ok {
+				val, err := validateValue(field, map[string]any{
+					field.FieldKey: col,
+				})
+				if err != nil {
+					return err
+				}
+				if field.FieldKey == constant.CRM_CUSTOMER_REMARK {
+					value.Remark = val.(string)
+				}
+				if field.FieldKey == constant.CRM_CUSTOMER_NAME {
+					value.CustomerName = val.(string)
+				}
+				data[field.FieldKey] = val
+			}
+		}
+		byteData, _ := json.Marshal(data)
+		value.Values = datatypes.JSON(byteData)
+		valueData = append(valueData, value)
+	}
+	if err := global.DB.Clauses(clause.OnConflict{
+		Columns: []clause.Column{
+			{Name: "customer_name"},
+			{Name: "entity_id"},
+			{Name: "user_id"},
+		},                                                                               // 判重唯一键，对应数据库字段名
+		DoUpdates: clause.AssignmentColumns([]string{"remark", "values", "updater_id"}), // 存在时更新的字段
+	}).Create(&valueData).Error; err != nil {
+		return fmt.Errorf("创建失败：%v", err)
+	}
+	return nil
 }
