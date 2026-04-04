@@ -20,6 +20,7 @@ const handleCrmValueColumn = (field: API.CrmEntityFieldVo): ProColumns => {
         title: fieldName,
         dataIndex: fieldKey,
         key: fieldKey,
+        hideInSearch: true,
         align: "center",
         render: (_, record: any) => {
           if (record[fieldKey] === true) {
@@ -34,6 +35,7 @@ const handleCrmValueColumn = (field: API.CrmEntityFieldVo): ProColumns => {
       return {
         title: fieldName,
         dataIndex: fieldKey,
+        hideInSearch: true,
         key: fieldKey,
         align: "center",
       };

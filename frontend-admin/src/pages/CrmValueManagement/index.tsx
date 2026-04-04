@@ -105,6 +105,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
       {
         title: "创建人",
         dataIndex: "userName",
+        hideInSearch: true,
         key: "userName",
         align: "center",
       },
