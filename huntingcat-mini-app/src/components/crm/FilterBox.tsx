@@ -7,7 +7,7 @@ import { findFieldByFieldKey } from "@/utils/crm";
 import { CrmDataTypeEnum } from "@/constant/enums";
 import { cn, handleResponse, Notify } from "@/utils/common";
 import { getUserListByRoleKey } from "@/services/steins-admin/systemUserController";
-import { CRM_ROLE_NAME } from "@/constant/global";
+import { CRM_ROLE_NAME, DEFAULT_CUSTOMER_DATA } from "@/constant/global";
 
 const ALL_COMMON_FILTER = ["business_worker", "customer_type"];
 const MY_COMMON_FILTER = ["customer_type"];
@@ -115,6 +115,15 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
       (it) => it.dataType === CrmDataTypeEnum.Picker,
     );
     dispatch.crmModel.setFilterParams({});
+    switch (mode) {
+      case "mine":
+        dispatch.crmModel.setMyCustomerData(DEFAULT_CUSTOMER_DATA);
+        break
+      case "all":
+        dispatch.crmModel.setAllCustomerData(DEFAULT_CUSTOMER_DATA);
+        break
+    }
+
     dispatch.crmModel.getEntityValues({ mode })
     setActiveMenu(null)
   };
@@ -143,6 +152,15 @@ export const FilterComponent = ({ mode }: { mode: "mine" | "all" }) => {
   };
   // 全局搜索
   const searchFilter = async () => {
+      switch (mode) {
+      case "mine":
+        dispatch.crmModel.setMyCustomerData(DEFAULT_CUSTOMER_DATA);
+        break
+      case "all":
+        dispatch.crmModel.setAllCustomerData(DEFAULT_CUSTOMER_DATA);
+        break
+    }
+
     await dispatch.crmModel.getEntityValues({ mode })
     setActiveMenu(null);
   }
@@ -251,10 +269,10 @@ const AllFilterMenu: React.FC<{
 
   // 只筛选Picker类型数据
   const filterTableFields = tableFields.filter(
-    (it) => it.dataType === CrmDataTypeEnum.Picker,
+    (it) => [CrmDataTypeEnum.Picker, CrmDataTypeEnum.PickerOrOther].includes(it.dataType as CrmDataTypeEnum),
   );
   const [selectedSider, setSelectedSider] = useState(
-    filterTableFields[0].fieldKey,
+    filterTableFields?.[0]?.fieldKey || ""
   );
 
   return (

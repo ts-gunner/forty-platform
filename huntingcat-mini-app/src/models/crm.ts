@@ -157,6 +157,14 @@ export const crmModel = createModel<RootModel>()({
       },
       state,
     ) => {
+      // 重置页数和数据
+      if (payload.mode === "mine") {
+        dispatch.crmModel.setMyCustomerData(DEFAULT_CUSTOMER_DATA)
+
+      } else if (payload.mode === "all") {
+        dispatch.crmModel.setAllCustomerData(DEFAULT_CUSTOMER_DATA)
+      }
+
       dispatch.crmModel.setFilterParams({
         ...state.crmModel.filterParams,
         customer_name: payload.text,
@@ -169,7 +177,7 @@ export const crmModel = createModel<RootModel>()({
       const resp = await getCrmValueCount({
         entityId: state.crmModel.entityVo.entityId
       })
-      let vo:API.CrmValueCountVo
+      let vo: API.CrmValueCountVo
       handleResponse({
         resp,
         onSuccess: (data) => {
@@ -226,7 +234,7 @@ export const crmModel = createModel<RootModel>()({
         handleResponse({
           resp,
           onSuccess: () => {
-            dispatch.crmModel.getEntityValues({mode: payload.mode})
+            dispatch.crmModel.getEntityValues({ mode: payload.mode })
           },
           onError: () => {
             Notify.fail("取消收藏失败");
@@ -241,7 +249,7 @@ export const crmModel = createModel<RootModel>()({
         handleResponse({
           resp,
           onSuccess: () => {
-             dispatch.crmModel.getEntityValues({mode: payload.mode})
+            dispatch.crmModel.getEntityValues({ mode: payload.mode })
           },
           onError: () => {
             Notify.fail("收藏失败");
