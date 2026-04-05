@@ -10,6 +10,7 @@ import {
 import { handleResponse, Notify } from "@/utils/common";
 import { getEntityByKey } from "@/services/steins-admin/crmEntityController";
 import {
+  getCrmValueCount,
   getEntityValueList,
   getEntityValueListBySelf,
   updateEntityValue,
@@ -162,6 +163,27 @@ export const crmModel = createModel<RootModel>()({
       });
 
       await dispatch.crmModel.getEntityValues({ mode: payload.mode });
+    },
+    countValue: async (_, state) => {
+      Notify.loading("加载数据中...")
+      const resp = await getCrmValueCount({
+        entityId: state.crmModel.entityVo.entityId
+      })
+      let vo:API.CrmValueCountVo
+      handleResponse({
+        resp,
+        onSuccess: (data) => {
+          vo = data
+          Notify.clear()
+        },
+        onError: () => {
+          Notify.fail("统计数据异常")
+        },
+        onFinish: () => {
+
+        }
+      })
+      return vo
     },
     updateCustomerDataState: (
       payload: {

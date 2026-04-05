@@ -581,6 +581,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/value/getCrmValueCount": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityValueController"
+                ],
+                "summary": "获取CRM客户信息的统计数据",
+                "operationId": "getCrmValueCount",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "实体id",
+                        "name": "entityId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-crm_CrmValueCountVo"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/value/insert": {
             "post": {
                 "consumes": [
@@ -2053,6 +2082,19 @@ const docTemplate = `{
                 }
             }
         },
+        "crm.CrmValueCountVo": {
+            "type": "object",
+            "properties": {
+                "allValueCount": {
+                    "description": "所有客户数据总数",
+                    "type": "integer"
+                },
+                "mineValueCount": {
+                    "description": "我的客户数据总数",
+                    "type": "integer"
+                }
+            }
+        },
         "crm.DeleteCrmEntityValueRequest": {
             "type": "object",
             "required": [
@@ -2396,6 +2438,22 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/crm.CrmEntityVo"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "response.ApiResult-crm_CrmValueCountVo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/crm.CrmValueCountVo"
                 },
                 "msg": {
                     "type": "string",

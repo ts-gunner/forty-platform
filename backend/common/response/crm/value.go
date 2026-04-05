@@ -22,3 +22,8 @@ type CrmEntityValueVo struct {
 type CrmEntityValueObjectVo struct {
 	EntityValue response.PageResult[CrmEntityValueVo] `json:"entityValue"`
 }
+
+type CrmValueCountVo struct {
+	MineValueCount int64 `json:"mineValueCount"` // 我的客户数据总数
+	AllValueCount  int64 `json:"allValueCount"`  // 所有客户数据总数
+}

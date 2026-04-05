@@ -73,6 +73,12 @@ declare namespace API {
     msg?: string;
   };
 
+  type ApiResultCrmCrmValueCountVo = {
+    code?: number;
+    data?: CrmValueCountVo;
+    msg?: string;
+  };
+
   type ApiResultResponsePageResultCrmCrmCustomerFavoriteVo = {
     code?: number;
     data?: PageResultCrmCrmCustomerFavoriteVo;
@@ -204,6 +210,13 @@ declare namespace API {
     updateTime?: string;
   };
 
+  type CrmValueCountVo = {
+    /** 所有客户数据总数 */
+    allValueCount?: number;
+    /** 我的客户数据总数 */
+    mineValueCount?: number;
+  };
+
   type DeleteCrmEntityValueRequest = {
     id: string;
   };
@@ -231,6 +244,11 @@ declare namespace API {
     pageNum?: number;
     pageSize?: number;
     userId?: string;
+  };
+
+  type getCrmValueCountParams = {
+    /** 实体id */
+    entityId: string;
   };
 
   type getCustomerFavoriteListParams = {

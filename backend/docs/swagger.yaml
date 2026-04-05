@@ -156,6 +156,15 @@ definitions:
       updateTime:
         type: string
     type: object
+  crm.CrmValueCountVo:
+    properties:
+      allValueCount:
+        description: 所有客户数据总数
+        type: integer
+      mineValueCount:
+        description: 我的客户数据总数
+        type: integer
+    type: object
   crm.DeleteCrmEntityValueRequest:
     properties:
       id:
@@ -391,6 +400,17 @@ definitions:
         type: integer
       data:
         $ref: '#/definitions/crm.CrmEntityVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-crm_CrmValueCountVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/crm.CrmValueCountVo'
       msg:
         example: 成功
         type: string
@@ -1260,6 +1280,25 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-crm_CrmEntityValueVo'
       summary: 获取对应的实体数据明细
+      tags:
+      - CrmEntityValueController
+  /crm/value/getCrmValueCount:
+    get:
+      operationId: getCrmValueCount
+      parameters:
+      - description: 实体id
+        in: query
+        name: entityId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-crm_CrmValueCountVo'
+      summary: 获取CRM客户信息的统计数据
       tags:
       - CrmEntityValueController
   /crm/value/insert:

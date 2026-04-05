@@ -6,11 +6,30 @@ import { ROUTERS } from "@/constant/menus";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
+import { useEffect, useState } from "react";
 const CURRENT_PAGE = ROUTERS.mine;
 function UserPage() {
   const dispatch = useDispatch<Dispatch>()
+  const activeRoute = useSelector((state:RootState) => state.routerModel.activeRoute)
+  const [statistic, setStatistic] = useState<API.CrmValueCountVo>({})
   const { navBarHeight } = useNavbar();
+useEffect(() => {
+    if (!activeRoute) {
+      return;
+    }
 
+    if (CURRENT_PAGE === activeRoute) {
+      getCountData()
+
+    } else {
+    }
+  }, [activeRoute]);
+
+  const getCountData = async () => {
+    let data = await dispatch.crmModel.countValue(null)
+    setStatistic(data)
+
+  }
   return (
     <View className="mesh-gradient relative bg-gray-100/50 min-h-screen">
       <View
@@ -28,43 +47,45 @@ function UserPage() {
               title="设置"
               className="gap-0 text-sm"
               onClick={() => {
-                dispatch.routerModel.navigateTo({url: ROUTERS.settings });
+                dispatch.routerModel.navigateTo({ url: ROUTERS.settings });
               }}
             />
           </View>
         </View>
-        {/* <StatsSection /> */}
+        <StatsSection  allCrmCount={statistic.allValueCount || 0} myCrmCount={statistic.mineValueCount || 0}/>
         <MyServiceComponent />
       </View>
     </View>
   );
 }
-const StatsSection = () => (
-  <View className="px-2 py-2">
-    <View
-      className="flex justify-between items-center rounded-2xl p-4 shadow-lg"
-      style={{ backgroundColor: THEME_CONFIG.active }}
-    >
-      {[
-        { label: '客户总数', count: '1,280' },
-        { label: '核心客户', count: '45' },
-        { label: '本月新增', count: '12' }
-      ].map((item, i, arr) => (
-        <View key={i} className="flex flex-col items-center flex-1">
-          {/* 数据值：大字突出 */}
-          <Text className="text-white text-xl font-bold mb-1">{item.count}</Text>
-          {/* 标签：小字半透明 */}
-          <Text className="text-white/70 text-xs">{item.label}</Text>
+const StatsSection = ({allCrmCount, myCrmCount}: {allCrmCount: number, myCrmCount: number}) => {
+  const dispatch = useDispatch<Dispatch>()
 
-          {/* 分隔线：除了最后一项，每项右侧加一条淡色竖线 */}
-          {i !== arr.length - 1 && (
-            <View className="absolute right-0 top-1/4 h-1/2 w-[1px] bg-white/20" />
-          )}
-        </View>
-      ))}
+  return (
+    <View className="px-2 py-2">
+      <View
+        className="flex justify-between items-center rounded-2xl p-4 shadow-lg bg-active"
+      >
+        {[
+          { label: '客户总数', count: allCrmCount },
+          { label: '我的客户', count: myCrmCount },
+        ].map((item, i, arr) => (
+          <View key={i} className="flex flex-col items-center flex-1">
+            {/* 数据值：大字突出 */}
+            <Text className="text-white text-xl font-bold mb-1">{item.count}</Text>
+            {/* 标签：小字半透明 */}
+            <Text className="text-white/70 text-xs">{item.label}</Text>
+
+            {/* 分隔线：除了最后一项，每项右侧加一条淡色竖线 */}
+            {i !== arr.length - 1 && (
+              <View className="absolute right-0 top-1/4 h-1/2 w-[1px] bg-white/20" />
+            )}
+          </View>
+        ))}
+      </View>
     </View>
-  </View>
-);
+  );
+}
 
 // 左上角的用户信息
 const UserComponent = () => {

@@ -24,6 +24,7 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 	routerGroup.POST("/update", updateEntityValue)
 	routerGroup.POST("/delete", deleteEntityValue)
 	routerGroup.POST("/uploadCrmExcel", uploadCrmExcel)
+	routerGroup.GET("/getCrmValueCount", getCrmValueCount)
 
 }
 
@@ -229,4 +230,28 @@ func uploadCrmExcel(c *gin.Context) {
 		return
 	}
 	response.Ok(c)
+}
+
+// @Tags CrmEntityValueController
+// @ID getCrmValueCount
+// @Router /crm/value/getCrmValueCount [get]
+// @Summary 获取CRM客户信息的统计数据
+// @Produce json
+// @Param entityId query string true "实体id" in:query
+// @Success 200 {object} response.ApiResult[crmResponse.CrmValueCountVo]
+func getCrmValueCount(c *gin.Context) {
+	var req request.CountValueRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	vo, err := entityValueService.CountValue(c.Request.Context(), req.EntityId)
+	if err != nil {
+		global.Logger.Error("统计数据失败", zap.Error(err))
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("统计数据失败: %v", err), c)
+		return
+	}
+	response.Data[crmResponse.CrmValueCountVo](vo, c)
 }

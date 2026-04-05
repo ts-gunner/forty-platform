@@ -49,3 +49,7 @@ type UploadCrmValueRequest struct {
 	File     *multipart.FileHeader `form:"file" json:"file"`
 	EntityId int64                 `form:"entityId,string" json:"entityId,string"`
 }
+
+type CountValueRequest struct {
+	EntityId int64 `form:"entityId,string" json:"entityId,string"`
+}

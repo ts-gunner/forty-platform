@@ -463,10 +463,35 @@ func (EntityValueService) HandleUploadExcel(ctx context.Context, req request.Upl
 			{Name: "customer_name"},
 			{Name: "entity_id"},
 			{Name: "user_id"},
-		},                                                                               // 判重唯一键，对应数据库字段名
+		}, // 判重唯一键，对应数据库字段名
 		DoUpdates: clause.AssignmentColumns([]string{"remark", "values", "updater_id"}), // 存在时更新的字段
 	}).Create(&valueData).Error; err != nil {
 		return fmt.Errorf("创建失败：%v", err)
 	}
 	return nil
+}
+
+func (EntityValueService) CountValue(ctx context.Context, entityId int64) (crmResponse.CrmValueCountVo, error) {
+	resp := crmResponse.CrmValueCountVo{}
+	ent, err := entityMapper.GetEntityById(entityId)
+	if err != nil {
+		return resp, err
+	}
+	if ent == nil {
+		return resp, fmt.Errorf("实体不存在")
+	}
+	userId := utils.GetLoginUserId(ctx)
+
+	var mineCount int64
+	if err := global.DB.Table("crm_customer_values").Where("is_delete = 0 AND user_id = ? AND entity_id = ?", userId, ent.Id).Count(&mineCount).Error; err != nil {
+		return resp, err
+	}
+	var allCount int64
+	if err := global.DB.Table("crm_customer_values").Where("is_delete = 0 AND entity_id = ?", ent.Id).Count(&allCount).Error; err != nil {
+		return resp, err
+	}
+	resp.MineValueCount = mineCount
+	resp.AllValueCount = allCount
+
+	return resp, nil
 }

@@ -32,6 +32,24 @@ export async function getEntityValueDetail(
   });
 }
 
+/** 获取CRM客户信息的统计数据 GET /crm/value/getCrmValueCount */
+export async function getCrmValueCount(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getCrmValueCountParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultCrmCrmValueCountVo>(
+    "/crm/value/getCrmValueCount",
+    {
+      method: "GET",
+      params: {
+        ...params,
+      },
+      ...(options || {}),
+    }
+  );
+}
+
 /** 插入实体数据 POST /crm/value/insert */
 export async function insertEntityValue(
   body: API.InsertCrmEntityValueRequest,
@@ -109,6 +127,48 @@ export async function updateEntityValue(
       "Content-Type": "application/json",
     },
     data: body,
+    ...(options || {}),
+  });
+}
+
+/** 上传表格，添加客户数据 POST /crm/value/uploadCrmExcel */
+export async function uploadCrmExcel(
+  body: {
+    /** 实体表id */
+    entityId?: string;
+  },
+  file?: File,
+  options?: { [key: string]: any }
+) {
+  const formData = new FormData();
+
+  if (file) {
+    formData.append("file", file);
+  }
+
+  Object.keys(body).forEach((ele) => {
+    const item = (body as any)[ele];
+
+    if (item !== undefined && item !== null) {
+      if (typeof item === "object" && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ""));
+        } else {
+          formData.append(
+            ele,
+            new Blob([JSON.stringify(item)], { type: "application/json" })
+          );
+        }
+      } else {
+        formData.append(ele, item);
+      }
+    }
+  });
+
+  return request<API.ApiResultAny>("/crm/value/uploadCrmExcel", {
+    method: "POST",
+    data: formData,
+    requestType: "form",
     ...(options || {}),
   });
 }

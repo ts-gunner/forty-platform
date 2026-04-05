@@ -32,6 +32,24 @@ export async function getEntityValueDetail(
   });
 }
 
+/** 获取CRM客户信息的统计数据 GET /crm/value/getCrmValueCount */
+export async function getCrmValueCount(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getCrmValueCountParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultCrmCrmValueCountVo>(
+    "/crm/value/getCrmValueCount",
+    {
+      method: "GET",
+      params: {
+        ...params,
+      },
+      ...(options || {}),
+    }
+  );
+}
+
 /** 插入实体数据 POST /crm/value/insert */
 export async function insertEntityValue(
   body: API.InsertCrmEntityValueRequest,
