@@ -19,17 +19,15 @@ func initRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 	swaggerGroup := r.Group(global.Config.Servlet.ContextPath)
 
-	contextGroup := r.Group(
-		global.Config.Servlet.ContextPath,
-		handler.RequestLog(),
-		handler.IdentityVerification(&handler.AuthorizationConfig{
-			ExcludePaths: []string{
-				"/auth/adminPwdLogin",
-				"/auth/wechatCrmLogin",
-			},
-		}),
-		handler.RoleCheckHandlerFunc(),
-	)
+	contextGroup := r.Group(global.Config.Servlet.ContextPath)
+	contextGroup.Use(handler.RequestLog())
+	contextGroup.Use(handler.IdentityVerification(&handler.AuthorizationConfig{
+		ExcludePaths: []string{
+			"/auth/adminPwdLogin",
+			"/auth/wechatCrmLogin",
+		},
+	}))
+	contextGroup.Use(handler.RoleCheckHandlerFunc())
 	initSwagger(swaggerGroup)
 	systemController.SystemRouter.InitSystemRouter(contextGroup)
 	crmController.CrmRouter.InitCrmRouter(contextGroup)
