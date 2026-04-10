@@ -1,5 +1,5 @@
 export const APP_CONFIG = {
-  version: "1.1.0"
+  title: "猎猫传媒",
 };
 
 // 后端前缀url
