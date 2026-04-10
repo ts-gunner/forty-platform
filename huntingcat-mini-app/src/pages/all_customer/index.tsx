@@ -26,16 +26,16 @@ function AllCustomerPage() {
   const dispatch = useDispatch<Dispatch>();
 
   useEffect(() => {
+    if (tableFields === undefined) {
+      dispatch.crmModel.getCrmFields();
+    }
+    if (entityVo === undefined) {
+      dispatch.crmModel.getEntityObject();
+    }
     if (!activeRoute) {
       return;
     }
     if (CURRENT_PAGE === activeRoute) {
-      if (tableFields === undefined) {
-        dispatch.crmModel.getCrmFields();
-      }
-      if (entityVo === undefined) {
-        dispatch.crmModel.getEntityObject();
-      }
       getAllCrmData();
     } else {
       // 跳转到其他页面时，注销数据
