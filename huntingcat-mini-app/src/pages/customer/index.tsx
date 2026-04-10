@@ -26,17 +26,17 @@ function MyCustomerPage() {
   const dispatch = useDispatch<Dispatch>();
 
   useEffect(() => {
-    if (tableFields === undefined) {
-      dispatch.crmModel.getCrmFields();
-    }
-    if (entityVo === undefined) {
-      dispatch.crmModel.getEntityObject();
-    }
     if (!activeRoute) {
       return;
     }
 
     if (CURRENT_PAGE === activeRoute) {
+      if (tableFields === undefined) {
+        dispatch.crmModel.getCrmFields();
+      }
+      if (entityVo === undefined) {
+        dispatch.crmModel.getEntityObject();
+      }
       getCrmDataBySelf();
     } else {
       // 跳转到其他页面时，注销数据
@@ -56,7 +56,9 @@ function MyCustomerPage() {
   });
 
   useEffect(() => {
-    getCrmDataBySelf();
+    if (CURRENT_PAGE === activeRoute) {
+      getCrmDataBySelf();
+    }
   }, [myCustomerData.current]);
   return (
     <HeaderBodyLayout

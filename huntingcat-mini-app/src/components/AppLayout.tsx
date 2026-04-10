@@ -27,7 +27,7 @@ export function withGlobalLayout<T>(WrappedComponent: React.ComponentType<T>) {
       (state: RootState) => state.notificationModel.notifyStatus,
     );
     useEffect(() => {
-      if (activeRoute !== ROUTERS.login) {
+      if (![ROUTERS.login, ROUTERS.privacy, ROUTERS.policy].includes(activeRoute)) {
         getLoginUser();
       }
       Taro.pageScrollTo({

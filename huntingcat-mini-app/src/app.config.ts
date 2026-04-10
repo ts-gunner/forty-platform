@@ -43,6 +43,8 @@ export default defineAppConfig({
     "pages/create_customer/index",
     "pages/login/index",
     "pages/user_profile/index",
+    "pages/policy/index",
+    "pages/privacy/index",
   ],
   window: {},
   lazyCodeLoading: "requiredComponents",

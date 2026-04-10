@@ -26,21 +26,21 @@ function AllCustomerPage() {
   const dispatch = useDispatch<Dispatch>();
 
   useEffect(() => {
+    if (!activeRoute) {
+      return;
+    }
+    if (CURRENT_PAGE === activeRoute) {
       if (tableFields === undefined) {
         dispatch.crmModel.getCrmFields();
       }
       if (entityVo === undefined) {
         dispatch.crmModel.getEntityObject();
       }
-      if (!activeRoute) {
-        return
-      }
-      if (CURRENT_PAGE === activeRoute) {
-        getAllCrmData();
-      } else {
-        // 跳转到其他页面时，注销数据
-        dispatch.crmModel.initAllCustomerData();
-      }
+      getAllCrmData();
+    } else {
+      // 跳转到其他页面时，注销数据
+      dispatch.crmModel.initAllCustomerData();
+    }
   }, [activeRoute]);
   // 4. 触底加载更多
   useReachBottom(() => {
@@ -50,7 +50,9 @@ function AllCustomerPage() {
     });
   });
   useEffect(() => {
-    getAllCrmData();
+    if (CURRENT_PAGE === activeRoute) {
+      getAllCrmData();
+    }
   }, [allCustomerData.current]);
   const getAllCrmData = async () => {
     await dispatch.crmModel.getEntityValues({ mode: "all" });

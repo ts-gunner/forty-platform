@@ -12,6 +12,8 @@ export const ROUTERS = {
     customerDetail: "/pages/customer_detail/index",
     createCustomer: "/pages/create_customer/index",
     login: "/pages/login/index",
+    privacy: "/pages/privacy/index",
+    policy: "/pages/policy/index",
 }
 
 export const DEFAULT_ROUTER = ROUTERS.customer

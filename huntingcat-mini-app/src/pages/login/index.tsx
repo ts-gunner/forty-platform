@@ -1,12 +1,20 @@
 import { useDispatch } from "react-redux";
-import { ICON_MAP } from "@/constant/global";
-import { Button, View, Image, Text } from "@tarojs/components";
+import { ICON_MAP, THEME_CONFIG } from "@/constant/global";
+import { Button, View, Image, Text, Radio } from "@tarojs/components";
 import Taro, { login } from "@tarojs/taro";
 import { Dispatch } from "@/store";
 import { withGlobalLayout } from "@/components/AppLayout";
+import { useState } from "react";
+import { Notify } from "@/utils/common";
+import { ROUTERS } from "@/constant/menus";
 function LoginPage() {
+  const [isAllow, setIsAllow] = useState<boolean>(false)
   const dispatch = useDispatch<Dispatch>();
   const doLogin = () => {
+    if (!isAllow) {
+      Notify.fail("需要同意授权后登录")
+      return
+    }
     login({
       success: (res: any) => {
         if (res.code) {
@@ -18,15 +26,10 @@ function LoginPage() {
   return (
     <View className="h-screen flex flex-col justify-center items-center gap-14">
       <View className="flex justify-center items-center">
-        {/* 光影容器 (定位在狗图片下方) */}
         <View className="relative">
-          {/* 核心光影层 (渐变+模糊) */}
           <View className="absolute -inset-12 bg-gradient-to-r from-yellow-300/40 via-orange-300/30 to-pink-400/20 blur-3xl rounded-full animate-pulse-slow" />
-
-          {/* 辅助光晕层 (增强立体感) */}
           <View className="absolute -inset-8 bg-gradient-to-tr from-amber-200/20 to-transparent blur-xl" />
 
-          {/* 狗图片 */}
           <Image
             src={ICON_MAP.loginLogo}
             lazyLoad
@@ -50,12 +53,21 @@ function LoginPage() {
         一键登录
       </Button>
       <View className="flex flex-row justify-center items-center mt-4">
+        <Radio color={THEME_CONFIG.active} checked={isAllow} onClick={() => {
+          setIsAllow(!isAllow)
+        }}/>
         <Text className="text-xs text-gray-400">登录即代表同意</Text>
-        <Text className="text-xs text-orange-400 font-medium">
+        <Text className="text-xs text-orange-400 font-medium" onClick={() => {
+          dispatch.routerModel.navigateTo({url: ROUTERS.policy})
+
+        }}>
           《用户协议》
         </Text>
         <Text className="text-xs text-gray-400">与</Text>
-        <Text className="text-xs text-orange-400 font-medium">
+        <Text className="text-xs text-orange-400 font-medium" onClick={() => {
+          dispatch.routerModel.navigateTo({url: ROUTERS.privacy})
+
+        }}>
           《隐私政策》
         </Text>
       </View>
