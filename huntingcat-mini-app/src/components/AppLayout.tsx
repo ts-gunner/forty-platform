@@ -35,6 +35,10 @@ export function withGlobalLayout<T>(WrappedComponent: React.ComponentType<T>) {
         duration: 0, // 立即回到顶部，无动画
       });
     }, [activeRoute]);
+    useEffect(() => {
+      const path = Taro.getCurrentInstance().router.path
+      dispatch.routerModel.setActiveRoute(path)
+    }, [])
 
     const getLoginUser = async () => {
       const resp = await getCurrentUser();

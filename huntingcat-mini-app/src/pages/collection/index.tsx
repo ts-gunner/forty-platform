@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavbar } from "@/context/NavbarContext";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { AtIcon, AtToast } from "taro-ui";
-import Taro from "@tarojs/taro";
+import Taro, { useShareAppMessage } from "@tarojs/taro";
 import { ROUTERS } from "@/constant/menus";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
@@ -11,6 +11,12 @@ import { getCustomerFavoriteList, removeCustomerFavorite } from "@/services/stei
 import { handleResponse, Notify } from "@/utils/common";
 const CURRENT_PAGE = ROUTERS.collection;
 function FavoriteCustomerPage() {
+  useShareAppMessage(() => {
+    return {
+      title: "查看我的收藏",
+      path: CURRENT_PAGE
+    }
+  })
   const dispatch = useDispatch<Dispatch>()
   const activeRoute = useSelector((state: RootState) => state.routerModel.activeRoute)
   const { navBarHeight } = useNavbar();
@@ -152,9 +158,9 @@ const FavoriteCustomerCard: React.FC<{
 }> = ({ data, onUnfavorite, onClick }) => {
   const dispatch = useDispatch<Dispatch>()
   return (
-    <View 
-    onClick={onClick}
-    className="relative overflow-hidden rounded-2xl border border-white/40 bg-white/70 p-4 shadow-lg backdrop-blur-md active:scale-[0.98] transition-transform">
+    <View
+      onClick={onClick}
+      className="relative overflow-hidden rounded-2xl border border-white/40 bg-white/70 p-4 shadow-lg backdrop-blur-md active:scale-[0.98] transition-transform">
       <View className="flex justify-between items-start mb-3">
         <View className="flex-1" >
           <Text className="text-xs text-gray-400 mb-1 block">{dispatch.crmModel.getFieldName("customer_name")}</Text>

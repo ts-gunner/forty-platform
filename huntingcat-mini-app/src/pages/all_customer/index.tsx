@@ -1,7 +1,7 @@
 import { View } from "@tarojs/components";
 import "./index.scss";
 import { useCallback, useEffect, useState } from "react";
-import Taro, { useReachBottom } from "@tarojs/taro";
+import Taro, { useReachBottom, useShareAppMessage } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { ROUTERS } from "@/constant/menus";
 import HeaderBodyLayout from "@/components/layout/HeaderBodyLayout";
@@ -13,6 +13,12 @@ import EmptyComponent from "@/components/EmptyComponent";
 import { ICON_MAP } from "@/constant/global";
 const CURRENT_PAGE = ROUTERS.allCustomer;
 function AllCustomerPage() {
+  useShareAppMessage(() => {
+      return {
+        title: "查看所有客户",
+        path: CURRENT_PAGE
+      }
+    })
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );

@@ -1,7 +1,7 @@
 import { ScrollView, View } from "@tarojs/components";
 import "./index.scss";
 import { useCallback, useEffect, useState } from "react";
-import Taro, { useReachBottom } from "@tarojs/taro";
+import Taro, { useReachBottom, useShareAppMessage } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { ROUTERS } from "@/constant/menus";
 import HeaderBodyLayout from "@/components/layout/HeaderBodyLayout";
@@ -13,6 +13,12 @@ import { ICON_MAP } from "@/constant/global";
 import EmptyComponent from "@/components/EmptyComponent";
 const CURRENT_PAGE = ROUTERS.customer;
 function MyCustomerPage() {
+  useShareAppMessage(() => {
+    return {
+      title: "查看我的客户",
+      path: CURRENT_PAGE
+    }
+  })
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
@@ -32,6 +38,7 @@ function MyCustomerPage() {
     if (entityVo === undefined) {
       dispatch.crmModel.getEntityObject();
     }
+    console.log("activeRoute",activeRoute)
     if (!activeRoute) {
       return;
     }
