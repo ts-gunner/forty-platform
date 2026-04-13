@@ -1,4 +1,16 @@
 definitions:
+  audit.UpdateAuditRequest:
+    properties:
+      id:
+        type: integer
+      remark:
+        type: string
+      status:
+        type: integer
+    required:
+    - id
+    - status
+    type: object
   crm.AddCustomerFavoriteRequest:
     properties:
       entityId:
@@ -603,6 +615,25 @@ definitions:
       total:
         type: integer
     type: object
+  system.ApprovalWechatAccessRequest:
+    properties:
+      auditCode:
+        description: 提交审核的随机码
+        type: string
+      auditName:
+        description: 申请人名称
+        type: string
+      auditRemark:
+        description: 申请人填写的备注
+        type: string
+      loginCode:
+        description: 微信登录的code
+        type: string
+    required:
+    - auditCode
+    - auditName
+    - loginCode
+    type: object
   system.GetUserListByRoleKeyRequest:
     properties:
       pageNum:
@@ -914,6 +945,77 @@ info:
   title: 四零专属管理后台
   version: "1.0"
 paths:
+  /audit/getAuditDetail:
+    get:
+      operationId: getAuditDetail
+      parameters:
+      - description: 审核记录ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 查询审核记录详情
+      tags:
+      - AuditController
+  /audit/getAuditList:
+    get:
+      operationId: getAuditList
+      parameters:
+      - description: 业务类型
+        in: query
+        name: bizType
+        type: string
+      - description: 状态
+        in: query
+        name: status
+        type: string
+      - description: 页码，默认1
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小，默认10
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 查询审核记录列表
+      tags:
+      - AuditController
+  /audit/updateAudit:
+    post:
+      consumes:
+      - application/json
+      operationId: updateAudit
+      parameters:
+      - description: 审核或驳回
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/audit.UpdateAuditRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 审核或驳回
+      tags:
+      - AuditController
   /crm/entity/create:
     post:
       consumes:
@@ -1455,6 +1557,28 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-string'
       summary: 运营端账号密码登录
+      tags:
+      - SystemAuthController
+  /system/auth/approvalWechatAccess:
+    post:
+      consumes:
+      - application/json
+      operationId: approvalWechatAccess
+      parameters:
+      - description: 请求参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.ApprovalWechatAccessRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 提交访问微信小程序申请
       tags:
       - SystemAuthController
   /system/auth/getCurrentUser:

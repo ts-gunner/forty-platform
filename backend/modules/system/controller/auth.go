@@ -2,7 +2,9 @@ package controller
 
 import (
 	"fmt"
+	"github.com/ts-gunner/forty-platform/common/constant"
 	"net/http"
+	"strconv"
 
 	"github.com/jinzhu/copier"
 	systemResponse "github.com/ts-gunner/forty-platform/common/response/system"
@@ -22,6 +24,7 @@ func (AuthRouter) InitAuthRouter(moduleName string, router *gin.RouterGroup) {
 	routerGroup.POST("/adminPwdLogin", adminPwdLogin)
 	routerGroup.GET("/getCurrentUser", getCurrentUser)
 	routerGroup.POST("/wechatCrmLogin", wechatCrmLogin)
+	routerGroup.POST("/approvalWechatAccess", approvalWechatAccess)
 }
 
 // @Tags SystemAuthController
@@ -50,6 +53,17 @@ func adminPwdLogin(c *gin.Context) {
 	}
 	if user.Status == 0 {
 		response.Fail(http.StatusBadRequest, "账号已停用", c)
+		return
+	}
+	ok, err := global.Enforcer.HasGroupingPolicy(strconv.FormatInt(user.UserId, 10), constant.ROLE_ADMIN)
+
+	if err != nil {
+		global.Logger.Error(fmt.Sprintf("权限校验异常: %v", err))
+		response.Fail(http.StatusBadRequest, "权限校验异常", c)
+		return
+	}
+	if !ok {
+		response.Fail(http.StatusForbidden, "没有权限登录管理端", c)
 		return
 	}
 
@@ -85,6 +99,30 @@ func wechatCrmLogin(c *gin.Context) {
 	}
 	response.Data[string](token, c)
 	return
+}
+
+// @Tags SystemAuthController
+// @ID approvalWechatAccess
+// @Router /system/auth/approvalWechatAccess [post]
+// @Summary 提交访问微信小程序申请
+// @Accept json
+// @Produce json
+// @Param request body request.ApprovalWechatAccessRequest true "请求参数"
+// @Success 200 {object} response.ApiResult[any]
+func approvalWechatAccess(c *gin.Context) {
+	var req request.ApprovalWechatAccessRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		global.Logger.Error("参数校验异常", zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+
+	if err := authService.ApprovalWechatAccess(req); err != nil {
+		response.Fail(http.StatusBadRequest, "账号异常:"+err.Error(), c)
+		return
+	}
+
+	response.Ok(c)
 }
 
 // @Tags SystemAuthController

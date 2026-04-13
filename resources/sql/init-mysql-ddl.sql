@@ -105,8 +105,9 @@ DROP TABLE IF EXISTS audit_access_record;
 CREATE TABLE IF NOT EXISTS audit_access_record (
     `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `biz_type` VARCHAR(50) NOT NULL COMMENT '业务类型',
-    `biz_desc` VARCHAR(50) NOT NULL UNIQUE COMMENT '业务描述',
-    `status` VARCHAR(255) COMMENT '审核状态， 0-待审核，1-通过，2-驳回',
+    `biz_desc` VARCHAR(50) NOT NULL COMMENT '业务描述',
+    `audit_code` VARCHAR(50) NOT NULL COMMENT '审核代码',
+    `status` TINYINT DEFAULT 0 COMMENT '审核状态， 0-待审核，1-通过，2-驳回',
     `remark` VARCHAR(1000) COMMENT '审核备注',
     `apply_user` VARCHAR(255) COMMENT '申请人名称',
     `apply_remark` VARCHAR(1000) COMMENT '申请人备注',

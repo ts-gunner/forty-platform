@@ -139,6 +139,17 @@ declare namespace API {
     msg?: string;
   };
 
+  type ApprovalWechatAccessRequest = {
+    /** 提交审核的随机码 */
+    auditCode: string;
+    /** 申请人名称 */
+    auditName: string;
+    /** 申请人填写的备注 */
+    auditRemark?: string;
+    /** 微信登录的code */
+    loginCode: string;
+  };
+
   type checkCustomerFavoriteParams = {
     /** 实体表id */
     entityId: string;
@@ -236,6 +247,22 @@ declare namespace API {
     entityCode?: string;
     entityId: string;
     entityName?: string;
+  };
+
+  type getAuditDetailParams = {
+    /** 审核记录ID */
+    id: string;
+  };
+
+  type getAuditListParams = {
+    /** 业务类型 */
+    bizType?: string;
+    /** 状态 */
+    status?: string;
+    /** 页码，默认1 */
+    page?: number;
+    /** 每页大小，默认10 */
+    size?: number;
   };
 
   type GetCrmEntityValueListRequest = {
@@ -520,6 +547,12 @@ declare namespace API {
     roleId?: string;
     roleKey?: string;
     roleName?: string;
+  };
+
+  type UpdateAuditRequest = {
+    id: number;
+    remark?: string;
+    status: number;
   };
 
   type UpdateCrmEntityValueRequest = {

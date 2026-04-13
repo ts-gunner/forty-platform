@@ -17,6 +17,21 @@ export async function adminPwdLogin(
   });
 }
 
+/** 提交访问微信小程序申请 POST /system/auth/approvalWechatAccess */
+export async function approvalWechatAccess(
+  body: API.ApprovalWechatAccessRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultAny>("/system/auth/approvalWechatAccess", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 获取当前登录用户 GET /system/auth/getCurrentUser */
 export async function getCurrentUser(options?: { [key: string]: any }) {
   return request<API.ApiResultSystemLoginUserVo>(

@@ -15,6 +15,115 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/audit/getAuditDetail": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AuditController"
+                ],
+                "summary": "查询审核记录详情",
+                "operationId": "getAuditDetail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "审核记录ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/audit/getAuditList": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AuditController"
+                ],
+                "summary": "查询审核记录列表",
+                "operationId": "getAuditList",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "业务类型",
+                        "name": "bizType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "状态",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码，默认1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页大小，默认10",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/audit/updateAudit": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AuditController"
+                ],
+                "summary": "审核或驳回",
+                "operationId": "updateAudit",
+                "parameters": [
+                    {
+                        "description": "审核或驳回",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/audit.UpdateAuditRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/entity/create": {
             "post": {
                 "consumes": [
@@ -846,6 +955,40 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.ApiResult-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/auth/approvalWechatAccess": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SystemAuthController"
+                ],
+                "summary": "提交访问微信小程序申请",
+                "operationId": "approvalWechatAccess",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.ApprovalWechatAccessRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
                         }
                     }
                 }
@@ -1852,6 +1995,24 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "audit.UpdateAuditRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "status"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "crm.AddCustomerFavoriteRequest": {
             "type": "object",
             "required": [
@@ -2738,6 +2899,32 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "system.ApprovalWechatAccessRequest": {
+            "type": "object",
+            "required": [
+                "auditCode",
+                "auditName",
+                "loginCode"
+            ],
+            "properties": {
+                "auditCode": {
+                    "description": "提交审核的随机码",
+                    "type": "string"
+                },
+                "auditName": {
+                    "description": "申请人名称",
+                    "type": "string"
+                },
+                "auditRemark": {
+                    "description": "申请人填写的备注",
+                    "type": "string"
+                },
+                "loginCode": {
+                    "description": "微信登录的code",
+                    "type": "string"
                 }
             }
         },

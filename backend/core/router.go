@@ -26,6 +26,7 @@ func initRouter() *gin.Engine {
 		ExcludePaths: []string{
 			"/auth/adminPwdLogin",
 			"/auth/wechatCrmLogin",
+			"/auth/approvalWechatAccess",
 		},
 	}))
 	contextGroup.Use(handler.RoleCheckHandlerFunc())
