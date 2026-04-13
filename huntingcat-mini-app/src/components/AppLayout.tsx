@@ -3,7 +3,7 @@ import { View } from "@tarojs/components";
 import { DispatchProp, useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import Taro from "@tarojs/taro";
-import { ROUTERS } from "../constant/menus";
+import { DISABLED_CHECK_LOGIN_ROUTERS, ROUTERS } from "../constant/menus";
 import { handleResponse, Notify } from "@/utils/common";
 import { getCurrentUser } from "@/services/steins-admin/systemAuthController";
 import { AtToast } from "taro-ui";
@@ -27,7 +27,7 @@ export function withGlobalLayout<T>(WrappedComponent: React.ComponentType<T>) {
       (state: RootState) => state.notificationModel.notifyStatus,
     );
     useEffect(() => {
-      if (![ROUTERS.login, ROUTERS.privacy, ROUTERS.policy].includes(activeRoute)) {
+      if (!DISABLED_CHECK_LOGIN_ROUTERS.includes(activeRoute)) {
         getLoginUser();
       }
       Taro.pageScrollTo({

@@ -32,13 +32,7 @@ function MyCustomerPage() {
   const dispatch = useDispatch<Dispatch>();
 
   useEffect(() => {
-    if (tableFields === undefined) {
-      dispatch.crmModel.getCrmFields();
-    }
-    if (entityVo === undefined) {
-      dispatch.crmModel.getEntityObject();
-    }
-    console.log("activeRoute",activeRoute)
+  
     if (!activeRoute) {
       return;
     }

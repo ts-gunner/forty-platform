@@ -60,5 +60,18 @@ export const authModel = createModel<RootModel>()({
       storage.removeItem("token")
       dispatch.routerModel.navigateTo({url: ROUTERS.login });
     },
+    applyAccessPermission: (payload: {
+      auditCode: string
+      name: string
+      remark: string
+    }) => {
+      Taro.login({
+      success: (res: any) => {
+        if (res.code) {
+
+        }
+      },
+    });
+    }
   }),
 });

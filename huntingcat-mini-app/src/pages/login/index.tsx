@@ -8,12 +8,12 @@ import { useState } from "react";
 import { Notify } from "@/utils/common";
 import { ROUTERS } from "@/constant/menus";
 function LoginPage() {
-  const [isAllow, setIsAllow] = useState<boolean>(false)
+  const [isAllow, setIsAllow] = useState<boolean>(false);
   const dispatch = useDispatch<Dispatch>();
   const doLogin = () => {
     if (!isAllow) {
-      Notify.fail("需要同意授权后登录")
-      return
+      Notify.fail("需要同意授权后登录");
+      return;
     }
     login({
       success: (res: any) => {
@@ -52,22 +52,36 @@ function LoginPage() {
       >
         一键登录
       </Button>
+      <Text
+        className="text-active text-center"
+        onClick={() => dispatch.routerModel.navigateTo({url: ROUTERS.accessPermission})}
+      >
+        申请内部使用
+      </Text>
       <View className="flex flex-row justify-center items-center mt-4">
-        <Radio color={THEME_CONFIG.active} checked={isAllow} onClick={() => {
-          setIsAllow(!isAllow)
-        }}/>
+        <Radio
+          color={THEME_CONFIG.active}
+          checked={isAllow}
+          onClick={() => {
+            setIsAllow(!isAllow);
+          }}
+        />
         <Text className="text-xs text-gray-400">登录即代表同意</Text>
-        <Text className="text-xs text-orange-400 font-medium" onClick={() => {
-          dispatch.routerModel.navigateTo({url: ROUTERS.policy})
-
-        }}>
+        <Text
+          className="text-xs text-orange-400 font-medium"
+          onClick={() => {
+            dispatch.routerModel.navigateTo({ url: ROUTERS.policy });
+          }}
+        >
           《用户协议》
         </Text>
         <Text className="text-xs text-gray-400">与</Text>
-        <Text className="text-xs text-orange-400 font-medium" onClick={() => {
-          dispatch.routerModel.navigateTo({url: ROUTERS.privacy})
-
-        }}>
+        <Text
+          className="text-xs text-orange-400 font-medium"
+          onClick={() => {
+            dispatch.routerModel.navigateTo({ url: ROUTERS.privacy });
+          }}
+        >
           《隐私政策》
         </Text>
       </View>

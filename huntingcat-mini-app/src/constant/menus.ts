@@ -14,9 +14,12 @@ export const ROUTERS = {
     login: "/pages/login/index",
     privacy: "/pages/privacy/index",
     policy: "/pages/policy/index",
+    accessPermission: "/pages/access_perm/index",
 }
 
 export const DEFAULT_ROUTER = ROUTERS.customer
+
+export const DISABLED_CHECK_LOGIN_ROUTERS = [ROUTERS.login, ROUTERS.privacy, ROUTERS.policy, ROUTERS.accessPermission]
 export default [
      {
         text: "我的客户",

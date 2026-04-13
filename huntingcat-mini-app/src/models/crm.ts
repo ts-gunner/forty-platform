@@ -15,7 +15,10 @@ import {
   getEntityValueListBySelf,
   updateEntityValue,
 } from "@/services/steins-admin/crmEntityValueController";
-import { addCustomerFavorite, removeCustomerFavorite } from "@/services/steins-admin/crmCustomerFavoriteController";
+import {
+  addCustomerFavorite,
+  removeCustomerFavorite,
+} from "@/services/steins-admin/crmCustomerFavoriteController";
 
 const initState: ReduxModel.CrmModelType = {
   entityVo: undefined,
@@ -72,9 +75,9 @@ export const crmModel = createModel<RootModel>()({
         onSuccess: (data) => {
           dispatch.crmModel.setEntityVo(data);
         },
-        onError: () => {
-          Notify.fail("获取实体失败:" + resp.msg);
-        },
+        // onError: () => {
+        //   Notify.fail("获取实体失败:" + resp.msg);
+        // },
       });
     },
     // 获取CRM字段信息
@@ -87,9 +90,9 @@ export const crmModel = createModel<RootModel>()({
         onSuccess: (data) => {
           dispatch.crmModel.setTableFields(data);
         },
-        onError: () => {
-          Notify.fail("获取客户字段失败:" + resp.msg);
-        },
+        // onError: () => {
+        //   Notify.fail("获取客户字段失败:" + resp.msg);
+        // },
       });
     },
     getFieldName: (fieldKey: string, state) => {
@@ -111,6 +114,13 @@ export const crmModel = createModel<RootModel>()({
       state,
     ) => {
       Notify.loading("数据加载中....");
+      let {tableFields, entityVo} = state.crmModel
+      if (tableFields === undefined) {
+        dispatch.crmModel.getCrmFields();
+      }
+      if (entityVo === undefined) {
+        dispatch.crmModel.getEntityObject();
+      }
       let resp: API.ApiResultCrmCrmEntityValueObjectVo;
       if (payload.mode === "mine") {
         resp = await getEntityValueListBySelf({
@@ -125,7 +135,7 @@ export const crmModel = createModel<RootModel>()({
           pageSize: state.crmModel.allCustomerData.pageSize,
           entityKey: CRM_TABLE_CODE,
           filterParams: state.crmModel.filterParams || {},
-          userId: state.crmModel.filterParams?.["business_worker"] || "0"
+          userId: state.crmModel.filterParams?.["business_worker"] || "0",
         });
       }
       handleResponse({
@@ -159,10 +169,9 @@ export const crmModel = createModel<RootModel>()({
     ) => {
       // 重置页数和数据
       if (payload.mode === "mine") {
-        dispatch.crmModel.setMyCustomerData(DEFAULT_CUSTOMER_DATA)
-
+        dispatch.crmModel.setMyCustomerData(DEFAULT_CUSTOMER_DATA);
       } else if (payload.mode === "all") {
-        dispatch.crmModel.setAllCustomerData(DEFAULT_CUSTOMER_DATA)
+        dispatch.crmModel.setAllCustomerData(DEFAULT_CUSTOMER_DATA);
       }
 
       dispatch.crmModel.setFilterParams({
@@ -173,25 +182,23 @@ export const crmModel = createModel<RootModel>()({
       await dispatch.crmModel.getEntityValues({ mode: payload.mode });
     },
     countValue: async (_, state) => {
-      Notify.loading("加载数据中...")
+      Notify.loading("加载数据中...");
       const resp = await getCrmValueCount({
-        entityId: state.crmModel.entityVo.entityId
-      })
-      let vo: API.CrmValueCountVo
+        entityId: state.crmModel.entityVo.entityId,
+      });
+      let vo: API.CrmValueCountVo;
       handleResponse({
         resp,
         onSuccess: (data) => {
-          vo = data
-          Notify.clear()
+          vo = data;
+          Notify.clear();
         },
         onError: () => {
-          Notify.fail("统计数据异常")
+          Notify.fail("统计数据异常");
         },
-        onFinish: () => {
-
-        }
-      })
-      return vo
+        onFinish: () => {},
+      });
+      return vo;
     },
     updateCustomerDataState: (
       payload: {
@@ -220,10 +227,10 @@ export const crmModel = createModel<RootModel>()({
       }
     },
     handleChangeFavorite: async (payload: {
-      mode: "mine" | "all"
-      isFavorite: boolean
-      entityId: string
-      valueId: string
+      mode: "mine" | "all";
+      isFavorite: boolean;
+      entityId: string;
+      valueId: string;
     }) => {
       if (payload.isFavorite) {
         // 取消收藏
@@ -234,7 +241,7 @@ export const crmModel = createModel<RootModel>()({
         handleResponse({
           resp,
           onSuccess: () => {
-            dispatch.crmModel.getEntityValues({ mode: payload.mode })
+            dispatch.crmModel.getEntityValues({ mode: payload.mode });
           },
           onError: () => {
             Notify.fail("取消收藏失败");
@@ -249,7 +256,7 @@ export const crmModel = createModel<RootModel>()({
         handleResponse({
           resp,
           onSuccess: () => {
-            dispatch.crmModel.getEntityValues({ mode: payload.mode })
+            dispatch.crmModel.getEntityValues({ mode: payload.mode });
           },
           onError: () => {
             Notify.fail("收藏失败");

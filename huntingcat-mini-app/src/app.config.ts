@@ -45,6 +45,7 @@ export default defineAppConfig({
     "pages/user_profile/index",
     "pages/policy/index",
     "pages/privacy/index",
+    "pages/access_perm/index",
   ],
   window: {},
   lazyCodeLoading: "requiredComponents",

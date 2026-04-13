@@ -43,7 +43,6 @@ export default function HeaderBodyFooterLayout({
           ) : (
             <View onClick={() => dispatch.routerModel.navigateBack()}>
               <AtIcon value="chevron-left" size="24" />
-              <Text className="font-bold">返回</Text>
             </View>
           )}
         </View>

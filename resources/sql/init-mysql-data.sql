@@ -9,11 +9,14 @@ INSERT INTO `sys_role` (`role_id`, `role_name`, `role_key`, `creator_id`) VALUES
 (1002, "微信CRM用户", "wechat_crm_user", 0),
 (1003, "微信CRM管理员", "wechat_crm_admin", 0);
 
-INSERT INTO `casbin_rule` (`ptype`, `v0`, `v1`) VALUES ('g', '1001', 'admin');
+-- 绑定用户角色
+INSERT INTO `casbin_rule` (`ptype`, `v0`, `v1`) VALUES 
+('g', '1001', 'admin'), ('g', '1001', 'wechat_crm_user'), ('g', '1001', 'wechat_crm_admin');
+INSERT INTO `sys_user_role_rel`(`role_id`, `user_id`) VALUES (1001, 1001), (1002, 1001), (1003,1001);
+
 
 INSERT INTO `crm_customer_entity` (`id`, `entity_name`, `entity_code`, `description`, `creator_id`) VALUES
 (1, "猎猫客户信息表", "huntingcat_customer", "", 1001);
-
 
 INSERT INTO `crm_customer_fields`(`id`, `entity_id`, `field_key`, `field_name`, `data_type`, `options`, `is_required`, `sort_order`, `creator_id`) VALUES
 (1001, 1, "customer_name", "企业名称", "text", null, 1, 0, 1001),

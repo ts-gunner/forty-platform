@@ -29,7 +29,13 @@ func RoleCheckHandlerFunc() gin.HandlerFunc {
 			return
 		}
 		user := utils.GetLoginUserInfo(c.Request.Context())
-		ok, err := global.Enforcer.Enforce(strconv.FormatInt(user.UserId, 10), c.Request.URL.Path, c.Request.Method)
+		var userId string
+		if user == nil {
+			userId = "0000"
+		} else {
+			userId = strconv.FormatInt(user.UserId, 10)
+		}
+		ok, err := global.Enforcer.Enforce(userId, c.Request.URL.Path, c.Request.Method)
 		if err != nil {
 			c.Abort()
 			global.Logger.Error("权限校验异常", zap.Error(err))

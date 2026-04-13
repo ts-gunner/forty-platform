@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	"fmt"
 	"github.com/ts-gunner/forty-platform/common/storage"
 	"strings"
 	"time"
@@ -65,62 +65,13 @@ func (s *AuthService) WechatCrmLogin(code string) (string, error) {
 		},
 	}
 	if sysUser.UserId == 0 {
-		userId, _ := global.IdCreator.NextID()
-		user := entity.SysUser{
-			UserId:   userId,
-			Account:  "openid_" + lo.RandomString(5, lo.LettersCharset),
-			Password: utils.EncryptBySM3(constant.INIT_PASSWORD),
-			NickName: "微信用户",
-			OpenId:   openId,
-			Phone:    "",
-			Email:    "",
-			AvatarId: 0,
-			Status:   1,
-			BaseRecordField: entity.BaseRecordField{
-				CreatorId: 0,
-			},
-		}
-		if err := global.DB.Transaction(func(tx *gorm.DB) error {
-			// 创建用户
-			if err := tx.Create(&user).Error; err != nil {
-				global.Logger.Error("微信小程序 - 用户创建失败：" + err.Error())
-				return errors.New("用户创建失败")
-			}
-
-			role, err := roleMapper.GetRoleByRoleKey(tx, constant.ROLE_WECHAT_CRM)
-			if err != nil {
-				return err
-			}
-			if role.RoleId == 0 {
-				return errors.New("角色不存在")
-			}
-
-			// 绑定用户跟微信小程序角色
-			rel := &entity.SysUserRoleRel{
-				UserId: userId,
-				RoleId: role.RoleId,
-			}
-			if err := tx.Create(rel).Error; err != nil {
-				global.Logger.Error("微信小程序 - 用户角色绑定失败：" + err.Error())
-				return errors.New("用户角色绑失败")
-			}
-			return nil
-
-		}); err != nil {
-			return "", err
-		}
-
-		if err := copier.Copy(&claim, user); err != nil {
-			return "", err
-		}
-
-	} else {
-		if sysUser.Status != 1 {
-			return "", errors.New("用户账号不可用，请联系管理员")
-		}
-		if err := copier.Copy(&claim, sysUser); err != nil {
-			return "", err
-		}
+		return "", fmt.Errorf("非内部人员，请申请且审批通过后再使用")
+	}
+	if sysUser.Status != 1 {
+		return "", fmt.Errorf("用户账号不可用，请联系管理员")
+	}
+	if err := copier.Copy(&claim, sysUser); err != nil {
+		return "", err
 	}
 	if sysUser.AvatarId != 0 {
 		resource, err := resourceMapper.GetResourceById(global.DB, sysUser.AvatarId)
@@ -149,7 +100,6 @@ func (s *AuthService) WechatCrmLogin(code string) (string, error) {
 		return item.RoleKey
 	})
 	claim.RoleIds = strings.Join(roleKeys, ",")
-
 	token := utils.CreateToken(claim, constant.SALT)
 	return token, nil
 }

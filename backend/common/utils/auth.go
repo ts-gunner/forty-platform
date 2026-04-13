@@ -9,7 +9,11 @@ import (
 )
 
 func GetLoginUserInfo(ctx context.Context) *systemResponse.LoginUserClaim {
-	loginUser := ctx.Value(constant.USER_KEY).(*systemResponse.LoginUserClaim)
+	userObject := ctx.Value(constant.USER_KEY)
+	if userObject == nil {
+		return nil
+	}
+	loginUser := userObject.(*systemResponse.LoginUserClaim)
 	return loginUser
 }
 

@@ -97,6 +97,28 @@ CREATE TABLE IF NOT EXISTS sys_resource (
     `delete_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间'
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '资源信息表';
 
+
+-- ***************************************************************************
+-- audit 审核审计相关表
+-- ***************************************************************************
+DROP TABLE IF EXISTS audit_access_record;
+CREATE TABLE IF NOT EXISTS audit_access_record (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `biz_type` VARCHAR(50) NOT NULL COMMENT '业务类型',
+    `biz_desc` VARCHAR(50) NOT NULL UNIQUE COMMENT '业务描述',
+    `status` VARCHAR(255) COMMENT '审核状态， 0-待审核，1-通过，2-驳回',
+    `remark` VARCHAR(1000) COMMENT '审核备注',
+    `apply_user` VARCHAR(255) COMMENT '申请人名称',
+    `apply_remark` VARCHAR(1000) COMMENT '申请人备注',
+    `creator_id` BIGINT NOT NULL COMMENT '创建者id',
+    `updater_id` BIGINT COMMENT '更新者id',
+    `deleter_id` BIGINT COMMENT '删除者id',
+    `is_delete` TINYINT DEFAULT 0 NOT NULL COMMENT '是否删除',
+    `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+    `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `delete_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除时间'
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '审核记录表';
+
 -- ***************************************************************************
 -- crm 客户管理相关表
 -- 采用配置表 + JSONB存储客户信息的方式实现crm
