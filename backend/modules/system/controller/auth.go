@@ -118,7 +118,7 @@ func approvalWechatAccess(c *gin.Context) {
 	}
 
 	if err := authService.ApprovalWechatAccess(req); err != nil {
-		response.Fail(http.StatusBadRequest, "账号异常:"+err.Error(), c)
+		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
 

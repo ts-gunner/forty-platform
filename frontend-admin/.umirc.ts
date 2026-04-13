@@ -26,6 +26,7 @@ export default defineConfig({
     { path: "/permission_manage", component: "./PermissionManagement" },
     { path: "/user_authorization", component: "./UserAuthorization" },
     { path: "/role_authorization", component: "./RoleAuthorization" },
+    { path: "/audit_manage", component: "./AuditManagement" },
     { path: "/crm_entity", component: "./CrmEntityManagement" },
     { path: "/crm_value", component: "./CrmValueManagement" },
      { path: "/crm_value_detail/:valueId", component: "./CrmValueDetail" },

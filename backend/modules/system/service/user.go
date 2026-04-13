@@ -69,12 +69,9 @@ func (UserService) GetUserList(req request.UserListRequest) (*response.PageResul
 		return nil, err
 	}
 
-	if req.PageNum <= 0 {
-		req.PageNum = 1
-	}
-	if req.PageSize <= 0 {
-		req.PageSize = 10
-	}
+	pageNum := utils.GetCurrentPage(req.PageNum)
+	pageSize := utils.GetPageSize(req.PageSize)
+
 	selectQuery := `
 	u.user_id AS user_id,
 	u.nickname AS nick_name,
@@ -93,16 +90,16 @@ func (UserService) GetUserList(req request.UserListRequest) (*response.PageResul
         LEFT JOIN sys_role sr ON sr.role_id = surr.role_id AND sr.is_delete = 0
         WHERE surr.user_id = u.user_id
     ) AS role_names`
-	offset := (req.PageNum - 1) * req.PageSize
-	if err := db.Select(selectQuery).Order("create_time DESC").Offset(offset).Limit(req.PageSize).Find(&list).Error; err != nil {
+	offset := (pageNum - 1) * pageSize
+	if err := db.Select(selectQuery).Order("create_time DESC").Offset(offset).Limit(pageSize).Find(&list).Error; err != nil {
 		return nil, err
 	}
 
 	return &response.PageResult[systemResponse.UserVo]{
 		List:     list,
 		Total:    total,
-		PageNum:  req.PageNum,
-		PageSize: req.PageSize,
+		PageNum:  pageNum,
+		PageSize: pageSize,
 	}, nil
 }
 

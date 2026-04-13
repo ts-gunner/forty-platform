@@ -7,4 +7,5 @@ export default {
     "menu.customerManagement": "客户信息管理",
     "menu.crmEntityManagement": "客户实体管理",
     "menu.crmValueManagement": "客户信息数据",
+    "menu.auditManagement": "审核管理",
 }

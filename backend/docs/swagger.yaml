@@ -1,8 +1,38 @@
 definitions:
+  audit.AuditAccessRecordVo:
+    properties:
+      applyRemark:
+        description: 申请人备注
+        type: string
+      applyUser:
+        description: 申请人名称
+        type: string
+      auditCode:
+        description: 审核代码
+        type: string
+      bizDesc:
+        description: 业务描述
+        type: string
+      bizType:
+        description: 业务类型
+        type: string
+      createTime:
+        type: string
+      id:
+        example: "0"
+        type: string
+      remark:
+        description: 审核备注
+        type: string
+      status:
+        description: 审核状态 0-待审核 1-通过 2-驳回
+        type: integer
+    type: object
   audit.UpdateAuditRequest:
     properties:
       id:
-        type: integer
+        example: "0"
+        type: string
       remark:
         type: string
       status:
@@ -427,6 +457,17 @@ definitions:
         example: 成功
         type: string
     type: object
+  response.ApiResult-response_PageResult-audit_AuditAccessRecordVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/response.PageResult-audit_AuditAccessRecordVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
   response.ApiResult-response_PageResult-crm_CrmCustomerFavoriteVo:
     properties:
       code:
@@ -536,6 +577,19 @@ definitions:
       msg:
         example: 成功
         type: string
+    type: object
+  response.PageResult-audit_AuditAccessRecordVo:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/audit.AuditAccessRecordVo'
+        type: array
+      pageNum:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
     type: object
   response.PageResult-crm_CrmCustomerFavoriteVo:
     properties:
@@ -945,26 +999,7 @@ info:
   title: 四零专属管理后台
   version: "1.0"
 paths:
-  /audit/getAuditDetail:
-    get:
-      operationId: getAuditDetail
-      parameters:
-      - description: 审核记录ID
-        in: query
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ApiResult-any'
-      summary: 查询审核记录详情
-      tags:
-      - AuditController
-  /audit/getAuditList:
+  /audit/review/getAuditList:
     get:
       operationId: getAuditList
       parameters:
@@ -976,13 +1011,13 @@ paths:
         in: query
         name: status
         type: string
-      - description: 页码，默认1
+      - description: 页码
         in: query
-        name: page
+        name: pageNum
         type: integer
-      - description: 每页大小，默认10
+      - description: 每页数量
         in: query
-        name: size
+        name: pageSize
         type: integer
       produces:
       - application/json
@@ -990,11 +1025,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.ApiResult-any'
+            $ref: '#/definitions/response.ApiResult-response_PageResult-audit_AuditAccessRecordVo'
       summary: 查询审核记录列表
       tags:
       - AuditController
-  /audit/updateAudit:
+  /audit/review/updateAudit:
     post:
       consumes:
       - application/json

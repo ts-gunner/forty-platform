@@ -79,6 +79,12 @@ declare namespace API {
     msg?: string;
   };
 
+  type ApiResultResponsePageResultAuditAuditAccessRecordVo = {
+    code?: number;
+    data?: PageResultAuditAuditAccessRecordVo;
+    msg?: string;
+  };
+
   type ApiResultResponsePageResultCrmCrmCustomerFavoriteVo = {
     code?: number;
     data?: PageResultCrmCrmCustomerFavoriteVo;
@@ -148,6 +154,25 @@ declare namespace API {
     auditRemark?: string;
     /** 微信登录的code */
     loginCode: string;
+  };
+
+  type AuditAccessRecordVo = {
+    /** 申请人备注 */
+    applyRemark?: string;
+    /** 申请人名称 */
+    applyUser?: string;
+    /** 审核代码 */
+    auditCode?: string;
+    /** 业务描述 */
+    bizDesc?: string;
+    /** 业务类型 */
+    bizType?: string;
+    createTime?: string;
+    id?: string;
+    /** 审核备注 */
+    remark?: string;
+    /** 审核状态 0-待审核 1-通过 2-驳回 */
+    status?: number;
   };
 
   type checkCustomerFavoriteParams = {
@@ -249,20 +274,15 @@ declare namespace API {
     entityName?: string;
   };
 
-  type getAuditDetailParams = {
-    /** 审核记录ID */
-    id: string;
-  };
-
   type getAuditListParams = {
     /** 业务类型 */
     bizType?: string;
     /** 状态 */
     status?: string;
-    /** 页码，默认1 */
-    page?: number;
-    /** 每页大小，默认10 */
-    size?: number;
+    /** 页码 */
+    pageNum?: number;
+    /** 每页数量 */
+    pageSize?: number;
   };
 
   type GetCrmEntityValueListRequest = {
@@ -422,6 +442,13 @@ declare namespace API {
     userId?: string;
   };
 
+  type PageResultAuditAuditAccessRecordVo = {
+    list?: AuditAccessRecordVo[];
+    pageNum?: number;
+    pageSize?: number;
+    total?: number;
+  };
+
   type PageResultCrmCrmCustomerFavoriteVo = {
     list?: CrmCustomerFavoriteVo[];
     pageNum?: number;
@@ -550,7 +577,7 @@ declare namespace API {
   };
 
   type UpdateAuditRequest = {
-    id: number;
+    id: string;
     remark?: string;
     status: number;
   };

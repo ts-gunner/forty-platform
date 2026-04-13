@@ -6,6 +6,7 @@ import (
 	"github.com/ts-gunner/forty-platform/common/global"
 	auditRequest "github.com/ts-gunner/forty-platform/common/request/audit"
 	"github.com/ts-gunner/forty-platform/common/response"
+	auditResponse "github.com/ts-gunner/forty-platform/common/response/audit"
 	"go.uber.org/zap"
 	"net/http"
 )
@@ -20,12 +21,11 @@ func (ReviewRouter) InitReviewRouter(moduleName string, router *gin.RouterGroup)
 	routerGroup := router.Group(fmt.Sprintf("/%s/review", moduleName))
 	routerGroup.POST("/updateAudit", updateAudit)
 	routerGroup.GET("/getAuditList", getAuditList)
-	routerGroup.GET("/getAuditDetail", getAuditDetail)
 }
 
 // @Tags AuditController
 // @ID updateAudit
-// @Router /audit/updateAudit [post]
+// @Router /audit/review/updateAudit [post]
 // @Summary 审核或驳回
 // @Accept json
 // @Produce json
@@ -49,14 +49,14 @@ func updateAudit(c *gin.Context) {
 
 // @Tags AuditController
 // @ID getAuditList
-// @Router /audit/getAuditList [get]
+// @Router /audit/review/getAuditList [get]
 // @Summary 查询审核记录列表
 // @Produce json
 // @Param bizType query string false "业务类型"
 // @Param status query string false "状态"
-// @Param page query int false "页码，默认1"
-// @Param size query int false "每页大小，默认10"
-// @Success 200 {object} response.ApiResult[any]
+// @Param pageNum query int false "页码" in:query
+// @Param pageSize query int false "每页数量" in:query
+// @Success 200 {object} response.ApiResult[response.PageResult[auditResponse.AuditAccessRecordVo]]
 func getAuditList(c *gin.Context) {
 	var req auditRequest.GetAuditListRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -65,38 +65,11 @@ func getAuditList(c *gin.Context) {
 		return
 	}
 
-	audits, total, err := reviewService.GetAuditList(req)
+	vo, err := reviewService.GetAuditList(req)
 	if err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}
 
-	response.Data(map[string]interface{}{
-		"list":  audits,
-		"total": total,
-	}, c)
-}
-
-// @Tags AuditController
-// @ID getAuditDetail
-// @Router /audit/getAuditDetail [get]
-// @Summary 查询审核记录详情
-// @Produce json
-// @Param id query string true "审核记录ID"
-// @Success 200 {object} response.ApiResult[any]
-func getAuditDetail(c *gin.Context) {
-	var req auditRequest.GetAuditDetailRequest
-	if err := c.ShouldBindQuery(&req); err != nil {
-		global.Logger.Error("参数校验异常："+err.Error(), zap.Any("request", req))
-		response.Fail(http.StatusBadRequest, "参数校验异常", c)
-		return
-	}
-
-	audit, err := reviewService.GetAuditDetail(req)
-	if err != nil {
-		response.Fail(http.StatusBadRequest, err.Error(), c)
-		return
-	}
-
-	response.Data(audit, c)
+	response.Data[response.PageResult[auditResponse.AuditAccessRecordVo]](*vo, c)
 }

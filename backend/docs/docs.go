@@ -15,36 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/audit/getAuditDetail": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "AuditController"
-                ],
-                "summary": "查询审核记录详情",
-                "operationId": "getAuditDetail",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "审核记录ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ApiResult-any"
-                        }
-                    }
-                }
-            }
-        },
-        "/audit/getAuditList": {
+        "/audit/review/getAuditList": {
             "get": {
                 "produces": [
                     "application/json"
@@ -69,14 +40,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "页码，默认1",
-                        "name": "page",
+                        "description": "页码",
+                        "name": "pageNum",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "每页大小，默认10",
-                        "name": "size",
+                        "description": "每页数量",
+                        "name": "pageSize",
                         "in": "query"
                     }
                 ],
@@ -84,13 +55,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.ApiResult-any"
+                            "$ref": "#/definitions/response.ApiResult-response_PageResult-audit_AuditAccessRecordVo"
                         }
                     }
                 }
             }
         },
-        "/audit/updateAudit": {
+        "/audit/review/updateAudit": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1995,6 +1966,46 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "audit.AuditAccessRecordVo": {
+            "type": "object",
+            "properties": {
+                "applyRemark": {
+                    "description": "申请人备注",
+                    "type": "string"
+                },
+                "applyUser": {
+                    "description": "申请人名称",
+                    "type": "string"
+                },
+                "auditCode": {
+                    "description": "审核代码",
+                    "type": "string"
+                },
+                "bizDesc": {
+                    "description": "业务描述",
+                    "type": "string"
+                },
+                "bizType": {
+                    "description": "业务类型",
+                    "type": "string"
+                },
+                "createTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "remark": {
+                    "description": "审核备注",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "审核状态 0-待审核 1-通过 2-驳回",
+                    "type": "integer"
+                }
+            }
+        },
         "audit.UpdateAuditRequest": {
             "type": "object",
             "required": [
@@ -2003,7 +2014,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "id": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "remark": {
                     "type": "string"
@@ -2622,6 +2634,22 @@ const docTemplate = `{
                 }
             }
         },
+        "response.ApiResult-response_PageResult-audit_AuditAccessRecordVo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/response.PageResult-audit_AuditAccessRecordVo"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
         "response.ApiResult-response_PageResult-crm_CrmCustomerFavoriteVo": {
             "type": "object",
             "properties": {
@@ -2779,6 +2807,26 @@ const docTemplate = `{
                 "msg": {
                     "type": "string",
                     "example": "成功"
+                }
+            }
+        },
+        "response.PageResult-audit_AuditAccessRecordVo": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/audit.AuditAccessRecordVo"
+                    }
+                },
+                "pageNum": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

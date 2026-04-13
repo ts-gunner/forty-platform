@@ -79,7 +79,7 @@ func (s *AuthService) WechatCrmLogin(code string) (string, error) {
 		return "", fmt.Errorf("权限校验异常")
 	}
 	if !ok {
-		return "", fmt.Errorf("没有权限登录管理端")
+		return "", fmt.Errorf("无权限登录")
 	}
 	if err := copier.Copy(&claim, sysUser); err != nil {
 		return "", err
@@ -155,10 +155,21 @@ func (AuthService) ApprovalWechatAccess(req request.ApprovalWechatAccessRequest)
 			return fmt.Errorf("存储用户失败")
 		}
 	}
-	// 4. 创建审核记录
+	// 4. 查询是否有待审核记录
+	var count int64
+	if err = global.DB.Model(
+		&entity.AuditAccessRecord{},
+	).Where("is_delete = 0 and status = 0 and biz_id = ?", openId).Count(&count).Error; err != nil {
+		return fmt.Errorf("存储用户失败")
+	}
+	if count > 0 {
+		return fmt.Errorf("已提交审核，请勿重复提交")
+	}
+	// 5. 创建审核记录
 	record := entity.AuditAccessRecord{
 		BizType:     string(constant.AUDIT_ACCESS_CRM),
 		BizDesc:     constant.AUDIT_BIZ_MAP[constant.AUDIT_ACCESS_CRM],
+		BizId:       openId,
 		AuditCode:   req.AuditCode,
 		ApplyUser:   req.AuditName,
 		ApplyRemark: req.AuditRemark,

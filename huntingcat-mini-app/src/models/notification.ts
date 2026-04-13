@@ -33,7 +33,6 @@ export const notificationModel = createModel<RootModel>()({
     ) {
       const { timer } = rootState.notificationModel;
       if (timer) clearTimeout(timer);
-
       dispatch.notificationModel.updateNotify({
         notifyOpen: true,
         notifyText: text,

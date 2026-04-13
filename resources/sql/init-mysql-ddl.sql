@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS audit_access_record (
     `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `biz_type` VARCHAR(50) NOT NULL COMMENT '业务类型',
     `biz_desc` VARCHAR(50) NOT NULL COMMENT '业务描述',
+    `biz_id` VARCHAR(255) NOT NULL COMMENT '业务ID',
     `audit_code` VARCHAR(50) NOT NULL COMMENT '审核代码',
     `status` TINYINT DEFAULT 0 COMMENT '审核状态， 0-待审核，1-通过，2-驳回',
     `remark` VARCHAR(1000) COMMENT '审核备注',

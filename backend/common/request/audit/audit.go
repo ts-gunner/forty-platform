@@ -8,7 +8,7 @@ type CreateAuditRequest struct {
 }
 
 type UpdateAuditRequest struct {
-	ID     uint64 `json:"id" binding:"required"`
+	ID     int64  `json:"id,string" binding:"required"`
 	Status int    `json:"status" binding:"required"`
 	Remark string `json:"remark"`
 }
@@ -18,10 +18,10 @@ type DeleteAuditRequest struct {
 }
 
 type GetAuditListRequest struct {
-	BizType string `form:"bizType"`
-	Status  *int   `form:"status"`
-	Page    int    `form:"page,default=1"`
-	Size    int    `form:"size,default=10"`
+	BizType  string `form:"bizType"`
+	Status   *int   `form:"status"`
+	PageNum  int    `form:"pageNum" json:"pageNum"`
+	PageSize int    `form:"pageSize" json:"pageSize"`
 }
 
 type GetAuditDetailRequest struct {

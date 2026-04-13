@@ -27,10 +27,25 @@ const (
 
 var (
 	CASBIN_INIT_MAP = []models.CasbinRule{
-		models.CasbinRule{
+		{
 			Subject: ROLE_ADMIN,
-			Object:  "/ft/crm/value/uploadCrmExcel",
+			Object:  "/ft/audit/review/updateAudit",
 			Action:  "POST",
+		},
+		{
+			Subject: ROLE_WECHAT_CRM_ADMIN,
+			Object:  "/ft/audit/review/updateAudit",
+			Action:  "POST",
+		},
+		{
+			Subject: ROLE_ADMIN,
+			Object:  "/ft/audit/review/getAuditList",
+			Action:  "GET",
+		},
+		{
+			Subject: ROLE_WECHAT_CRM_ADMIN,
+			Object:  "/ft/audit/review/getAuditList",
+			Action:  "GET",
 		},
 	}
 )

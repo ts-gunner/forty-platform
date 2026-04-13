@@ -4,8 +4,10 @@ import Taro from "@tarojs/taro";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "@/store";
+import { Notify } from "@/utils/common";
+import { withGlobalLayout } from "@/components/AppLayout";
 
-export default function AccessPermissionPage() {
+function AccessPermissionPage() {
     const dispatch = useDispatch<Dispatch>()
   // 表单状态管理
   const [auditCode, setAuditCode] = useState(""); // 审核随机码
@@ -29,13 +31,10 @@ export default function AccessPermissionPage() {
   }, []);
 
   // 提交审核申请
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // 表单校验
     if (!applicant.trim()) {
-      Taro.showToast({
-        title: "请填写申请人",
-        icon: "none",
-      });
+      Notify.fail("请填写申请人")
       return;
     }
 
@@ -46,7 +45,7 @@ export default function AccessPermissionPage() {
       remark,
     };
 
-    dispatch.authModel.applyAccessPermission(submitData)
+    await dispatch.authModel.applyAccessPermission(submitData)
 
     setApplicant('')
     setRemark('')
@@ -107,3 +106,6 @@ export default function AccessPermissionPage() {
     </HeaderBodyFooterLayout>
   );
 }
+
+
+export default withGlobalLayout(AccessPermissionPage)

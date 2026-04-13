@@ -65,6 +65,7 @@ export const authModel = createModel<RootModel>()({
       name: string;
       remark: string;
     }) => {
+      Notify.loading("正在提交中....")
       const loginResp = await Taro.login();
       const resp = await approvalWechatAccess({
         loginCode: loginResp.code,
