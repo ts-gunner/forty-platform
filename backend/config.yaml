@@ -11,7 +11,7 @@ redis:
     port: "6379"
     host: ${FORTY_APP_REDIS_HOST:=127.0.0.1}
     password: ${FORTY_APP_REDIS_PASSWORD:=123456}
-    db: 8
+    db: 0
 
 servlet:
     port: ${FORTY_APP_PORT:=18888}

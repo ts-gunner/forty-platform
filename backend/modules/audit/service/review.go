@@ -18,32 +18,39 @@ type ReviewService struct{}
 // UpdateAudit 审核或驳回
 func (ReviewService) UpdateAudit(ctx context.Context, req auditRequest.UpdateAuditRequest) error {
 	userId := utils.GetLoginUserId(ctx)
-
-	// 检查审核记录是否存在
-	var audit entity.AuditAccessRecord
-	if err := global.DB.First(&audit, req.ID).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return errors.New("审核记录不存在")
+	return global.DB.Transaction(func(tx *gorm.DB) error {
+		// 检查审核记录是否存在
+		var audit entity.AuditAccessRecord
+		if err := tx.First(&audit, req.ID).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return errors.New("审核记录不存在")
+			}
+			return err
 		}
-		return err
-	}
 
-	// 检查状态是否合法
-	if req.Status != 1 && req.Status != 2 {
-		return errors.New("状态值不合法，只能是1(通过)或2(驳回)")
-	}
-	
-	// 更新审核记录
-	if err := global.DB.Model(&audit).Updates(map[string]interface{}{
-		"status":     req.Status,
-		"remark":     req.Remark,
-		"updater_id": userId,
-	}).Error; err != nil {
-		global.Logger.Error("更新审核记录失败:" + err.Error())
-		return errors.New("更新审核记录失败")
-	}
+		// 检查状态是否合法
+		if req.Status != 1 && req.Status != 2 {
+			return errors.New("状态值不合法，只能是1(通过)或2(驳回)")
+		}
 
-	return nil
+		// 更新审核记录
+		if err := tx.Model(&audit).Updates(map[string]interface{}{
+			"status":     req.Status,
+			"remark":     req.Remark,
+			"updater_id": userId,
+		}).Error; err != nil {
+			global.Logger.Error("更新审核记录失败:" + err.Error())
+			return errors.New("更新审核记录失败")
+		}
+		// 审核成功， 添加任务队列
+		if req.Status == 1 {
+			global.Redis.RPush(ctx, audit.BizType, audit.BizId)
+
+		}
+		return nil
+
+	})
+
 }
 
 // GetAuditList 查询审核数据列表
