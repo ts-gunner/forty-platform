@@ -35,6 +35,7 @@ backend
 |    redis     |   	github.com/go-redis/redis/v8   |     redis	      |
 |     gmsm     |      	github.com/tjfoc/gmsm       |      国密算法	      |
 |   excelize   |   github.com/xuri/excelize/v2     |    处理excel表格    |
+| cron | github.com/robfig/cron/v3 | 定时任务 | 
 
 
 # 系统存储策略

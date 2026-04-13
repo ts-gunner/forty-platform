@@ -45,7 +45,6 @@ func (ReviewService) UpdateAudit(ctx context.Context, req auditRequest.UpdateAud
 		// 审核成功， 添加任务队列
 		if req.Status == 1 {
 			global.Redis.RPush(ctx, audit.BizType, audit.BizId)
-
 		}
 		return nil
 

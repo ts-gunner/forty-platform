@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-
 	"github.com/ts-gunner/forty-platform/common/global"
 	"github.com/ts-gunner/forty-platform/core"
 )

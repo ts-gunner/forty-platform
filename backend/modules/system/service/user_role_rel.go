@@ -79,9 +79,9 @@ func (UserRoleRelService) GetUsersByRoleId(roleId int64) ([]systemResponse.UserW
 	return result, nil
 }
 
-func (UserRoleRelService) AssignRolesToUser(req request.UserRoleRelAssignRequest) error {
+func (UserRoleRelService) AssignRolesToUser(gtx *gorm.DB, req request.UserRoleRelAssignRequest) error {
 	var user entity.SysUser
-	if err := global.DB.Where("user_id = ? AND is_delete = ?", req.UserId, 0).First(&user).Error; err != nil {
+	if err := gtx.Where("user_id = ? AND is_delete = ?", req.UserId, 0).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return errors.New("用户不存在")
 		}
@@ -89,14 +89,14 @@ func (UserRoleRelService) AssignRolesToUser(req request.UserRoleRelAssignRequest
 	}
 
 	var roles []entity.SysRole
-	if err := global.DB.Where("role_id IN ? AND is_delete = ?", req.RoleIds, 0).Find(&roles).Error; err != nil {
+	if err := gtx.Where("role_id IN ? AND is_delete = ?", req.RoleIds, 0).Find(&roles).Error; err != nil {
 		return err
 	}
 	if len(roles) != len(req.RoleIds) {
 		return errors.New("部分角色不存在")
 	}
 
-	return global.DB.Transaction(func(tx *gorm.DB) error {
+	return gtx.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Where("user_id = ?", req.UserId).Delete(&entity.SysUserRoleRel{}).Error; err != nil {
 			return err
 		}

@@ -88,7 +88,7 @@ func assignRolesToUser(c *gin.Context) {
 		return
 	}
 
-	if err := userRoleRelService.AssignRolesToUser(req); err != nil {
+	if err := userRoleRelService.AssignRolesToUser(global.DB, req); err != nil {
 		response.Fail(http.StatusBadRequest, err.Error(), c)
 		return
 	}

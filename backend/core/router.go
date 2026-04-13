@@ -1,8 +1,6 @@
 package core
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -12,11 +10,12 @@ import (
 	auditController "github.com/ts-gunner/forty-platform/modules/audit/controller"
 	crmController "github.com/ts-gunner/forty-platform/modules/crm/controller"
 	systemController "github.com/ts-gunner/forty-platform/modules/system/controller"
+	systemTask "github.com/ts-gunner/forty-platform/modules/system/task"
+	"net/http"
 )
 
 func initRouter() *gin.Engine {
 	r := gin.Default()
-
 	r.Use(gin.Recovery())
 	swaggerGroup := r.Group(global.Config.Servlet.ContextPath)
 
@@ -31,7 +30,10 @@ func initRouter() *gin.Engine {
 	}))
 	contextGroup.Use(handler.RoleCheckHandlerFunc())
 	initSwagger(swaggerGroup)
+
 	systemController.SystemRouter.InitSystemRouter(contextGroup)
+	systemTask.InitSystemTask()
+
 	crmController.CrmRouter.InitCrmRouter(contextGroup)
 	auditController.AuditRouter.InitAuditRouter(contextGroup)
 	return r
