@@ -80,9 +80,9 @@ const AuditManagePage = () => {
         return (
           record.status === 0 && (
             <div className="flex justify-center items-center gap-3">
-              <Button className="bg-green-600! text-white! font-bold! hover:bg-green-700!"
-              
-              onClick={()=>  approveAccess(false, record.id || "", "")}>通过</Button>
+              <Button className="bg-green-600! text-white! font-bold! hover:bg-green-700!" onClick={() => approveAccess(true, record.id || "", "")}>
+                通过
+              </Button>
               <Popover
                 content={<PopoverContent auditId={record.id || ""} />}
                 trigger="click"

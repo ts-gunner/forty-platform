@@ -10,7 +10,7 @@ mysql:
 redis:
     port: "6379"
     host: ${FORTY_APP_REDIS_HOST:=127.0.0.1}
-    password: ""
+    password: ${FORTY_APP_REDIS_PASSWORD:=123456}
     db: 8
 
 servlet:

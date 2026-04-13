@@ -16,17 +16,21 @@ services:
     networks:
       - middle-network
 
-  # redis:
-  #   container_name: forty-redis
-  #   image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:5.0.14
-  #   ports:
-  #     - "6379:6379"
-  #   volumes:
-  #     - ${REDIS_VOLUME_DIRECTORY:-.}:/data
-  #     - ${REDIS_VOLUME_CONFIG:-./redis.conf}:/etc/redis/redis.conf
-  #   command: redis-server /etc/redis/redis.conf
-  #   networks:
-  #     - middle-network
+  redis:
+    container_name: forty-redis
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/quay.io/opstree/redis:v7.0.5
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-123456}
+      - REDIS_APPENDONLY=yes
+      - REDIS_MAXMEMORY=256mb
+      - REDIS_MAXMEMORY_POLICY=allkeys-lru
+    volumes:
+      - ${REDIS_VOLUME_DIRECTORY:-.}:/data
+    command: redis-server /etc/redis/redis.conf
+    networks:
+      - middle-network
 
 networks:
   middle-network:
