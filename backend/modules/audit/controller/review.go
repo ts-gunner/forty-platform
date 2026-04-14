@@ -53,7 +53,7 @@ func updateAudit(c *gin.Context) {
 // @Summary 查询审核记录列表
 // @Produce json
 // @Param bizType query string false "业务类型"
-// @Param status query string false "状态"
+// @Param status query int false "状态"
 // @Param pageNum query int false "页码" in:query
 // @Param pageSize query int false "每页数量" in:query
 // @Success 200 {object} response.ApiResult[response.PageResult[auditResponse.AuditAccessRecordVo]]

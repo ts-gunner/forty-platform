@@ -278,7 +278,7 @@ declare namespace API {
     /** 业务类型 */
     bizType?: string;
     /** 状态 */
-    status?: string;
+    status?: number;
     /** 页码 */
     pageNum?: number;
     /** 每页数量 */

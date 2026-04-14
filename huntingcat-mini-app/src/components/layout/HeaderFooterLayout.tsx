@@ -13,15 +13,17 @@ import { Dispatch } from "@/store";
 export default function HeaderBodyFooterLayout({
   headerRender,
   FooterRender,
+  title,
   children,
   className,
 }: {
   headerRender?: React.ReactNode;
   FooterRender?: React.ReactNode;
+  title?: string;
   children: React.ReactNode;
-  className?: string
+  className?: string;
 }) {
-  const dispatch = useDispatch<Dispatch>()
+  const dispatch = useDispatch<Dispatch>();
   const { navBarHeight, headerHeight } = useNavbar();
   return (
     <View className={cn("flex flex-col h-screen", className)}>
@@ -33,7 +35,7 @@ export default function HeaderBodyFooterLayout({
         }}
       >
         <View
-          className="flex items-center"
+          className="w-full flex-1 flex items-center"
           style={{
             height: `${headerHeight}px`,
           }}
@@ -41,8 +43,14 @@ export default function HeaderBodyFooterLayout({
           {headerRender ? (
             headerRender
           ) : (
-            <View onClick={() => dispatch.routerModel.navigateBack()}>
-              <AtIcon value="chevron-left" size="24" />
+            <View className="flex-1 w-full grid grid-cols-3">
+              <View onClick={() => dispatch.routerModel.navigateBack()}>
+                <AtIcon value="chevron-left" size="24" />
+              </View>
+              <View className="text-center">
+                <Text className="font-[600] text-lg">{title}</Text>
+              </View>
+              <View></View>
             </View>
           )}
         </View>

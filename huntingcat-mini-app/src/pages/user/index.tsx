@@ -1,12 +1,14 @@
 import { Image, Text, View } from "@tarojs/components";
 import { useNavbar } from "@/context/NavbarContext";
 import { ICON_MAP, IMAGE_MAP, THEME_CONFIG } from "@/constant/global";
-import { cn } from "@/utils/common";
+import { cn, handleResponse, Notify } from "@/utils/common";
 import { ROUTERS } from "@/constant/menus";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import { useEffect, useState } from "react";
+import Taro from "@tarojs/taro";
+import { uploadCrmExcel } from "@/services/steins-admin/crmEntityValueController";
 const CURRENT_PAGE = ROUTERS.mine;
 function UserPage() {
   const dispatch = useDispatch<Dispatch>()
@@ -116,37 +118,55 @@ const UserComponent = () => {
 };
 
 
+// 我的服务
+const MyServiceComponent = () => {
+  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo)
+  const dispatch = useDispatch<Dispatch>()
 const serviceData = [
   {
     key: "1",
-    title: "拜访记录",
-    icon: <Image src={ICON_MAP.visitRecordIcon} lazyLoad className="h-6 w-6" />,
+    title: "导入数据",
+    icon: <Image src={ICON_MAP.uploadExcel} lazyLoad className="h-6 w-6" />,
+    onClick: () => {
+      Taro.chooseMessageFile({
+        count: 1,
+        type: "file",
+        success: async (res) => {
+          const tempFilePaths = res.tempFiles
+          const tempFile = tempFilePaths[0]
+          const resp = await uploadCrmExcel({
+            entityId: entityVo.entityId
+          }, { uri: tempFile.path } as any,)
+          handleResponse({
+            resp,
+            onSuccess: () => {
+              Notify.ok("导入成功")
+            },
+            onError: () => {
+              Notify.fail(resp.msg)
+            }
+          })
+        }
+      })
+    }
   },
   {
     key: "2",
-    title: "电话记录",
-    icon: <Image src={ICON_MAP.phoneRecordIcon} lazyLoad className="h-6 w-6" />,
+    title: "审批",
+    icon: <Image src={ICON_MAP.auditIcon} lazyLoad className="h-6 w-6" />,
+    onClick: () => {
+      dispatch.routerModel.navigateTo({url: ROUTERS.audit})
+    },
   },
-  {
-    key: "3",
-    title: "附近企业",
-    icon: <Image src={ICON_MAP.rangCompanyIcon} lazyLoad className="h-6 w-6" />,
-  },
-  {
-    key: "4",
-    title: "物品流向",
-    icon: <Image src={ICON_MAP.goodFlowIcon} lazyLoad className="h-6 w-6" />,
-  },
+
 ];
-// 我的服务
-const MyServiceComponent = () => {
   return (
     <View className="flex justify-center mt-4">
       <View className="rounded-xl p-3 bg-white w-[95%] shadow">
         <Text className="font-[600]">我的服务</Text>
         <View className="grid grid-cols-4 mt-6 gap-2 gap-y-6">
           {serviceData.map((it) => (
-            <CardComponent key={it.key} icon={it.icon} title={it.title} />
+            <CardComponent key={it.key} icon={it.icon} title={it.title} onClick={it.onClick}/>
           ))}
         </View>
       </View>

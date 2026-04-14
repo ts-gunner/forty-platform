@@ -19,10 +19,7 @@ function AllCustomerPage() {
         path: CURRENT_PAGE
       }
     })
-  const tableFields = useSelector(
-    (state: RootState) => state.crmModel.tableFields,
-  );
-  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
+
   const allCustomerData = useSelector(
     (state: RootState) => state.crmModel.allCustomerData,
   );

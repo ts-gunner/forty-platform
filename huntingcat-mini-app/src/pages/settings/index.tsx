@@ -111,7 +111,7 @@ const SettingsPage: React.FC = () => {
         </View>
 
         <View className="mt-6 flex justify-center">
-          <Text className="text-xs text-gray-400">版本号 2.1.0</Text>
+          <Text className="text-xs text-gray-400">版本号 1.1.4</Text>
         </View>
       </>
     </HeaderBodyFooterLayout>

@@ -30,6 +30,9 @@ export const ICON_MAP = {
   phoneRecordIcon: "https://pic1.imgdb.cn/item/69a98a0649a76f9266b10908.png", // 电话记录
   rangCompanyIcon: "https://pic1.imgdb.cn/item/69a98aa449a76f9266b109a9.png", // 附近企业
   goodFlowIcon: "https://pic1.imgdb.cn/item/69b677ac0a6745dc77dc4cda.png", // 物品流向
+
+  uploadExcel: "https://pic1.imgdb.cn/item/69ddafbf1395de9438ab70e7.png", // 上传表格
+  auditIcon: "https://pic1.imgdb.cn/item/69ddb2231395de9438ab7374.png",  // 审批
 };
 
 export const THEME_CONFIG = {

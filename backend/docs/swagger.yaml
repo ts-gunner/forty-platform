@@ -1010,7 +1010,7 @@ paths:
       - description: 状态
         in: query
         name: status
-        type: string
+        type: integer
       - description: 页码
         in: query
         name: pageNum

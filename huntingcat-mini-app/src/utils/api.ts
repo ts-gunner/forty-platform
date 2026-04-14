@@ -87,7 +87,7 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
           });
           return response.data as T;
         }
-      } catch (err) {
+      } catch (err:any) {
         return {
           code: 500,
           msg: "服务异常:" + err.errMsg,
@@ -112,7 +112,7 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
           enableHttp2: true,
         });
         return response.data as T;
-      } catch (err) {
+      } catch (err:any) {
         return {
           code: 500,
           msg: "服务异常:" + err.errMsg,

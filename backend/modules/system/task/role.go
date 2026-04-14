@@ -8,6 +8,7 @@ import (
 	"github.com/ts-gunner/forty-platform/common/global"
 	request "github.com/ts-gunner/forty-platform/common/request/system"
 	"github.com/ts-gunner/forty-platform/common/response/system"
+	"github.com/ts-gunner/forty-platform/modules/system/mapper"
 	"github.com/ts-gunner/forty-platform/modules/system/service"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -35,12 +36,25 @@ func AddCrmRole() {
 		roleIds := lo.Map(roleList, func(role system.UserRoleRelVo, idx int) int64 {
 			return role.RoleId
 		})
-		
+		// 找到对应的id
+		role, err := mapper.SystemMapper.RoleMapper.GetRoleByRoleKey(tx, constant.ROLE_WECHAT_CRM)
+		if err != nil {
+			return err
+		}
+		roleIds = append(roleIds, role.RoleId)
 		// 授权角色
-		return service.SystemService.AssignRolesToUser(tx, request.UserRoleRelAssignRequest{
+		if err = service.SystemService.AssignRolesToUser(tx, request.UserRoleRelAssignRequest{
 			UserId:  user.UserId,
 			RoleIds: roleIds,
-		})
+		}); err != nil {
+			return err
+		}
+		global.Logger.Info("定时任务 - AddCrmRole完成", zap.Any("user", map[string]any{
+			"openId":   user.OpenId,
+			"nickName": user.NickName,
+		}))
+
+		return nil
 	})
 	if err != nil {
 		global.Logger.Error("定时任务 - AddCrmRole发生错误", zap.Error(err))

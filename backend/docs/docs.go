@@ -33,7 +33,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "状态",
                         "name": "status",
                         "in": "query"

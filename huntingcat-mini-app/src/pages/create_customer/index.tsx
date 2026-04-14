@@ -41,7 +41,6 @@ function CreateCustomerPage() {
 
   // 提交逻辑：组合原本的数据结构
   const handleSubmit = async () => {
-    console.log("提交的数据:", createData, entityVo);
     let errorMsg = validateValue();
     if (errorMsg) {
       Notify.fail(errorMsg);
@@ -135,7 +134,6 @@ function CreateCustomerPage() {
                         field={tableFields[idx]}
                         value={createData[fieldKey]}
                         onChange={(val: any) => {
-                          console.log("val", val)
                           setCreateData((prev) => ({
                             ...prev,
                             [fieldKey]: val,
