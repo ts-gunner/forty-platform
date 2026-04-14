@@ -42,6 +42,8 @@ func AddCrmRole() {
 			return err
 		}
 		roleIds = append(roleIds, role.RoleId)
+		// 去重
+		roleIds = lo.Uniq(roleIds)
 		// 授权角色
 		if err = service.SystemService.AssignRolesToUser(tx, request.UserRoleRelAssignRequest{
 			UserId:  user.UserId,
@@ -58,7 +60,7 @@ func AddCrmRole() {
 	})
 	if err != nil {
 		global.Logger.Error("定时任务 - AddCrmRole发生错误", zap.Error(err))
-		global.Redis.RPush(ctx, string(constant.AUDIT_ACCESS_CRM), openId)
+		//global.Redis.RPush(ctx, string(constant.AUDIT_ACCESS_CRM), openId)
 
 	}
 }
