@@ -47,5 +47,25 @@ var (
 			Object:  "/ft/audit/review/getAuditList",
 			Action:  "GET",
 		},
+		{
+			Subject: ROLE_WECHAT_CRM_ADMIN,
+			Object:  "/ft/audit/review/getAuditList",
+			Action:  "GET",
+		},
+		{
+			Subject: ROLE_WECHAT_CRM,
+			Object:  "/ft/crm/value/list",
+			Action:  "POST",
+		},
+		{
+			Subject: ROLE_WECHAT_CRM,
+			Object:  "/ft/crm/value/listBySelf",
+			Action:  "POST",
+		},
+		{
+			Subject: ROLE_WECHAT_CRM,
+			Object:  "/ft/crm/value/detail",
+			Action:  "GET",
+		},
 	}
 )
