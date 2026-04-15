@@ -67,5 +67,10 @@ var (
 			Object:  "/ft/crm/value/detail",
 			Action:  "GET",
 		},
+		{
+			Subject: ROLE_ADMIN,
+			Object:  "/ft/crm/value/adminUploadCrmExcel",
+			Action:  "POST",
+		},
 	}
 )

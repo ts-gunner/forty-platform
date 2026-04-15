@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -371,7 +372,11 @@ func (EntityValueService) DeleteEntityValueData(ctx context.Context, id int64) e
 			return err
 		}
 
-		if entityValue.UserId != operatorId {
+		exists, err := global.Enforcer.HasGroupingPolicy(strconv.FormatInt(operatorId, 10), constant.ROLE_WECHAT_CRM_ADMIN)
+		if err != nil {
+			return err
+		}
+		if !exists && entityValue.UserId != operatorId {
 			return fmt.Errorf("没有权限删除该数据")
 		}
 		updates := make(map[string]interface{})
