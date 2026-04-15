@@ -198,6 +198,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
             pageNum: params.current,
             pageSize: params.pageSize,
             entityId: entity.entityId as string,
+            filterParams: params,
             isDelete: Number.parseInt(params.isDelete),
           });
           let tableData: any[] = [];

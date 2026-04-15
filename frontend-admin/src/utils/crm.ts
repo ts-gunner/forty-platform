@@ -35,7 +35,6 @@ const handleCrmValueColumn = (field: API.CrmEntityFieldVo): ProColumns => {
       return {
         title: fieldName,
         dataIndex: fieldKey,
-        hideInSearch: true,
         key: fieldKey,
         align: "center",
       };
