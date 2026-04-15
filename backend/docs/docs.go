@@ -598,6 +598,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/value/adminUploadCrmExcel": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityValueController"
+                ],
+                "summary": "管理端 - 上传表格，添加客户数据",
+                "operationId": "adminUploadCrmExcel",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "上传的表格数据",
+                        "name": "file",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "实体表id",
+                        "name": "entityId",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户id",
+                        "name": "userId",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/value/delete": {
             "post": {
                 "consumes": [
@@ -871,7 +914,7 @@ const docTemplate = `{
                 "tags": [
                     "CrmEntityValueController"
                 ],
-                "summary": "上传表格，添加客户数据",
+                "summary": "客户端 - 上传表格，添加客户数据",
                 "operationId": "uploadCrmExcel",
                 "parameters": [
                     {

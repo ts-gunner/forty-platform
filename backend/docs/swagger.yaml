@@ -1378,6 +1378,34 @@ paths:
       summary: 更新实体表所有字段
       tags:
       - CrmEntityFieldController
+  /crm/value/adminUploadCrmExcel:
+    post:
+      consumes:
+      - multipart/form-data
+      operationId: adminUploadCrmExcel
+      parameters:
+      - description: 上传的表格数据
+        in: formData
+        name: file
+        type: file
+      - description: 实体表id
+        in: formData
+        name: entityId
+        type: string
+      - description: 用户id
+        in: formData
+        name: userId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 管理端 - 上传表格，添加客户数据
+      tags:
+      - CrmEntityValueController
   /crm/value/delete:
     post:
       consumes:
@@ -1569,7 +1597,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.ApiResult-any'
-      summary: 上传表格，添加客户数据
+      summary: 客户端 - 上传表格，添加客户数据
       tags:
       - CrmEntityValueController
   /system/auth/adminPwdLogin:

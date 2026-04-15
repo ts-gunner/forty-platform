@@ -24,6 +24,7 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 	routerGroup.POST("/update", updateEntityValue)
 	routerGroup.POST("/delete", deleteEntityValue)
 	routerGroup.POST("/uploadCrmExcel", uploadCrmExcel)
+	routerGroup.POST("/adminUploadCrmExcel", adminUploadCrmExcel)
 	routerGroup.GET("/getCrmValueCount", getCrmValueCount)
 
 }
@@ -208,9 +209,38 @@ func deleteEntityValue(c *gin.Context) {
 }
 
 // @Tags CrmEntityValueController
+// @ID adminUploadCrmExcel
+// @Router /crm/value/adminUploadCrmExcel [post]
+// @Summary 管理端 - 上传表格，添加客户数据
+// @Accept mpfd
+// @Produce json
+// @Param file formData file false "上传的表格数据"
+// @Param entityId formData string false "实体表id"
+// @Param userId formData string false "用户id"
+// @Success 200 {object} response.ApiResult[any]
+func adminUploadCrmExcel(c *gin.Context) {
+	var req request.AdminUploadCrmValueRequest
+	if err := c.ShouldBind(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+	err := entityValueService.HandleUploadExcel(c.Request.Context(), request.UploadCrmValueRequest{
+		EntityId: req.EntityId,
+		File:     req.File,
+	}, &req.UserId)
+	if err != nil {
+		global.Logger.Error("上传实体表数据失败", zap.Error(err))
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("上传实体表数据失败: %v", err), c)
+		return
+	}
+	response.Ok(c)
+}
+
+// @Tags CrmEntityValueController
 // @ID uploadCrmExcel
 // @Router /crm/value/uploadCrmExcel [post]
-// @Summary 上传表格，添加客户数据
+// @Summary 客户端 - 上传表格，添加客户数据
 // @Accept mpfd
 // @Produce json
 // @Param file formData file false "上传的表格数据"
@@ -223,7 +253,7 @@ func uploadCrmExcel(c *gin.Context) {
 		response.Fail(http.StatusBadRequest, "参数校验异常", c)
 		return
 	}
-	err := entityValueService.HandleUploadExcel(c.Request.Context(), req)
+	err := entityValueService.HandleUploadExcel(c.Request.Context(), req, nil)
 	if err != nil {
 		global.Logger.Error("上传实体表数据失败", zap.Error(err))
 		response.Fail(http.StatusBadRequest, fmt.Sprintf("上传实体表数据失败: %v", err), c)

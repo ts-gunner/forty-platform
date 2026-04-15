@@ -2,6 +2,50 @@
 /* eslint-disable */
 import request from "@/utils/admin_request";
 
+/** 管理端 - 上传表格，添加客户数据 POST /crm/value/adminUploadCrmExcel */
+export async function adminUploadCrmExcel(
+  body: {
+    /** 实体表id */
+    entityId?: string;
+    /** 用户id */
+    userId?: string;
+  },
+  file?: File,
+  options?: { [key: string]: any }
+) {
+  const formData = new FormData();
+
+  if (file) {
+    formData.append("file", file);
+  }
+
+  Object.keys(body).forEach((ele) => {
+    const item = (body as any)[ele];
+
+    if (item !== undefined && item !== null) {
+      if (typeof item === "object" && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ""));
+        } else {
+          formData.append(
+            ele,
+            new Blob([JSON.stringify(item)], { type: "application/json" })
+          );
+        }
+      } else {
+        formData.append(ele, item);
+      }
+    }
+  });
+
+  return request<API.ApiResultAny>("/crm/value/adminUploadCrmExcel", {
+    method: "POST",
+    data: formData,
+    requestType: "form",
+    ...(options || {}),
+  });
+}
+
 /** 删除实体数据 POST /crm/value/delete */
 export async function deleteEntityValue(
   body: API.DeleteCrmEntityValueRequest,
@@ -131,7 +175,7 @@ export async function updateEntityValue(
   });
 }
 
-/** 上传表格，添加客户数据 POST /crm/value/uploadCrmExcel */
+/** 客户端 - 上传表格，添加客户数据 POST /crm/value/uploadCrmExcel */
 export async function uploadCrmExcel(
   body: {
     /** 实体表id */

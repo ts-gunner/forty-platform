@@ -6,15 +6,9 @@ export enum LocaleLang {
   EN_US = "en-US",
 }
 
-export enum AgentKeyEnum {
-  KNOWLEDGE = "knowledge",
-  DATA = "data",
+export enum SystemRoleEnum {
+  ROLE_WECHAT_CRM = "wechat_crm_user",
 }
-
-export const AgentKeyMap: Record<AgentKeyEnum, string> = {
-  [AgentKeyEnum.KNOWLEDGE]: "知识库",
-  [AgentKeyEnum.DATA]: "数据库",
-};
 
 export const StatusOptions = [
   {
@@ -36,5 +30,5 @@ export enum CrmDataTypeEnum {
   Date = "date", // 日期
   Region = "region", // 行政区划
   Location = "location", // 定位器
-  PickerOrOther = "picker_or_other",  // 选择器或者其他自定义普通文本
+  PickerOrOther = "picker_or_other", // 选择器或者其他自定义普通文本
 }

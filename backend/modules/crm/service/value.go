@@ -386,7 +386,13 @@ func (EntityValueService) DeleteEntityValueData(ctx context.Context, id int64) e
 
 }
 
-func (EntityValueService) HandleUploadExcel(ctx context.Context, req request.UploadCrmValueRequest) error {
+func (EntityValueService) HandleUploadExcel(ctx context.Context, req request.UploadCrmValueRequest, operatorId *int64) error {
+	var userId int64
+	if operatorId == nil {
+		userId = utils.GetLoginUserId(ctx)
+	} else {
+		userId = *operatorId
+	}
 	ext := filepath.Ext(req.File.Filename)
 	if !lo.Contains([]string{".xlsx", ".xls"}, ext) {
 		return fmt.Errorf("不支持上传%s", ext)
@@ -436,7 +442,6 @@ func (EntityValueService) HandleUploadExcel(ctx context.Context, req request.Upl
 	// 整理数据
 	for _, row := range rows[1:] {
 		data := make(map[string]interface{})
-		userId := utils.GetLoginUserId(ctx)
 		value := entity.CrmCustomerValues{
 			EntityId: req.EntityId,
 			UserId:   userId,
@@ -472,7 +477,7 @@ func (EntityValueService) HandleUploadExcel(ctx context.Context, req request.Upl
 			{Name: "customer_name"},
 			{Name: "entity_id"},
 			{Name: "user_id"},
-		},                                                                               // 判重唯一键，对应数据库字段名
+		}, // 判重唯一键，对应数据库字段名
 		DoUpdates: clause.AssignmentColumns([]string{"remark", "values", "updater_id"}), // 存在时更新的字段
 	}).Create(&valueData).Error; err != nil {
 		return fmt.Errorf("创建失败：%v", err)

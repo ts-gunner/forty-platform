@@ -1,21 +1,22 @@
 import { getEntityList } from "@/services/steins-admin/crmEntityController";
 import { getFieldsByEntityId } from "@/services/steins-admin/crmEntityFieldController";
 import {
+  adminUploadCrmExcel,
   deleteEntityValue,
   getEntityValueListByAdmin,
   insertEntityValue,
   updateEntityValue,
-  uploadCrmExcel,
 } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
 import { generateCrmValueColumns } from "@/utils/crm";
 import { CloudUploadOutlined, PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
-import { Button, Popconfirm, Tabs, Upload } from "antd";
+import { Button, Popconfirm, Tabs } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { history } from "umi";
 import CreateEntityValueModal from "./CreateEntityValueModal";
 import UpdateEntityValueModal from "./UpdateEntityValueModal";
+import UploadValueModal from "./UploadValueModal";
 
 export default function CrmValueManagementPage() {
   const [entityData, setEntityData] = useState<API.CrmEntityVo[]>([]);
@@ -67,6 +68,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
   const [pageSize, setPageSize] = useState(20);
   const [createModalOpen, handleCreateModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [uploadExcelModalOpen, handleUploadExcelModalOpen] = useState<boolean>(false);
   const [currentValue, handleCurrentValue] = useState<any>({});
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const [entityFields, setEntityFields] = useState<API.CrmEntityFieldVo[]>([]);
@@ -178,39 +180,9 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         columns={columns}
         key={"id"}
         toolBarRender={() => [
-          <Upload
-            maxCount={1}
-            accept={".xlsx,.xls"}
-            multiple={false}
-            showUploadList={false}
-            customRequest={async ({ file, onSuccess, onError }) => {
-              setPageLoading(true);
-              const resp = await uploadCrmExcel(
-                {
-                  entityId: entity.entityId,
-                },
-                file as File,
-              );
-              handleResponse({
-                resp,
-                onSuccess: () => {
-                  Notify.ok("插入数据成功:" + resp.msg);
-                  onSuccess?.(null)
-                  actionRef.current?.reload()
-                },
-                onError: () => {
-                  Notify.fail("录入数据失败:" + resp.msg);
-                },
-                onFinish: () => {
-                  setPageLoading(false);
-                }
-              });
-            }}
-          >
-            <Button key="upload_excel">
-              <CloudUploadOutlined /> 上传表格
-            </Button>
-          </Upload>,
+          <Button key="upload_excel" onClick={() => handleUploadExcelModalOpen(true)}>
+            <CloudUploadOutlined /> 上传表格
+          </Button>,
           <Button
             type="primary"
             key="primary"
@@ -311,6 +283,34 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
             },
             onError: () => {
               Notify.fail("更新失败：" + resp.msg);
+            },
+          });
+        }}
+      />
+      <UploadValueModal
+        modalOpen={uploadExcelModalOpen}
+        handleModalOpen={handleUploadExcelModalOpen}
+        onSubmit={async (file: File, userId: string) => {
+          setPageLoading(true);
+          const resp = await adminUploadCrmExcel(
+            {
+              entityId: entity.entityId,
+              userId: userId,
+            },
+            file as File,
+          );
+          handleResponse({
+            resp,
+            onSuccess: () => {
+              Notify.ok("插入数据成功:" + resp.msg);
+              actionRef.current?.reload();
+            },
+            onError: () => {
+              Notify.fail("录入数据失败:" + resp.msg);
+            },
+            onFinish: () => {
+              setPageLoading(false);
+              handleUploadExcelModalOpen(false);
             },
           });
         }}
