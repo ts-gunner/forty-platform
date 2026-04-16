@@ -16,11 +16,12 @@ export default defineConfig({
   }, // electron打包必备配置
   favicons: [`${process.env.UMI_APP_PREFIX_ROUTER}favicon.ico`],
   proxy: {
-     '/ft': {
+    "/ft": {
       target: process.env.UMI_APP_PROXY_BACKEND_URL || "http://127.0.0.1:18000",
     },
   },
   routes: [
+    { path: "/", component: "./Dashboard" },
     { path: "/user_manage", component: "./UserManagement" },
     { path: "/role_manage", component: "./RoleManagement" },
     { path: "/permission_manage", component: "./PermissionManagement" },
@@ -29,12 +30,12 @@ export default defineConfig({
     { path: "/audit_manage", component: "./AuditManagement" },
     { path: "/crm_entity", component: "./CrmEntityManagement" },
     { path: "/crm_value", component: "./CrmValueManagement" },
-     { path: "/crm_value_detail/:valueId", component: "./CrmValueDetail" },
+    { path: "/crm_value_detail/:valueId", component: "./CrmValueDetail" },
     { path: "/blank", component: "./Blank" },
     { path: "/signin", component: "./AuthPages/SignIn", layout: false },
     {
       path: "/",
-      redirect: "/user_manage",
+      redirect: "/",
     },
 
     {

@@ -1,4 +1,5 @@
 export default {
+    "menu.dashboard": "数据看板",
     "menu.userManagement": "用户管理",
     "menu.roleManagement": "角色管理",
     "menu.permissionManagement": "权限管理",
