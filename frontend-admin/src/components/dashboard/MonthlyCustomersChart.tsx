@@ -39,29 +39,29 @@ export default function MonthlyCustomersChart() {
         enabled: true,
       },
       toolbar: {
-        show: false
-      }
+        show: true,
+      },
     },
     stroke: {
       curve: "straight",
-      colors: ["#da4f7a", "#eb604c"]
+      colors: ["#da4f7a", "#eb604c"],
     },
     tooltip: {
-      
+     
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     fill: {
-    type: "gradient", // 渐变模式（改成 'solid' 就是纯色）
-    gradient: {
-      shadeIntensity: 1,
-      opacityFrom: 1,  // 顶部透明度
-      opacityTo: 1,   // 底部透明度
-      stops: [0, 100],
+      type: "gradient", // 渐变模式（改成 'solid' 就是纯色）
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 1, // 顶部透明度
+        opacityTo: 1, // 底部透明度
+        stops: [0, 100],
+      },
+      colors: ["#da4f7a"], // 填充主色（和线条保持一致更美观）
     },
-    colors: ["#da4f7a"], // 填充主色（和线条保持一致更美观）
-  },
     yaxis: {
       // opposite: true,  // 纵坐标位置， true: 右侧 false: 在左侧
     },
