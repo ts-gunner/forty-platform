@@ -5,7 +5,7 @@ import { Link, useLocation } from "umi";
 import config, { ICONS_MAP } from "@/constants/config";
 import { useIntl } from "react-intl";
 import { useSidebar } from "../context/SidebarContext";
-import { ChevronDownIcon, HorizontaLDots } from "../icons";
+import { ChevronDownIcon, Ellipsis } from "lucide-react";
 
 const AppSidebar: React.FC<{ siderMenus: Record<string, Sider.NavItem[]> }> = ({ siderMenus }) => {
   const intl = useIntl();
@@ -173,7 +173,7 @@ const AppSidebar: React.FC<{ siderMenus: Record<string, Sider.NavItem[]> }> = ({
             {Object.entries(siderMenus).map(([key, menus]) => (
               <div key={key}>
                 <h2 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`}>
-                  {isExpanded || isHovered || isMobileOpen ? key : <HorizontaLDots className="size-6" />}
+                  {isExpanded || isHovered || isMobileOpen ? key : <Ellipsis className="size-6" />}
                 </h2>
                 {renderMenuItems(menus, key)}
               </div>

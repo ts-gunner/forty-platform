@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "umi";
-import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { useIntl } from "react-intl";
-import { ICONS_MAP } from "@/constants/config";
-import { Smartphone } from "lucide-react";
 import { Loader } from "../ui/loading/Loader";
+import { EyeClosedIcon, EyeIcon } from "lucide-react";
 
 export default function SignInForm({ 
   pwdLogin,
@@ -96,7 +94,7 @@ export default function SignInForm({
                       {showPassword ? (
                         <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
                       ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                        <EyeClosedIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
                       )}
                     </span>
                   </div>
