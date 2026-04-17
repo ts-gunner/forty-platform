@@ -178,7 +178,7 @@ export default function SearchCustomerPage() {
                 </View>
               ))}
             </View>
-            {searchHistory.length > 0 && (
+            {searchResult.length > 0 && (
               <View className="mt-3 flex items-center text-sm">
                 <Text>搜索到</Text>
                 <Text className="text-red-500">{searhTotal}</Text>
