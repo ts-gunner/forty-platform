@@ -162,7 +162,11 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 				// 处理情况4
 				var options datatypes.JSON
 				// 如果datatype是picker时，需要特殊处理, A,B,C -> ['A', 'B', 'C']
-				if enums.CrmFieldDataType(curField.DataType) == enums.CrmDataTypePicker {
+
+				if lo.Contains([]enums.CrmFieldDataType{
+					enums.CrmDataTypePicker,
+					enums.CrmDataTypePickerOrOther,
+				}, enums.CrmFieldDataType(curField.DataType)) {
 					optionArr := lo.Map(strings.Split(curField.Options, ","), func(it string, idx int) string {
 						return strings.TrimSpace(it)
 					})
@@ -210,7 +214,10 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 				}
 				var options datatypes.JSON
 				// 如果datatype是4时，需要特殊处理, A,B,C -> ['A', 'B', 'C']
-				if enums.CrmFieldDataType(curField.DataType) == enums.CrmDataTypePicker {
+				if lo.Contains([]enums.CrmFieldDataType{
+					enums.CrmDataTypePicker,
+					enums.CrmDataTypePickerOrOther,
+				}, enums.CrmFieldDataType(curField.DataType)) {
 					optionArr := lo.Map(strings.Split(curField.Options, ","), func(it string, idx int) string {
 						return strings.TrimSpace(it)
 					})
