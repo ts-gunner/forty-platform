@@ -178,13 +178,6 @@ export default function SearchCustomerPage() {
                 </View>
               ))}
             </View>
-            {searchResult.length > 0 && (
-              <View className="mt-3 flex items-center text-sm">
-                <Text>搜索到</Text>
-                <Text className="text-red-500">{searhTotal}</Text>
-                <Text>条结果</Text>
-              </View>
-            )}
           </View>
         )}
         {searchLoading && (
@@ -193,7 +186,13 @@ export default function SearchCustomerPage() {
             <Text>正在加载</Text>
           </View>
         )}
-
+        {searchResult.length > 0 && (
+          <View className="mt-3 flex items-center text-sm">
+            <Text>搜索到</Text>
+            <Text className="text-red-500">{searhTotal}</Text>
+            <Text>条结果</Text>
+          </View>
+        )}
         <View className="p-3 flex flex-col gap-2 w-full">
           {searchResult.map((it, idx) => {
             return (
