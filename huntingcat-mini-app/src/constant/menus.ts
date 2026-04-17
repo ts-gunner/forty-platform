@@ -12,6 +12,7 @@ export const ROUTERS = {
   policy: "/pages/policy/index",
   accessPermission: "/pages/access_perm/index",
   audit: "/pages/audit/index",
+  searchCustomer: "/pages/search/index",
 };
 
 export const DEFAULT_ROUTER = ROUTERS.customer;
