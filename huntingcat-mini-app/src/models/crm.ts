@@ -114,7 +114,7 @@ export const crmModel = createModel<RootModel>()({
       state,
     ) => {
       Notify.loading("数据加载中....");
-      let {tableFields, entityVo} = state.crmModel
+      let { tableFields, entityVo } = state.crmModel;
       if (tableFields === undefined) {
         dispatch.crmModel.getCrmFields();
       }
@@ -162,24 +162,20 @@ export const crmModel = createModel<RootModel>()({
     },
     handleSearchData: async (
       payload: {
-        mode: "mine" | "all";
         text: string;
       },
       state,
     ) => {
       // 重置页数和数据
-      if (payload.mode === "mine") {
-        dispatch.crmModel.setMyCustomerData(DEFAULT_CUSTOMER_DATA);
-      } else if (payload.mode === "all") {
-        dispatch.crmModel.setAllCustomerData(DEFAULT_CUSTOMER_DATA);
-      }
 
-      dispatch.crmModel.setFilterParams({
-        ...state.crmModel.filterParams,
-        customer_name: payload.text,
-      });
+      // dispatch.crmModel.setAllCustomerData(DEFAULT_CUSTOMER_DATA);
 
-      await dispatch.crmModel.getEntityValues({ mode: payload.mode });
+      // dispatch.crmModel.setFilterParams({
+      //   ...state.crmModel.filterParams,
+      //   customer_name: payload.text,
+      // });
+
+      // await dispatch.crmModel.getEntityValues({ mode: "all" });
     },
     countValue: async (_, state) => {
       Notify.loading("加载数据中...");

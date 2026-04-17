@@ -47,6 +47,7 @@ export const extend: Extend = (initialOptions: RequestOptions): RequestFunc => {
       ...options,
     };
     let finalUrl = (finalOptions?.prefix || "") + url;
+    console.log("finalUrl",finalUrl)
     let requestHeader = {
       ...finalOptions?.headers,
       Authorization: await storage.getItem("token"),

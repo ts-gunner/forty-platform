@@ -3,7 +3,6 @@ export const APP_CONFIG = {
 };
 
 // 后端前缀url
-// export const API_PREFIX_URL = "http://192.168.31.180:18888/ft";
 export const API_PREFIX_URL = process.env.TARO_APP_BACKEND_ENDPOINT
 
 
@@ -36,7 +35,7 @@ export const ICON_MAP = {
 };
 
 export const THEME_CONFIG = {
-  active: "#B84A4A",
+  active: "#aa3226",
   inactive: "#97a3b6",
 };
 

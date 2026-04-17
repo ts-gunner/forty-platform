@@ -1,7 +1,12 @@
 import { View } from "@tarojs/components";
 import "./index.scss";
 import { useCallback, useEffect, useState } from "react";
-import Taro, { useReachBottom, useShareAppMessage } from "@tarojs/taro";
+import Taro, {
+  useReachBottom,
+  useShareAppMessage,
+  stopPullDownRefresh,
+  usePullDownRefresh,
+} from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { ROUTERS } from "@/constant/menus";
 import HeaderBodyLayout from "@/components/layout/HeaderBodyLayout";
@@ -10,15 +15,15 @@ import { SearchHeader } from "@/components/crm/SearchBox";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import EmptyComponent from "@/components/EmptyComponent";
-import { ICON_MAP } from "@/constant/global";
+import { DEFAULT_CUSTOMER_DATA, ICON_MAP } from "@/constant/global";
 const CURRENT_PAGE = ROUTERS.allCustomer;
 function AllCustomerPage() {
   useShareAppMessage(() => {
-      return {
-        title: "查看所有客户",
-        path: CURRENT_PAGE
-      }
-    })
+    return {
+      title: "查看所有客户",
+      path: CURRENT_PAGE,
+    };
+  });
 
   const allCustomerData = useSelector(
     (state: RootState) => state.crmModel.allCustomerData,
@@ -27,9 +32,17 @@ function AllCustomerPage() {
     (state: RootState) => state.routerModel.activeRoute,
   );
   const dispatch = useDispatch<Dispatch>();
-
+  usePullDownRefresh(async () => {
+    try {
+      dispatch.crmModel.setAllCustomerData(DEFAULT_CUSTOMER_DATA);
+      setTimeout(() => {
+        getAllCrmData(); // 刷新数据
+      }, 50);
+    } finally {
+      stopPullDownRefresh(); // 无论成功失败都关闭动画
+    }
+  });
   useEffect(() => {
- 
     if (!activeRoute) {
       return;
     }
@@ -40,6 +53,11 @@ function AllCustomerPage() {
       dispatch.crmModel.initAllCustomerData();
     }
   }, [activeRoute]);
+  // startPullDownRefresh({
+  //   success: () => {
+  //     getAllCrmData()
+  //   }
+  // })
   // 4. 触底加载更多
   useReachBottom(() => {
     dispatch.crmModel.setAllCustomerData({
