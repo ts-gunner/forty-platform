@@ -12,25 +12,7 @@ import { insertEntityValue } from "@/services/steins-admin/crmEntityValueControl
 import { handleResponse, Notify } from "@/utils/common";
 import { ROUTERS } from "@/constant/menus";
 const CURRENT_PAGE = ROUTERS.createCustomer;
-const GROUP_INFO = {
-  基本信息: [
-    "customer_name",
-    "contract_name",
-    "contract_phone",
-    "job_title",
-    "origin_addr",
-  ],
-  项目基本信息: [
-    "project_name",
-    "region",
-    "detail_addr",
-    "cooperate_type",
-    "customer_type",
-    "customer_category",
-    "customer_source",
-  ],
-  备注: ["remark"],
-};
+
 function CreateCustomerPage() {
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
@@ -70,22 +52,13 @@ function CreateCustomerPage() {
   const validateValue = () => {
     let errorMsg = "";
 
-    Object.values(GROUP_INFO).forEach((fields) => {
+    tableFields.forEach((field) => {
       if (errorMsg) {
         return;
       }
-      for (let field of fields) {
-        let idx = tableFields.findIndex((it) => it.fieldKey === field);
-        if (idx === -1) {
-          errorMsg = `【${field}】字段找不到`;
-          return;
-        }
-        let fieldName = tableFields[idx].fieldName;
-        let isRequired = tableFields[idx].isRequired;
-        if (isRequired && !createData?.[field]) {
-          errorMsg = `【${fieldName}】为必填项`;
-          return;
-        }
+      if (field.isRequired && !createData?.[field.fieldKey]) {
+        errorMsg = `【${field.fieldName}】为必填项`;
+        return;
       }
     });
     return errorMsg;
@@ -113,36 +86,20 @@ function CreateCustomerPage() {
         </View>
 
         <View className="space-y-6 px-4 pb-4">
-          {Object.entries(GROUP_INFO).map(([key, value], index) => {
+          {tableFields.map((field, index) => {
             return (
               <View key={index}>
-                <View className="flex items-center gap-2 mb-3">
-                  <View className="w-1 h-4 bg-amber-400 rounded-full" />
-                  <Text className="font-bold text-gray-700">{key}</Text>
-                </View>
-                <View className="bg-white rounded-lg overflow-hidden border border-gray-100">
-                  {value.map((fieldKey) => {
-                    let idx = tableFields.findIndex(
-                      (it) => it.fieldKey === fieldKey,
-                    );
-                    if (idx === -1) {
-                      return null;
-                    }
-                    return (
-                      <ValueBoxGenerator
-                        key={fieldKey}
-                        field={tableFields[idx]}
-                        value={createData[fieldKey]}
-                        onChange={(val: any) => {
-                          setCreateData((prev) => ({
-                            ...prev,
-                            [fieldKey]: val,
-                          }));
-                        }}
-                      />
-                    );
-                  })}
-                </View>
+                <ValueBoxGenerator
+                  key={field.fieldKey}
+                  field={field}
+                  value={createData?.[field.fieldKey]}
+                  onChange={(val: any) => {
+                    setCreateData((prev) => ({
+                      ...prev,
+                      [field.fieldKey]: val,
+                    }));
+                  }}
+                />
               </View>
             );
           })}

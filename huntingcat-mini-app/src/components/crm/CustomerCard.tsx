@@ -21,7 +21,9 @@ export const CustomerCard: React.FC<{
   onClick: (key: string) => void;
 }> = ({ mode, data, onClick }) => {
   const dispatch = useDispatch<Dispatch>();
-  const tableFields = useSelector((state: RootState) => state.crmModel.tableFields)
+  const tableFields = useSelector(
+    (state: RootState) => state.crmModel.tableFields,
+  );
   const dataObject = JSON.parse(data.values);
   const actions = [
     {
@@ -83,32 +85,43 @@ export const CustomerCard: React.FC<{
           <View className="space-y-2">
             <InfoItem
               label={dispatch.crmModel.getFieldName("contract_name")}
-              value={handleCrmValueByFieldKey(tableFields, "contract_name", dataObject)}
+              value={handleCrmValueByFieldKey(
+                tableFields,
+                "contract_name",
+                dataObject,
+              )}
             />
             <InfoItem
               label={dispatch.crmModel.getFieldName("contract_phone")}
-              value={handleCrmValueByFieldKey(tableFields, "contract_phone", dataObject)}
+              value={handleCrmValueByFieldKey(
+                tableFields,
+                "contract_phone",
+                dataObject,
+              )}
             />
             <View className="flex items-center gap-2">
               <InfoItem
                 label={dispatch.crmModel.getFieldName("detail_addr")}
-                value={handleCrmValueByFieldKey(tableFields, "detail_addr", dataObject)}
+                value={handleCrmValueByFieldKey(
+                  tableFields,
+                  "detail_addr",
+                  dataObject,
+                )}
               />
               <View
                 onClick={(e) => {
                   e.stopPropagation();
                   try {
-                    let addr = JSON.parse(dataObject["detail_addr"])
-                     Taro.openLocation({
-                        latitude: addr?.latitude,
-                        longitude: addr?.longitude,
-                        scale: 18,
-                        address: addr?.address,
-                      });
-                  }catch {
-                    Notify.fail("地址异常, 无法查询位置")
+                    let addr = JSON.parse(dataObject["detail_addr"]);
+                    Taro.openLocation({
+                      latitude: addr?.latitude,
+                      longitude: addr?.longitude,
+                      scale: 18,
+                      address: addr?.address,
+                    });
+                  } catch {
+                    Notify.fail("地址异常, 无法查询位置");
                   }
-                 
                 }}
               >
                 <AtIcon value="map-pin" size="20" />
@@ -176,11 +189,13 @@ export const CustomerCard: React.FC<{
           </Text>
         </View>
         {/* 标签 */}
-        <View className="px-3 py-2 rounded-full bg-active shadow-sm flex items-center justify-center">
-          <Text className="text-[22rpx] font-medium text-white">
-            {dataObject["customer_type"]}
-          </Text>
-        </View>
+        {dataObject["customer_type"] && (
+          <View className="px-3 py-2 rounded-full bg-active shadow-sm flex items-center justify-center">
+            <Text className="text-[22rpx] font-medium text-white">
+              {dataObject["customer_type"]}
+            </Text>
+          </View>
+        )}
       </View>
       <CustomerBaseInfo />
     </View>

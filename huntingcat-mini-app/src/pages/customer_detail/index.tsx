@@ -156,16 +156,21 @@ function CustomerDetailPage() {
         </View>
 
         <View className="px-4 space-y-4">
+          {
+            tableFields.filter(it => it.fieldKey !== "customer_name").map(field => (
+              <InfoRow isEdit={isEdit} field={field} valueObject={valueObject} setValueObject={setValueObject} />
+            ))
+          }
           {/* Section: 基本信息 */}
-          <DetailSection title="基本信息" iconColor="bg-amber-400">
+          {/* <DetailSection title="基本信息" iconColor="bg-amber-400">
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "contract_name")} valueObject={valueObject} setValueObject={setValueObject} />
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "contract_phone")} valueObject={valueObject} setValueObject={setValueObject} />
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "job_title")} valueObject={valueObject} setValueObject={setValueObject} />
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "origin_addr")} valueObject={valueObject} setValueObject={setValueObject} />
-          </DetailSection>
+          </DetailSection> */}
 
           {/* Section: 项目基本信息 */}
-          <DetailSection title="项目基本信息" iconColor="bg-blue-400">
+          {/* <DetailSection title="项目基本信息" iconColor="bg-blue-400">
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "project_name")} valueObject={valueObject} setValueObject={setValueObject} />
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "region")} valueObject={valueObject} setValueObject={setValueObject} />
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "detail_addr")} valueObject={valueObject} setValueObject={setValueObject} />
@@ -173,10 +178,10 @@ function CustomerDetailPage() {
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "customer_type")} valueObject={valueObject} setValueObject={setValueObject} />
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "customer_category")} valueObject={valueObject} setValueObject={setValueObject} />
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "customer_source")} valueObject={valueObject} setValueObject={setValueObject} />
-          </DetailSection>
+          </DetailSection> */}
 
           {/* Section: 备注 */}
-          <DetailSection title={dispatch.crmModel.getFieldName("remark")} iconColor="bg-green-400">
+          {/* <DetailSection title={dispatch.crmModel.getFieldName("remark")} iconColor="bg-green-400">
             <View className="p-3 bg-gray-50/50 rounded-lg">
               {
                 isEdit ? <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "remark")} valueObject={valueObject} setValueObject={setValueObject} /> : (
@@ -187,7 +192,7 @@ function CustomerDetailPage() {
               }
 
             </View>
-          </DetailSection>
+          </DetailSection> */}
         </View>
       </>
     </HeaderBodyFooterLayout>
