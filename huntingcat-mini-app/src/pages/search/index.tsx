@@ -1,6 +1,10 @@
+import { CustomerCard } from "@/components/crm/CustomerCard";
+import EmptyComponent from "@/components/EmptyComponent";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { ROUTERS } from "@/constant/menus";
+import { getEntityValueList } from "@/services/steins-admin/crmEntityValueController";
 import { Dispatch, RootState } from "@/store";
+import { handleResponse, Notify } from "@/utils/common";
 import storage from "@/utils/storage";
 import { Input, Picker, Text, View } from "@tarojs/components";
 import Taro from "@tarojs/taro";
@@ -14,10 +18,14 @@ export default function SearchCustomerPage() {
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [isShowRemove, setIsShowRemove] = useState<boolean>(false);
+  const [searchResult, setSearchResult] = useState<API.CrmEntityValueVo[]>([]);
+  const [searhTotal, setSearchTotal] = useState<number>(0);
+  const [isEmpty, setEmpty] = useState<boolean>(false);
   const dispatch = useDispatch<Dispatch>();
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
+  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
   const activeRoute = useSelector(
     (state: RootState) => state.routerModel.activeRoute,
   );
@@ -45,6 +53,34 @@ export default function SearchCustomerPage() {
       } catch {}
     });
   };
+  const searchCustomerData = async (keyword: string) => {
+    setEmpty(false);
+    setSearchLoading(true);
+    const resp = await getEntityValueList({
+      entityKey: entityVo.entityCode,
+      pageNum: 1,
+      pageSize: 20,
+      filterParams: {
+        [activeField.fieldKey]: keyword,
+      },
+    });
+    handleResponse({
+      resp,
+      onSuccess: (data) => {
+        setSearchResult(data.entityValue.list);
+        setSearchTotal(data.entityValue.total);
+        if (data.entityValue.total === 0) {
+          setEmpty(true);
+        }
+      },
+      onError: () => {
+        Notify.fail(resp.msg);
+      },
+      onFinish: () => {
+        setSearchLoading(false);
+      },
+    });
+  };
   return (
     <HeaderBodyFooterLayout title="搜索">
       <View className="p-3">
@@ -61,25 +97,27 @@ export default function SearchCustomerPage() {
             let memory = await storage.getItem(HISTORY_KEY);
             if (memory) {
               try {
-                let history = JSON.parse(memory);
+                let history = JSON.parse(memory) as string[];
+                if (history.includes(searchText)) {
+                  history = history.filter((it) => it !== searchText);
+                }
                 history.push(searchText);
-                await storage.setItem(HISTORY_KEY, JSON.stringify(history));
+                // 最多5个搜索历史记录
+                await storage.setItem(
+                  HISTORY_KEY,
+                  JSON.stringify(history.slice(0, 5)),
+                );
               } catch {
                 await storage.setItem(
-                  "searchMemory",
+                  HISTORY_KEY,
                   JSON.stringify([searchText]),
                 );
               }
             } else {
-              await storage.setItem(
-                "searchMemory",
-                JSON.stringify([searchText]),
-              );
+              await storage.setItem(HISTORY_KEY, JSON.stringify([searchText]));
             }
             refreshHistory();
-            dispatch.crmModel.handleSearchData({
-              text: searchText,
-            });
+            searchCustomerData(searchText);
           }}
         />
         {!searchText && (
@@ -97,9 +135,9 @@ export default function SearchCustomerPage() {
                         confirmText: "删除",
                         success: (res) => {
                           if (res.confirm) {
-                            storage.removeItem(HISTORY_KEY).then(res => {
-                              setSearchHistory([])
-                              setIsShowRemove(false)
+                            storage.removeItem(HISTORY_KEY).then((res) => {
+                              setSearchHistory([]);
+                              setIsShowRemove(false);
                             });
                           }
                         },
@@ -125,17 +163,28 @@ export default function SearchCustomerPage() {
                 />
               )}
             </View>
+            {/* 历史记录 */}
             <View className="mt-4 flex items-center gap-3 flex-wrap">
               {searchHistory.map((it, idx) => (
                 <View
                   key={idx}
-                  onClick={() => setSearchText(it)}
+                  onClick={() => {
+                    setSearchText(it);
+                    searchCustomerData(it);
+                  }}
                   className="py-2 px-4 bg-gray-100 text-gray-700 text-sm rounded-lg"
                 >
                   {it}
                 </View>
               ))}
             </View>
+            {searchHistory.length > 0 && (
+              <View className="mt-3 flex items-center text-sm">
+                <Text>搜索到</Text>
+                <Text className="text-red-500">{searhTotal}</Text>
+                <Text>条结果</Text>
+              </View>
+            )}
           </View>
         )}
         {searchLoading && (
@@ -144,6 +193,25 @@ export default function SearchCustomerPage() {
             <Text>正在加载</Text>
           </View>
         )}
+
+        <View className="p-3 flex flex-col gap-2 w-full">
+          {searchResult.map((it, idx) => {
+            return (
+              <CustomerCard
+                mode="all"
+                key={idx}
+                data={it}
+                onClick={() => {
+                  dispatch.crmModel.setSelectedEntityValue(it);
+                  dispatch.routerModel.navigateTo({
+                    url: ROUTERS.customerDetail,
+                  });
+                }}
+              />
+            );
+          })}
+        </View>
+        {isEmpty && <EmptyComponent />}
       </View>
     </HeaderBodyFooterLayout>
   );
