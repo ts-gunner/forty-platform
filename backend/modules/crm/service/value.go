@@ -263,8 +263,9 @@ func validateValue(field entity.CrmCustomerFields, values map[string]any) (any, 
 		val := lo.ValueOr(values, field.FieldKey, "").(string)
 		var location models.LocationData
 		if err := json.Unmarshal([]byte(val), &location); err != nil {
-			// 反序列化异常，则存入普通字符串即可
-			return val, nil
+			errorMsg := fmt.Sprintf("[%s]该字段的值反序列化异常", field.FieldName)
+			global.Logger.Error(errorMsg, zap.Any("value", val))
+			return nil, errors.New(errorMsg)
 		}
 		return val, nil
 	default:
@@ -274,6 +275,39 @@ func validateValue(field entity.CrmCustomerFields, values map[string]any) (any, 
 		}
 		return val, nil
 	}
+}
+
+/*
+*
+表格数据存在一定限制，需要转换数据
+*/
+func parseExcelValue(field entity.CrmCustomerFields, values map[string]any) error {
+	switch enums.CrmFieldDataType(field.DataType) {
+
+	case enums.CrmDataTypeBoolean:
+		val := lo.ValueOr(values, field.FieldKey, "").(string)
+		if val == "是" {
+			values[field.FieldKey] = true
+		} else {
+			values[field.FieldKey] = false
+		}
+
+	case enums.CrmDataTypeLocation:
+		val := lo.ValueOr(values, field.FieldKey, "").(string)
+		location := models.LocationData{
+			Latitude:  0,
+			Longitude: 0,
+			Address:   val,
+		}
+		locationBytes, err := json.Marshal(location)
+		if err != nil {
+			global.Logger.Error("数据序列化异常", zap.Any("location", location))
+			return fmt.Errorf("数据序列化异常")
+		}
+		values[field.FieldKey] = string(locationBytes)
+	}
+	return nil
+
 }
 func (EntityValueService) InsertEntityValueData(ctx context.Context, req request.InsertCrmEntityValueRequest) error {
 	entityObject, err := entityMapper.GetEntityById(req.EntityId)
@@ -458,9 +492,13 @@ func (EntityValueService) HandleUploadExcel(ctx context.Context, req request.Upl
 		for idx, col := range row {
 			field, ok := fieldMap[idx]
 			if ok {
-				val, err := validateValue(field, map[string]any{
+				dict := map[string]any{
 					field.FieldKey: col,
-				})
+				}
+				if err := parseExcelValue(field, dict); err != nil {
+					return err
+				}
+				val, err := validateValue(field, dict)
 				if err != nil {
 					return err
 				}
