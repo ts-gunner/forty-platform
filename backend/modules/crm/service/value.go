@@ -230,12 +230,8 @@ func validateValue(field entity.CrmCustomerFields, values map[string]any) (any, 
 		}
 		return val, nil
 	case enums.CrmDataTypeBoolean:
-		val := lo.ValueOr(values, field.FieldKey, "").(string)
-		if val == "是" {
-			return true, nil
-		} else {
-			return false, nil
-		}
+		val := lo.ValueOr(values, field.FieldKey, false).(bool)
+		return val, nil
 	case enums.CrmDataTypeDate:
 		val := lo.ValueOr(values, field.FieldKey, "").(string)
 		if field.IsRequired && val == "" {
@@ -486,7 +482,7 @@ func (EntityValueService) HandleUploadExcel(ctx context.Context, req request.Upl
 			{Name: "customer_name"},
 			{Name: "entity_id"},
 			{Name: "user_id"},
-		}, // 判重唯一键，对应数据库字段名
+		},                                                                               // 判重唯一键，对应数据库字段名
 		DoUpdates: clause.AssignmentColumns([]string{"remark", "values", "updater_id"}), // 存在时更新的字段
 	}).Create(&valueData).Error; err != nil {
 		return fmt.Errorf("创建失败：%v", err)
