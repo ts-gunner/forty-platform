@@ -201,6 +201,109 @@ export const CustomerCard: React.FC<{
     </View>
   );
 };
+export const CustomerSearchCard: React.FC<{
+  index: number;
+  data: API.CrmEntityValueVo;
+  onClick: (key: string) => void;
+}> = ({ index, data, onClick }) => {
+  const dispatch = useDispatch<Dispatch>();
+  const tableFields = useSelector(
+    (state: RootState) => state.crmModel.tableFields,
+  );
+  const dataObject = JSON.parse(data.values);
+  return (
+    <View
+      onClick={() => onClick(data.id)}
+      className={cn(
+        "relative overflow-hidden py-4 px-3 mb-1 bg-white",
+      )}
+    >
+      {/* 顶部：公司名与状态标签 */}
+      <View className="flex items-center gap-2">
+        <View className="w-8 h-8 rounded-full bg-active flex items-center justify-center">
+          <Text className="text-sm text-white font-bold">企</Text>
+        </View>
+        <Text className="text-[32rpx] font-bold text-gray-800 leading-tight">
+          {dataObject["customer_name"]}
+        </Text>
+      </View>
+      <View className="grid grid-cols-3 mt-2 gap-2">
+        <SearchInfoItem
+          label={dispatch.crmModel.getFieldName("contract_name")}
+          value={handleCrmValueByFieldKey(
+            tableFields,
+            "contract_name",
+            dataObject,
+          ) || "-"}
+        />
+        <SearchInfoItem
+          label={dispatch.crmModel.getFieldName("contract_phone")}
+          value={handleCrmValueByFieldKey(
+            tableFields,
+            "contract_phone",
+            dataObject,
+          ) || "-"}
+        />
+        <View className="flex items-center gap-2">
+          <View className="flex flex-col items-center text-sm">
+            <View className="flex items-center justify-center gap-1">
+              <Text className="text-gray-400 flex-shrink-0">
+                {dispatch.crmModel.getFieldName("detail_addr")}
+              </Text>
+              <View
+                onClick={(e) => {
+                  e.stopPropagation();
+                  try {
+                    let addr = JSON.parse(dataObject["detail_addr"]);
+                    Taro.openLocation({
+                      latitude: addr?.latitude,
+                      longitude: addr?.longitude,
+                      scale: 18,
+                      address: addr?.address,
+                    });
+                  } catch {
+                    Notify.fail("地址异常, 无法查询位置");
+                  }
+                }}
+              >
+                <AtIcon value="map-pin" size="20" />
+              </View>
+            </View>
+
+            <Text className="text-gray-600 font-medium">
+              {handleCrmValueByFieldKey(tableFields, "detail_addr", dataObject) || "-"}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* 分隔虚线或细线 */}
+      <View className="h-[1px] w-full border-t border-dashed border-gray-200 mb-3" />
+
+      {/* 底部：归属业务员信息 */}
+      <View className="flex flex-row items-center justify-between">
+        <View className="flex flex-row items-center">
+          {/* 业务员头像占位/图标 */}
+          <View className="w-6 h-6 rounded-full bg-active flex items-center justify-center mr-2">
+            <Text className="text-[18rpx] text-white font-bold">责</Text>
+          </View>
+          <View>
+            <Text className="text-[20rpx] text-gray-400">业务员:</Text>
+            <Text className="text-[24rpx] font-semibold text-gray-700">
+              {data.userName}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+};
+const SearchInfoItem = ({ label, value }: { label: string; value: string }) => (
+  <View className="flex flex-col items-center text-sm">
+    <Text className="text-gray-400 flex-shrink-0">{label}</Text>
+    <Text className="text-gray-600 font-medium">{value}</Text>
+  </View>
+);
 
 const InfoItem = ({ label, value }: { label: string; value: string }) => (
   <View className="flex text-sm">

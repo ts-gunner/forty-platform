@@ -1,4 +1,5 @@
-import { CustomerCard } from "@/components/crm/CustomerCard";
+import { withGlobalLayout } from "@/components/AppLayout";
+import { CustomerCard, CustomerSearchCard } from "@/components/crm/CustomerCard";
 import EmptyComponent from "@/components/EmptyComponent";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { ROUTERS } from "@/constant/menus";
@@ -13,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AtIcon } from "taro-ui";
 const HISTORY_KEY = "searchMemory";
 const CURRENT_PAGE = ROUTERS.searchCustomer;
-export default function SearchCustomerPage() {
+function SearchCustomerPage() {
   const [searchText, setSearchText] = useState<string>("");
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
@@ -82,8 +83,8 @@ export default function SearchCustomerPage() {
     });
   };
   return (
-    <HeaderBodyFooterLayout title="搜索">
-      <View className="p-3">
+    <HeaderBodyFooterLayout title="搜索" className="bg-gray-100">
+      <View className="">
         <SearchComponent
           value={searchText}
           onInput={setSearchText}
@@ -172,7 +173,7 @@ export default function SearchCustomerPage() {
                     setSearchText(it);
                     searchCustomerData(it);
                   }}
-                  className="py-2 px-4 bg-gray-100 text-gray-700 text-sm rounded-lg"
+                  className="py-2 px-4 bg-white text-gray-700 text-sm rounded-lg"
                 >
                   {it}
                 </View>
@@ -187,18 +188,18 @@ export default function SearchCustomerPage() {
           </View>
         )}
         {searchResult.length > 0 && (
-          <View className="mt-3 flex items-center text-sm">
+          <View className="ml-3 mt-3 flex items-center text-sm">
             <Text>搜索到</Text>
             <Text className="text-red-500">{searhTotal}</Text>
             <Text>条结果</Text>
           </View>
         )}
-        <View className="p-3 flex flex-col gap-2 w-full">
+        <View className="flex flex-col w-full mt-3 gap-2">
           {searchResult.map((it, idx) => {
             return (
-              <CustomerCard
-                mode="all"
+              <CustomerSearchCard
                 key={idx}
+                index={idx}
                 data={it}
                 onClick={() => {
                   dispatch.crmModel.setSelectedEntityValue(it);
@@ -216,7 +217,7 @@ export default function SearchCustomerPage() {
   );
 }
 
-export const SearchComponent: React.FC<{
+const SearchComponent: React.FC<{
   value: string;
   onInput: (val: string) => void;
   onSearch: () => void;
@@ -235,7 +236,7 @@ export const SearchComponent: React.FC<{
     (it) => it.id === activeField?.id,
   );
   return (
-    <View className="flex items-center w-full border-t border-b border-gray-100">
+    <View className="flex items-center w-full bg-white">
       <Picker
         mode="selector"
         range={tableFields.map((item) => item.fieldName)}
@@ -267,3 +268,5 @@ export const SearchComponent: React.FC<{
     </View>
   );
 };
+
+export default withGlobalLayout(SearchCustomerPage)

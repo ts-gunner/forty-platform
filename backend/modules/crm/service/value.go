@@ -120,9 +120,7 @@ func FindEntityValuePageList(db *gorm.DB, entityId int64, req models.FindCrmValu
 				continue
 			}
 			switch enums.CrmFieldDataType(field.DataType) {
-			case enums.CrmDataTypeText:
-				query := fmt.Sprintf("c.values ->>'$.%s' LIKE %s", field.FieldKey, "CONCAT('%', ?, '%')")
-				db = db.Where(query, v.(string))
+
 			case enums.CrmDataTypePicker:
 				inQuery := fmt.Sprintf("c.values ->>'$.%s' IN ?", field.FieldKey)
 				equalQuery := fmt.Sprintf("c.values ->>'$.%s' = ?", field.FieldKey)
@@ -141,6 +139,14 @@ func FindEntityValuePageList(db *gorm.DB, entityId int64, req models.FindCrmValu
 				} else if len(options) == 1 {
 					db = db.Where(equalQuery, v.(string))
 				}
+			case enums.CrmDataTypeBoolean:
+				if v.(string) == "是" {
+					query := fmt.Sprintf("c.values ->>'$.%s' = 'true'", field.FieldKey)
+					db = db.Where(query)
+				}
+			default:
+				query := fmt.Sprintf("c.values ->>'$.%s' LIKE %s", field.FieldKey, "CONCAT('%', ?, '%')")
+				db = db.Where(query, v.(string))
 			}
 
 		}
@@ -263,9 +269,7 @@ func validateValue(field entity.CrmCustomerFields, values map[string]any) (any, 
 		val := lo.ValueOr(values, field.FieldKey, "").(string)
 		var location models.LocationData
 		if err := json.Unmarshal([]byte(val), &location); err != nil {
-			errorMsg := fmt.Sprintf("[%s]该字段的值反序列化异常", field.FieldName)
-			global.Logger.Error(errorMsg, zap.Any("value", val))
-			return nil, errors.New(errorMsg)
+			return val, nil
 		}
 		return val, nil
 	default:
