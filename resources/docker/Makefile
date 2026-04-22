@@ -35,3 +35,10 @@ middleware-down:
 	docker compose -f docker-compose-middle.yml --env-file .env down
 
 
+# 清除containerd的缓存
+clear-container:
+	docker system prune -a
+
+# 查看当前目录的文件夹大小
+check:
+	du -h --max-depth=1 .
