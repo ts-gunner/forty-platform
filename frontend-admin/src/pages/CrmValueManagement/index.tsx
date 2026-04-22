@@ -17,6 +17,8 @@ import { history } from "umi";
 import CreateEntityValueModal from "./CreateEntityValueModal";
 import UpdateEntityValueModal from "./UpdateEntityValueModal";
 import UploadValueModal from "./UploadValueModal";
+import dayjs from "dayjs";
+import { getUserList } from "@/services/steins-admin/systemUserController";
 
 export default function CrmValueManagementPage() {
   const [entityData, setEntityData] = useState<API.CrmEntityVo[]>([]);
@@ -107,9 +109,34 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
       {
         title: "创建人",
         dataIndex: "userName",
-        hideInSearch: true,
         key: "userName",
         align: "center",
+        order: 1,
+        valueType: "select",
+        request: async () => {
+          const resp = await getUserList({
+            status:1,
+            pageNum:1,
+            pageSize: 9999
+          })
+          let options:{
+            label: any
+            value: any
+          }[] = []
+          handleResponse({
+            resp,
+            onSuccess: (data) => {
+              options = (data?.list || []).map(it => ({
+                label: it.nickName,
+                value: it.userId
+              }))
+            },
+            onError: () => {
+              Notify.fail("用户列表获取失败")
+            }
+          })
+          return options
+        }
       },
       {
         title: "是否删除",
@@ -122,6 +149,16 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
           0: { text: "存在", status: "Success" },
           1: { text: "已删除", status: "Error" },
         },
+      },
+       {
+        title: "创建时间",
+        dataIndex: "createTime",
+        hideInSearch: true,
+        key: "createTime",
+        align: "center",
+        render: (_,record) => {
+          return dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss")
+        }
       },
       {
         title: "操作",
@@ -198,6 +235,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
             pageNum: params.current,
             pageSize: params.pageSize,
             entityId: entity.entityId as string,
+            userId: params.userName,
             filterParams: params,
             isDelete: Number.parseInt(params.isDelete),
           });

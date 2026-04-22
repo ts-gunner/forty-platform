@@ -12,6 +12,7 @@ import { AppWrapper } from "./components/common/PageMeta";
 import Toaster, { ToasterRef } from "./components/ui/toast/message";
 import { LocaleLang } from "./constants/enums";
 
+
 function getAntdLocale(locale: LocaleLang) {
   if (locale === LocaleLang.ZH_CN) {
     return zhCN;
