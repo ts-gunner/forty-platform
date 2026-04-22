@@ -15,6 +15,47 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/analysis/statistics/getBasicCount": {
+            "get": {
+                "description": "获取业务员总数，客户总数",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AnalysisController"
+                ],
+                "summary": "获取基础数据指标值",
+                "operationId": "getBasicCount",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-analysis_BasicIndicator"
+                        }
+                    }
+                }
+            }
+        },
+        "/analysis/statistics/getCustomerCountByUser": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AnalysisController"
+                ],
+                "summary": "获取客户数据跟业务员的相关指标值",
+                "operationId": "getCustomerCountByUser",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-array_analysis_CustomerIndicator"
+                        }
+                    }
+                }
+            }
+        },
         "/audit/review/getAuditList": {
             "get": {
                 "produces": [
@@ -2009,6 +2050,33 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "analysis.BasicIndicator": {
+            "type": "object",
+            "properties": {
+                "businessCount": {
+                    "description": "业务员总数",
+                    "type": "integer"
+                },
+                "customerCount": {
+                    "description": "客户总数",
+                    "type": "integer"
+                }
+            }
+        },
+        "analysis.CustomerIndicator": {
+            "type": "object",
+            "properties": {
+                "customerCount": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "string"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
         "audit.AuditAccessRecordVo": {
             "type": "object",
             "properties": {
@@ -2488,6 +2556,22 @@ const docTemplate = `{
                 }
             }
         },
+        "response.ApiResult-analysis_BasicIndicator": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/analysis.BasicIndicator"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
         "response.ApiResult-any": {
             "type": "object",
             "properties": {
@@ -2496,6 +2580,25 @@ const docTemplate = `{
                     "example": 200
                 },
                 "data": {},
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "response.ApiResult-array_analysis_CustomerIndicator": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/analysis.CustomerIndicator"
+                    }
+                },
                 "msg": {
                     "type": "string",
                     "example": "成功"

@@ -1,4 +1,22 @@
 definitions:
+  analysis.BasicIndicator:
+    properties:
+      businessCount:
+        description: 业务员总数
+        type: integer
+      customerCount:
+        description: 客户总数
+        type: integer
+    type: object
+  analysis.CustomerIndicator:
+    properties:
+      customerCount:
+        type: integer
+      userId:
+        type: string
+      userName:
+        type: string
+    type: object
   audit.AuditAccessRecordVo:
     properties:
       applyRemark:
@@ -327,12 +345,36 @@ definitions:
     - entityId
     - fields
     type: object
+  response.ApiResult-analysis_BasicIndicator:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/analysis.BasicIndicator'
+      msg:
+        example: 成功
+        type: string
+    type: object
   response.ApiResult-any:
     properties:
       code:
         example: 200
         type: integer
       data: {}
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-array_analysis_CustomerIndicator:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/analysis.CustomerIndicator'
+        type: array
       msg:
         example: 成功
         type: string
@@ -999,6 +1041,33 @@ info:
   title: 四零专属管理后台
   version: "1.0"
 paths:
+  /analysis/statistics/getBasicCount:
+    get:
+      description: 获取业务员总数，客户总数
+      operationId: getBasicCount
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-analysis_BasicIndicator'
+      summary: 获取基础数据指标值
+      tags:
+      - AnalysisController
+  /analysis/statistics/getCustomerCountByUser:
+    get:
+      operationId: getCustomerCountByUser
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-array_analysis_CustomerIndicator'
+      summary: 获取客户数据跟业务员的相关指标值
+      tags:
+      - AnalysisController
   /audit/review/getAuditList:
     get:
       operationId: getAuditList

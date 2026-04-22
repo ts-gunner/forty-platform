@@ -1,8 +1,28 @@
 
 import { ArrowDownIcon, BoxIcon, GroupIcon } from "lucide-react";
 import Badge from "../ui/badge/Badge";
+import { getBasicCount } from "@/services/steins-admin/analysisController";
+import { useEffect, useState } from "react";
+import { handleResponse, Notify } from "@/utils/common";
 
 export default function EcommerceMetrics() {
+  const [basicCount, setBasicCount]=useState<API.BasicIndicator>({})
+  useEffect(() => {
+getData()
+  }, [])
+  const getData = async () => {
+
+    const resp = await getBasicCount()
+    handleResponse({
+      resp,
+      onSuccess:(data) => {
+        setBasicCount(data)
+      },
+      onError: ()=> {
+        Notify.fail(resp.msg || "")
+      }
+    })
+  }
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
       {/* <!-- Metric Item Start --> */}
@@ -17,7 +37,7 @@ export default function EcommerceMetrics() {
               业务员总数
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              3,782
+              {basicCount?.businessCount}
             </h4>
           </div>
           {/* <Badge color="success">
@@ -37,17 +57,16 @@ export default function EcommerceMetrics() {
               客户数量
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              5,359
+              {basicCount?.customerCount}
             </h4>
           </div>
 
-          <Badge color="error">
+          {/* <Badge color="error">
             <ArrowDownIcon />
             9.05%
-          </Badge>
+          </Badge> */}
         </div>
       </div>
-      {/* <!-- Metric Item End --> */}
     </div>
   );
 }

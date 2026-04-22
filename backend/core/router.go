@@ -7,6 +7,7 @@ import (
 	"github.com/ts-gunner/forty-platform/common/global"
 	"github.com/ts-gunner/forty-platform/common/handler"
 	_ "github.com/ts-gunner/forty-platform/docs"
+	analysisController "github.com/ts-gunner/forty-platform/modules/analysis/controller"
 	auditController "github.com/ts-gunner/forty-platform/modules/audit/controller"
 	crmController "github.com/ts-gunner/forty-platform/modules/crm/controller"
 	systemController "github.com/ts-gunner/forty-platform/modules/system/controller"
@@ -36,6 +37,7 @@ func initRouter() *gin.Engine {
 
 	crmController.CrmRouter.InitCrmRouter(contextGroup)
 	auditController.AuditRouter.InitAuditRouter(contextGroup)
+	analysisController.AnalysisRouter.InitAnalysisRouter(contextGroup)
 	return r
 }
 
