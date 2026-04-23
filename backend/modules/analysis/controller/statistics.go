@@ -2,12 +2,13 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ts-gunner/forty-platform/common/global"
 	"github.com/ts-gunner/forty-platform/common/response"
 	analysisResponse "github.com/ts-gunner/forty-platform/common/response/analysis"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 type StatisticsRouter struct{}
@@ -16,6 +17,7 @@ func (StatisticsRouter) InitStatisticsRouter(moduleName string, router *gin.Rout
 	routerGroup := router.Group(fmt.Sprintf("/%s/statistics", moduleName))
 	routerGroup.GET("/getBasicCount", getBasicCount)
 	routerGroup.GET("/getCustomerCountByUser", getCustomerCountByUser)
+	routerGroup.GET("/getCustomerTrendChart", getCustomerTrendChart)
 
 }
 
@@ -50,4 +52,20 @@ func getCustomerCountByUser(c *gin.Context) {
 		return
 	}
 	response.Data[[]analysisResponse.CustomerIndicator](indicator, c)
+}
+
+// @Tags AnalysisController
+// @ID getCustomerTrendChart
+// @Router /analysis/statistics/getCustomerTrendChart [get]
+// @Summary 获取客户总数趋势图
+// @Produce json
+// @Success 200 {object} response.ApiResult[[]analysisResponse.CustomerTrendChart]
+func getCustomerTrendChart(c *gin.Context) {
+	indicator, err := statisticsService.GetCustomerTrendChart()
+	if err != nil {
+		global.Logger.Error("业务员 - 客户数据指标获取异常", zap.Error(err))
+		response.Fail(http.StatusBadRequest, "业务员 - 客户数据指标获取异常", c)
+		return
+	}
+	response.Data[[]analysisResponse.CustomerTrendChart](indicator, c)
 }

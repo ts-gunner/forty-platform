@@ -17,6 +17,13 @@ definitions:
       userName:
         type: string
     type: object
+  analysis.CustomerTrendChart:
+    properties:
+      statDate:
+        type: string
+      totalCount:
+        type: integer
+    type: object
   audit.AuditAccessRecordVo:
     properties:
       applyRemark:
@@ -374,6 +381,19 @@ definitions:
       data:
         items:
           $ref: '#/definitions/analysis.CustomerIndicator'
+        type: array
+      msg:
+        example: 成功
+        type: string
+    type: object
+  response.ApiResult-array_analysis_CustomerTrendChart:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/analysis.CustomerTrendChart'
         type: array
       msg:
         example: 成功
@@ -1066,6 +1086,19 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-array_analysis_CustomerIndicator'
       summary: 获取客户数据跟业务员的相关指标值
+      tags:
+      - AnalysisController
+  /analysis/statistics/getCustomerTrendChart:
+    get:
+      operationId: getCustomerTrendChart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-array_analysis_CustomerTrendChart'
+      summary: 获取客户总数趋势图
       tags:
       - AnalysisController
   /audit/review/getAuditList:

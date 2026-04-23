@@ -56,6 +56,26 @@ const docTemplate = `{
                 }
             }
         },
+        "/analysis/statistics/getCustomerTrendChart": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AnalysisController"
+                ],
+                "summary": "获取客户总数趋势图",
+                "operationId": "getCustomerTrendChart",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-array_analysis_CustomerTrendChart"
+                        }
+                    }
+                }
+            }
+        },
         "/audit/review/getAuditList": {
             "get": {
                 "produces": [
@@ -2077,6 +2097,17 @@ const docTemplate = `{
                 }
             }
         },
+        "analysis.CustomerTrendChart": {
+            "type": "object",
+            "properties": {
+                "statDate": {
+                    "type": "string"
+                },
+                "totalCount": {
+                    "type": "integer"
+                }
+            }
+        },
         "audit.AuditAccessRecordVo": {
             "type": "object",
             "properties": {
@@ -2597,6 +2628,25 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/analysis.CustomerIndicator"
+                    }
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "response.ApiResult-array_analysis_CustomerTrendChart": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/analysis.CustomerTrendChart"
                     }
                 },
                 "msg": {

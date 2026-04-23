@@ -23,3 +23,14 @@ export async function getCustomerCountByUser(options?: { [key: string]: any }) {
     }
   );
 }
+
+/** 获取客户总数趋势图 GET /analysis/statistics/getCustomerTrendChart */
+export async function getCustomerTrendChart(options?: { [key: string]: any }) {
+  return request<API.ApiResultArrayAnalysisCustomerTrendChart>(
+    "/analysis/statistics/getCustomerTrendChart",
+    {
+      method: "GET",
+      ...(options || {}),
+    }
+  );
+}

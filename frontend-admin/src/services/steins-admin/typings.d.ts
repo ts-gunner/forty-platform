@@ -31,6 +31,12 @@ declare namespace API {
     msg?: string;
   };
 
+  type ApiResultArrayAnalysisCustomerTrendChart = {
+    code?: number;
+    data?: CustomerTrendChart[];
+    msg?: string;
+  };
+
   type ApiResultArrayCrmCrmEntityFieldVo = {
     code?: number;
     data?: CrmEntityFieldVo[];
@@ -276,6 +282,11 @@ declare namespace API {
     customerCount?: number;
     userId?: string;
     userName?: string;
+  };
+
+  type CustomerTrendChart = {
+    statDate?: string;
+    totalCount?: number;
   };
 
   type DeleteCrmEntityValueRequest = {

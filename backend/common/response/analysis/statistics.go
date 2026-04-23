@@ -11,3 +11,9 @@ type CustomerIndicator struct {
 	UserName      string `json:"userName"`
 	CustomerCount int64  `json:"customerCount"`
 }
+
+// 客户总数趋势图
+type CustomerTrendChart struct {
+	StatDate   string `json:"statDate"`
+	TotalCount int64  `json:"totalCount"`
+}
