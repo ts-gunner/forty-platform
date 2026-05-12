@@ -276,7 +276,7 @@ const PickerOrOther: React.FC<{
             name={fieldKey}
             title={fieldName}
             required={isRequired}
-            placeholder={"请输入" + fieldName}
+            placeholder={customInputVal ? "" : "请输入" + fieldName}
             value={customInputVal}
             onChange={handleInputChange}
           />
