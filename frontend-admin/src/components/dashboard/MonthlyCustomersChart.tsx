@@ -4,7 +4,7 @@ import { ApexOptions } from "apexcharts";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
-
+const chartColors = ["#546E7A", "#E91E63", "#00E676", "#FFD600", "#1DE9B6"];
 export default function MonthlyCustomersChart() {
   const [seriesData, setSeriesData] = useState<ApexAxisChartSeries>([]);
   const [options, setOptions] = useState<ApexOptions>({
@@ -19,15 +19,28 @@ export default function MonthlyCustomersChart() {
         show: true,
       },
     },
+    colors: chartColors,
     stroke: {
-      curve: "straight",
-      colors: ["#da4f7a", "#eb604c"],
+      curve: "smooth",
     },
     tooltip: {
      
     },
     dataLabels: {
       enabled: false,
+    },
+    xaxis: {
+      type: "datetime",
+      labels: {
+        datetimeUTC: false,
+        // ApexCharts 会根据缩放自动切换以下格式
+        datetimeFormatter: {
+          year: "yyyy",
+          month: "MMM yyyy",
+          day: "dd MMM",
+          hour: "HH:mm",
+        },
+      },
     },
     fill: {
       type: "gradient", // 渐变模式（改成 'solid' 就是纯色）
@@ -37,7 +50,6 @@ export default function MonthlyCustomersChart() {
         opacityTo: 1, // 底部透明度
         stops: [0, 100],
       },
-      colors: ["#da4f7a"], // 填充主色（和线条保持一致更美观）
     },
     yaxis: {
       // opposite: true,  // 纵坐标位置， true: 右侧 false: 在左侧
@@ -60,7 +72,7 @@ export default function MonthlyCustomersChart() {
           {
             name: "当前总数",
             data: (data || []).map(it => ({
-              x: dayjs(it.statDate).format("MM-DD"),
+              x: it.statDate,
               y: it.totalCount,
             }))
           }
