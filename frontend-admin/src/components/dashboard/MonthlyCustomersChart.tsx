@@ -4,13 +4,34 @@ import { ApexOptions } from "apexcharts";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
-const chartColors = ["#546E7A", "#E91E63", "#00E676", "#FFD600", "#1DE9B6"];
+const chartColors = ["#E91E63", "#00E676", "#FFD600", "#1DE9B6"];
 export default function MonthlyCustomersChart() {
   const [seriesData, setSeriesData] = useState<ApexAxisChartSeries>([]);
   const [options, setOptions] = useState<ApexOptions>({
     chart: {
       type: "area",
       height: 350,
+      locales: [{
+        name: 'zh-cn',
+        options: {
+          months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+          shortMonths: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+          days: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+          shortDays: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+          toolbar: {
+            exportToSVG: '下载 SVG',
+            exportToPNG: '下载 PNG',
+            exportToCSV: '下载 CSV',
+            selection: '选择',
+            selectionZoom: '选择缩放',
+            zoomIn: '放大',
+            zoomOut: '缩小',
+            pan: '平移',
+            reset: '重置缩放',
+          }
+        }
+      }],
+      defaultLocale: 'zh-cn',
       fontFamily: "Outfit, sans-serif",
       zoom: {
         enabled: true,
@@ -23,9 +44,15 @@ export default function MonthlyCustomersChart() {
     stroke: {
       curve: "smooth",
     },
-    tooltip: {
+   tooltip: {
+      shared: true,
+      intersect: false,
+      x: {
+        format: "yyyy-MM-dd",
+      },
      
     },
+    
     dataLabels: {
       enabled: false,
     },
@@ -36,8 +63,8 @@ export default function MonthlyCustomersChart() {
         // ApexCharts 会根据缩放自动切换以下格式
         datetimeFormatter: {
           year: "yyyy",
-          month: "MMM yyyy",
-          day: "dd MMM",
+          month: "yyyy MMM",
+          day: "MMM dd",
           hour: "HH:mm",
         },
       },
