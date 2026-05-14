@@ -27,7 +27,7 @@ export default function UploadValueModal({ modalOpen, handleModalOpen, onSubmit 
     const resp = await getUserListByRoleKey({
       roleKey: SystemRoleEnum.ROLE_WECHAT_CRM,
       pageNum: 1,
-      pageSize: 999,
+      pageSize: 99999,
     });
     handleResponse({
       resp,

@@ -13,9 +13,27 @@ declare namespace API {
     userId?: string;
   };
 
+  type ApiResultAnalysisBasicIndicator = {
+    code?: number;
+    data?: BasicIndicator;
+    msg?: string;
+  };
+
   type ApiResultAny = {
     code?: number;
     data?: any;
+    msg?: string;
+  };
+
+  type ApiResultArrayAnalysisCustomerIndicator = {
+    code?: number;
+    data?: CustomerIndicator[];
+    msg?: string;
+  };
+
+  type ApiResultArrayAnalysisCustomerTrendChart = {
+    code?: number;
+    data?: CustomerTrendChart[];
     msg?: string;
   };
 
@@ -175,6 +193,13 @@ declare namespace API {
     status?: number;
   };
 
+  type BasicIndicator = {
+    /** 业务员总数 */
+    businessCount?: number;
+    /** 客户总数 */
+    customerCount?: number;
+  };
+
   type checkCustomerFavoriteParams = {
     /** 实体表id */
     entityId: string;
@@ -253,6 +278,17 @@ declare namespace API {
     mineValueCount?: number;
   };
 
+  type CustomerIndicator = {
+    customerCount?: number;
+    userId?: string;
+    userName?: string;
+  };
+
+  type CustomerTrendChart = {
+    statDate?: string;
+    totalCount?: number;
+  };
+
   type DeleteCrmEntityValueRequest = {
     id: string;
   };
@@ -305,6 +341,11 @@ declare namespace API {
     pageSize?: number;
     /** 实体表id */
     entityId?: string;
+  };
+
+  type getCustomerTrendChartByUserIdParams = {
+    /** 用户id */
+    userId: string;
   };
 
   type getDeletedFieldsByEntityIdParams = {

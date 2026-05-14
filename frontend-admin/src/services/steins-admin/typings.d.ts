@@ -343,6 +343,11 @@ declare namespace API {
     entityId?: string;
   };
 
+  type getCustomerTrendChartByUserIdParams = {
+    /** 用户id */
+    userId: string;
+  };
+
   type getDeletedFieldsByEntityIdParams = {
     /** 实体表id */
     entityId?: string;

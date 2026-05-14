@@ -54,7 +54,7 @@ func (StatisticsService) GetCustomerTrendChart() ([]response.CustomerTrendChart,
 	if err := global.DB.Raw(`
 SELECT
     day_date AS stat_date,
-    @total := @total + day_count AS total_count
+    SUM(t.day_count) OVER (ORDER BY day_date) AS total_count
 FROM (
     -- 第一步：先算出每天新增了多少条
     SELECT
@@ -64,10 +64,34 @@ FROM (
     WHERE is_delete = 0
     GROUP BY DATE(create_time)
     ORDER BY day_date
-) AS t1
-CROSS JOIN (SELECT @total := 0) AS t2  -- 变量初始化，累加总数
+) t
 ORDER BY day_date;
 `).Scan(&indicators).Error; err != nil {
+		return indicators, err
+	}
+	return indicators, nil
+}
+
+// 获取指定用户的每日用户总量
+func (StatisticsService) GetCrmTrendChartByUserId(userId int64) ([]response.CustomerTrendChart, error) {
+	indicators := []response.CustomerTrendChart{}
+	if err := global.DB.Raw(`
+SELECT
+    day_date as stat_date,
+    SUM(day_count) OVER (PARTITION BY nickname ORDER BY day_date) AS total_count  -- 每日累计总量
+FROM (
+    -- 先统计每个人每天的新增数量
+    SELECT
+        DATE(ccv.create_time) AS day_date,
+        su.nickname AS nickname,
+        COUNT(ccv.id) AS day_count
+    FROM crm_customer_values ccv
+    LEFT JOIN sys_user su ON su.user_id = ccv.user_id
+    WHERE ccv.is_delete = 0 AND su.user_id = ?
+    GROUP BY su.nickname, DATE(ccv.create_time)
+) t
+ORDER BY day_date, nickname;
+`, userId).Scan(&indicators).Error; err != nil {
 		return indicators, err
 	}
 	return indicators, nil

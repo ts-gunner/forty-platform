@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/analysis/statistics/getBasicCount": {
+        "/analysis/analysis/getBasicCount": {
             "get": {
                 "description": "获取业务员总数，客户总数",
                 "produces": [
@@ -36,7 +36,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/analysis/statistics/getCustomerCountByUser": {
+        "/analysis/analysis/getCustomerCountByUser": {
             "get": {
                 "produces": [
                     "application/json"
@@ -56,7 +56,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/analysis/statistics/getCustomerTrendChart": {
+        "/analysis/analysis/getCustomerTrendChart": {
             "get": {
                 "produces": [
                     "application/json"
@@ -66,6 +66,35 @@ const docTemplate = `{
                 ],
                 "summary": "获取客户总数趋势图",
                 "operationId": "getCustomerTrendChart",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-array_analysis_CustomerTrendChart"
+                        }
+                    }
+                }
+            }
+        },
+        "/analysis/analysis/getCustomerTrendChartByUserId": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AnalysisController"
+                ],
+                "summary": "根据用户id获取客户总数趋势图",
+                "operationId": "getCustomerTrendChartByUserId",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户id",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
