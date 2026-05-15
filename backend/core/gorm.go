@@ -6,6 +6,7 @@ import (
 	"github.com/ts-gunner/forty-platform/common/global"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func InitGorm() (*gorm.DB, error) {
@@ -26,7 +27,11 @@ func GormMysql() *gorm.DB {
 		DefaultStringSize:         255,
 		SkipInitializeWithVersion: false,
 	}
-	if db, err := gorm.Open(mysql.New(mysqlConfig), &gorm.Config{}); err != nil {
+	c := &gorm.Config{}
+	if global.Config.Mysql.ShowSql {
+		c.Logger = logger.Default.LogMode(logger.Info)
+	}
+	if db, err := gorm.Open(mysql.New(mysqlConfig), c); err != nil {
 		panic(errors.New(fmt.Sprintf("数据库连接异常: %s", err)))
 	} else {
 		sqlDB, _ := db.DB()

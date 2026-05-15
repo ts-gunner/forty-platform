@@ -174,6 +174,11 @@ declare namespace API {
     loginCode: string;
   };
 
+  type AssignValueRequest = {
+    entityIds: string[];
+    targetId: string;
+  };
+
   type AuditAccessRecordVo = {
     /** 申请人备注 */
     applyRemark?: string;

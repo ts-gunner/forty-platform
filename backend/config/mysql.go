@@ -5,6 +5,7 @@ import "fmt"
 type Mysql struct {
 	// 将CommonDB的配置扁平化拆解到Mysql中
 	CommonDB `mapstructure:",squash" yaml:",inline"`
+	ShowSql  bool `mapstructure:"show-sql" yaml:"show-sql"`
 }
 
 func (m *Mysql) Dsn() string {

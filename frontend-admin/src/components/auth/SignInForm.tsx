@@ -6,7 +6,7 @@ import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { useIntl } from "react-intl";
 import { Loader } from "../ui/loading/Loader";
-import { EyeClosedIcon, EyeIcon } from "lucide-react";
+import { EyeOff, EyeIcon } from "lucide-react";
 
 export default function SignInForm({ 
   pwdLogin,
@@ -92,9 +92,9 @@ export default function SignInForm({
                     />
                     <span onClick={() => setShowPassword(!showPassword)} className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2">
                       {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                        <EyeIcon className="size-5" />
                       ) : (
-                        <EyeClosedIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                        <EyeOff className="size-5" />
                       )}
                     </span>
                   </div>

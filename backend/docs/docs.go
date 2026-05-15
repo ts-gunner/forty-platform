@@ -731,6 +731,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/crm/value/assign": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CrmEntityValueController"
+                ],
+                "summary": "转让实体数据给其他用户",
+                "operationId": "assignEntityValue",
+                "parameters": [
+                    {
+                        "description": "转让实体数据数据参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/crm.AssignValueRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/crm/value/delete": {
             "post": {
                 "consumes": [
@@ -2237,6 +2271,25 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "userId": {
+                    "type": "string",
+                    "example": "0"
+                }
+            }
+        },
+        "crm.AssignValueRequest": {
+            "type": "object",
+            "required": [
+                "entityIds",
+                "targetId"
+            ],
+            "properties": {
+                "entityIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "targetId": {
                     "type": "string",
                     "example": "0"
                 }

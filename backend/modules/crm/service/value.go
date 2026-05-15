@@ -524,7 +524,7 @@ func (EntityValueService) HandleUploadExcel(ctx context.Context, req request.Upl
 			{Name: "customer_name"},
 			{Name: "entity_id"},
 			{Name: "user_id"},
-		},                                                                               // 判重唯一键，对应数据库字段名
+		}, // 判重唯一键，对应数据库字段名
 		DoUpdates: clause.AssignmentColumns([]string{"remark", "values", "updater_id"}), // 存在时更新的字段
 	}).Create(&valueData).Error; err != nil {
 		return fmt.Errorf("创建失败：%v", err)
@@ -555,4 +555,31 @@ func (EntityValueService) CountValue(ctx context.Context, entityId int64) (crmRe
 	resp.AllValueCount = allCount
 
 	return resp, nil
+}
+
+func (EntityValueService) AssignEntityValue(ctx context.Context, valueIds []int64, targetId int64) error {
+	operatorId := utils.GetLoginUserId(ctx)
+	if len(valueIds) == 0 {
+		return fmt.Errorf("未选中数据")
+	}
+	var count int64
+	if err := global.DB.Model(entity.CrmCustomerValues{}).Where(
+		"is_delete = 0 and id in (?) AND user_id = ?", valueIds, operatorId,
+	).Count(&count).Error; err != nil {
+		return err
+	}
+	hasPerm, err := global.Enforcer.HasGroupingPolicy(strconv.FormatInt(operatorId, 10), constant.ROLE_WECHAT_CRM_ADMIN)
+	if err != nil {
+		return err
+	}
+	if !hasPerm && count != int64(len(valueIds)) {
+		return fmt.Errorf("非管理员只能转让自己的数据")
+	}
+
+	return global.DB.Model(entity.CrmCustomerValues{}).Where(
+		"is_delete = 0 and id in (?)", valueIds,
+	).Updates(map[string]any{
+		"user_id":    targetId,
+		"updater_id": operatorId,
+	}).Error
 }

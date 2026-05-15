@@ -46,6 +46,21 @@ export async function adminUploadCrmExcel(
   });
 }
 
+/** 转让实体数据给其他用户 POST /crm/value/assign */
+export async function assignEntityValue(
+  body: API.AssignValueRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.ApiResultAny>("/crm/value/assign", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 删除实体数据 POST /crm/value/delete */
 export async function deleteEntityValue(
   body: API.DeleteCrmEntityValueRequest,

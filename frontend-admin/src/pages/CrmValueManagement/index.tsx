@@ -2,23 +2,26 @@ import { getEntityList } from "@/services/steins-admin/crmEntityController";
 import { getFieldsByEntityId } from "@/services/steins-admin/crmEntityFieldController";
 import {
   adminUploadCrmExcel,
+  assignEntityValue,
   deleteEntityValue,
   getEntityValueListByAdmin,
   insertEntityValue,
   updateEntityValue,
 } from "@/services/steins-admin/crmEntityValueController";
+import { getUserList } from "@/services/steins-admin/systemUserController";
 import { handleResponse, Notify } from "@/utils/common";
 import { generateCrmValueColumns } from "@/utils/crm";
 import { CloudUploadOutlined, PlusOutlined } from "@ant-design/icons";
 import ProTable, { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Button, Popconfirm, Tabs } from "antd";
+import dayjs from "dayjs";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { history } from "umi";
+import AssignValueModal from "./AssignValueModal";
 import CreateEntityValueModal from "./CreateEntityValueModal";
 import UpdateEntityValueModal from "./UpdateEntityValueModal";
 import UploadValueModal from "./UploadValueModal";
-import dayjs from "dayjs";
-import { getUserList } from "@/services/steins-admin/systemUserController";
+import { ArrowLeftRight, AsteriskSquare } from "lucide-react";
 
 export default function CrmValueManagementPage() {
   const [entityData, setEntityData] = useState<API.CrmEntityVo[]>([]);
@@ -71,9 +74,11 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
   const [createModalOpen, handleCreateModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [uploadExcelModalOpen, handleUploadExcelModalOpen] = useState<boolean>(false);
+  const [assignValueModalOpen, handleAssignValueModalOpen] = useState<boolean>(false);
   const [currentValue, handleCurrentValue] = useState<any>({});
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const [entityFields, setEntityFields] = useState<API.CrmEntityFieldVo[]>([]);
+  const [selectedValueIds, setSelectedValueIds] = useState<string[]>([]);
   useEffect(() => {
     if (activeKey === entity.entityId) {
       getEntityFields();
@@ -107,7 +112,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
     return [
       ...columns,
       {
-        title: "创建人",
+        title: "所属人",
         dataIndex: "userName",
         key: "userName",
         align: "center",
@@ -115,28 +120,28 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         valueType: "select",
         request: async () => {
           const resp = await getUserList({
-            status:1,
-            pageNum:1,
-            pageSize: 9999
-          })
-          let options:{
-            label: any
-            value: any
-          }[] = []
+            status: 1,
+            pageNum: 1,
+            pageSize: 9999,
+          });
+          let options: {
+            label: any;
+            value: any;
+          }[] = [];
           handleResponse({
             resp,
             onSuccess: (data) => {
-              options = (data?.list || []).map(it => ({
+              options = (data?.list || []).map((it) => ({
                 label: it.nickName,
-                value: it.userId
-              }))
+                value: it.userId,
+              }));
             },
             onError: () => {
-              Notify.fail("用户列表获取失败")
-            }
-          })
-          return options
-        }
+              Notify.fail("用户列表获取失败");
+            },
+          });
+          return options;
+        },
       },
       {
         title: "是否删除",
@@ -150,21 +155,23 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
           1: { text: "已删除", status: "Error" },
         },
       },
-       {
+      {
         title: "创建时间",
         dataIndex: "createTime",
         hideInSearch: true,
         key: "createTime",
         align: "center",
-        render: (_,record) => {
-          return dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss")
-        }
+        render: (_, record) => {
+          return dayjs(record.createTime).format("YYYY-MM-DD HH:mm:ss");
+        },
       },
       {
         title: "操作",
         dataIndex: "action",
         key: "action",
         align: "center",
+        width: 230,
+        fixed: "right",
         hideInSearch: true,
         render: (_, record: any) => {
           return (
@@ -183,6 +190,14 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
                 }}
               >
                 更新
+              </a>
+              <a
+                onClick={() => {
+                  setSelectedValueIds([record.id])
+                  handleAssignValueModalOpen(true);
+                }}
+              >
+                转让
               </a>
               <Popconfirm
                 title="确认删除"
@@ -216,7 +231,13 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
         actionRef={actionRef}
         columns={columns}
         key={"id"}
+        rowKey={"id"}
         toolBarRender={() => [
+           <Button key="assign" onClick={() => {
+                 handleAssignValueModalOpen(true);
+           }}>
+            <ArrowLeftRight /> 转让
+          </Button>,
           <Button key="upload_excel" onClick={() => handleUploadExcelModalOpen(true)}>
             <CloudUploadOutlined /> 上传表格
           </Button>,
@@ -230,6 +251,13 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
             <PlusOutlined /> 新建
           </Button>,
         ]}
+        rowSelection={{
+          columnWidth: 48,
+          selectedRowKeys: selectedValueIds,
+          onChange: (keys) => {
+            setSelectedValueIds(keys as string[]);
+          },
+        }}
         request={async (params) => {
           const resp = await getEntityValueListByAdmin({
             pageNum: params.current,
@@ -341,7 +369,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
           handleResponse({
             resp,
             onSuccess: () => {
-              Notify.ok("插入数据成功:" + resp.msg);
+              Notify.ok(resp.msg || "成功");
               actionRef.current?.reload();
             },
             onError: () => {
@@ -350,6 +378,31 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
             onFinish: () => {
               setPageLoading(false);
               handleUploadExcelModalOpen(false);
+            },
+          });
+        }}
+      />
+      <AssignValueModal
+        modalOpen={assignValueModalOpen}
+        handleModalOpen={handleAssignValueModalOpen}
+        onSubmit={async (userId: string) => {
+          setPageLoading(true);
+          const resp = await assignEntityValue({
+            entityIds: selectedValueIds,
+            targetId: userId,
+          });
+          handleResponse({
+            resp,
+            onSuccess: () => {
+              Notify.ok(resp.msg || "成功");
+              actionRef.current?.reload();
+            },
+            onError: () => {
+              Notify.fail("转让数据失败:" + resp.msg);
+            },
+            onFinish: () => {
+              setPageLoading(false);
+              handleAssignValueModalOpen(false);
             },
           });
         }}

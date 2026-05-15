@@ -2,7 +2,9 @@ package controller
 
 import (
 	"fmt"
+	"github.com/samber/lo"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ts-gunner/forty-platform/common/global"
@@ -26,6 +28,7 @@ func (EntityRouter) InitEntityValueRouter(moduleName string, router *gin.RouterG
 	routerGroup.POST("/uploadCrmExcel", uploadCrmExcel)
 	routerGroup.POST("/adminUploadCrmExcel", adminUploadCrmExcel)
 	routerGroup.GET("/getCrmValueCount", getCrmValueCount)
+	routerGroup.POST("/assign", assignEntityValue)
 
 }
 
@@ -284,4 +287,30 @@ func getCrmValueCount(c *gin.Context) {
 		return
 	}
 	response.Data[crmResponse.CrmValueCountVo](vo, c)
+}
+
+// @Tags CrmEntityValueController
+// @ID assignEntityValue
+// @Router /crm/value/assign [post]
+// @Summary 转让实体数据给其他用户
+// @Accept json
+// @Produce json
+// @Param request body request.AssignValueRequest true "转让实体数据数据参数"
+// @Success 200 {object} response.ApiResult[any]
+func assignEntityValue(c *gin.Context) {
+	var req request.AssignValueRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		global.Logger.Error("参数校验异常:"+err.Error(), zap.Any("request", req))
+		response.Fail(http.StatusBadRequest, "参数校验异常", c)
+		return
+	}
+	entityIds := lo.Map(req.EntityIds, func(it string, idx int) int64 {
+		id, _ := strconv.ParseInt(it, 10, 64)
+		return id
+	})
+	if err := entityValueService.AssignEntityValue(c.Request.Context(), entityIds, req.TargetId); err != nil {
+		response.Fail(http.StatusBadRequest, err.Error(), c)
+		return
+	}
+	response.Ok(c)
 }

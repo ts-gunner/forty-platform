@@ -6,7 +6,7 @@ mysql:
     password: ${FORTY_APP_MYSQL_PASSWORD:=123456}
     max-idle-conns: 10
     max-open-conns: 100
-
+    show-sql: true
 redis:
     port: "6379"
     host: ${FORTY_APP_REDIS_HOST:=127.0.0.1}

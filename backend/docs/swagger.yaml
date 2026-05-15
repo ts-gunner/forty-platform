@@ -98,6 +98,19 @@ definitions:
     required:
     - entityId
     type: object
+  crm.AssignValueRequest:
+    properties:
+      entityIds:
+        items:
+          type: string
+        type: array
+      targetId:
+        example: "0"
+        type: string
+    required:
+    - entityIds
+    - targetId
+    type: object
   crm.CrmCustomerFavoriteVo:
     properties:
       createTime:
@@ -1525,6 +1538,28 @@ paths:
           schema:
             $ref: '#/definitions/response.ApiResult-any'
       summary: 管理端 - 上传表格，添加客户数据
+      tags:
+      - CrmEntityValueController
+  /crm/value/assign:
+    post:
+      consumes:
+      - application/json
+      operationId: assignEntityValue
+      parameters:
+      - description: 转让实体数据数据参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/crm.AssignValueRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 转让实体数据给其他用户
       tags:
       - CrmEntityValueController
   /crm/value/delete:

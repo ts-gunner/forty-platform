@@ -59,3 +59,8 @@ type AdminUploadCrmValueRequest struct {
 type CountValueRequest struct {
 	EntityId int64 `form:"entityId,string" json:"entityId,string"`
 }
+
+type AssignValueRequest struct {
+	EntityIds []string `json:"entityIds" binding:"required"`
+	TargetId  int64    `json:"targetId,string" binding:"required"`
+}
