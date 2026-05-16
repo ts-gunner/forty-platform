@@ -1,4 +1,4 @@
-import { View, Text } from "@tarojs/components";
+import { View, Text, Picker } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React, { useEffect, useState } from "react";
 import { AtIcon } from "taro-ui";
@@ -9,10 +9,12 @@ import { Dispatch, RootState } from "@/store";
 import { handleCrmValueByField } from "@/utils/crm";
 import ValueBoxGenerator from "@/components/crm/ValueBoxGenerator";
 import "./index.scss"
-import { updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
+import { assignEntityValue, updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { addCustomerFavorite, checkCustomerFavorite, removeCustomerFavorite } from "@/services/steins-admin/crmCustomerFavoriteController";
 import { handleResponse, Notify } from "@/utils/common";
 import { ROUTERS } from "@/constant/menus";
+import { getUserListByRoleKey } from "@/services/steins-admin/systemUserController";
+import { CRM_ROLE_NAME } from "@/constant/global";
 const CURRENT_PAGE = ROUTERS.customerDetail;
 function CustomerDetailPage() {
   const [isEdit, setIsEdit] = useState<boolean>(false)
@@ -21,13 +23,42 @@ function CustomerDetailPage() {
   const selectedEntityValue = useSelector((state: RootState) => state.crmModel.selectedEntityValue)
   const tableFields = useSelector((state: RootState) => state.crmModel.tableFields)
   const [valueObject, setValueObject] = useState<any>(JSON.parse(selectedEntityValue.values))
-  
+  const [businessUserList, setBusinessUserList] = useState<API.UserVo[]>([])
+   const activeRoute = useSelector(
+    (state: RootState) => state.routerModel.activeRoute,
+  );
   // 检查收藏状态
   useEffect(() => {
     setValueObject(JSON.parse(selectedEntityValue.values))
     checkFavoriteStatus();
   }, [selectedEntityValue])
-  
+
+   useEffect(() => {
+      if (!activeRoute) {
+        return;
+      }
+      if (CURRENT_PAGE === activeRoute) {
+        getBusinessWorkerOptions();
+      } else {
+       
+      }
+    }, [activeRoute]);
+  const getBusinessWorkerOptions = async () => {
+    console.log("获取业务员信息")
+    const resp = await getUserListByRoleKey({
+      roleKey: CRM_ROLE_NAME,
+      pageSize: 9999
+    })
+    handleResponse({
+      resp,
+      onSuccess: (data) => {
+        setBusinessUserList(data.list || [])
+      },
+      onError: () => {
+        Notify.fail("获取业务员信息失败：" + resp.msg)
+      }
+    })
+  }
   // 检查收藏状态
   const checkFavoriteStatus = async () => {
     if (selectedEntityValue.id && selectedEntityValue.entityId) {
@@ -79,20 +110,50 @@ function CustomerDetailPage() {
             </View>
           </View>
         ) : (
-          <View className="w-full p-4 bg-white/80 backdrop-blur-md flex gap-4">
+          <View className="w-full p-4 bg-white/80 backdrop-blur-md grid grid-cols-3 gap-4">
             <View
               onClick={() => setIsEdit(true)}
-              className="flex-1 py-3 bg-white border border-gray-200 rounded-full text-center text-sm font-bold text-gray-600 active:bg-gray-100">
+              className="py-3 bg-white border border-gray-200 rounded-full text-center text-sm font-bold text-gray-600 active:bg-gray-100">
               编辑信息
             </View>
             <View
-              className="bg-active flex-1 py-3 rounded-full text-center text-sm font-bold text-white shadow-lg active:opacity-80"
+              className="bg-active py-3 rounded-full text-center text-sm font-bold text-white shadow-lg active:opacity-80"
               onClick={() =>
                 Taro.makePhoneCall({ phoneNumber: valueObject["contract_phone"] })
               }
             >
               立即联系
             </View>
+            <Picker
+              onChange={async(e:any) => {
+                Notify.loading("转让中...")
+                const idx = Number.parseInt(e.detail.value)
+                let user = businessUserList[idx]
+                const resp = await assignEntityValue({
+                  entityIds: [selectedEntityValue.id],
+                  targetId: user.userId
+                })
+                handleResponse({
+                  resp,
+                  onSuccess: () => {
+                    Notify.ok("转让成功!!")
+                  },
+                  onFinish: ()=> {
+
+                  }
+                })
+
+              }}
+              rangeKey="nickName"
+              range={businessUserList}
+            >
+              <View
+                className="py-3 bg-white border border-gray-200 rounded-full text-center text-sm font-bold text-gray-600 active:bg-gray-100"
+              >
+                转让
+              </View>
+            </Picker>
+
           </View>
         )
 
