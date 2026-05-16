@@ -2,9 +2,10 @@ package controller
 
 import (
 	"fmt"
-	"github.com/samber/lo"
 	"net/http"
 	"strconv"
+
+	"github.com/samber/lo"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ts-gunner/forty-platform/common/global"
@@ -178,7 +179,7 @@ func updateEntityValue(c *gin.Context) {
 	err := entityValueService.UpdateEntityValueData(c.Request.Context(), req)
 	if err != nil {
 		global.Logger.Error("更新客户实体表数据失败", zap.Error(err))
-		response.Fail(http.StatusBadRequest, fmt.Sprintf("更新客户实体表数据失败: %v", err), c)
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("更新失败: %v", err), c)
 		return
 	}
 
@@ -203,8 +204,8 @@ func deleteEntityValue(c *gin.Context) {
 
 	err := entityValueService.DeleteEntityValueData(c.Request.Context(), req.Id)
 	if err != nil {
-		global.Logger.Error("删除客户实体表数据失败", zap.Error(err))
-		response.Fail(http.StatusBadRequest, fmt.Sprintf("删除客户实体表数据失败: %v", err), c)
+		global.Logger.Error("删除失败", zap.Error(err))
+		response.Fail(http.StatusBadRequest, fmt.Sprintf("删除失败: %v", err), c)
 		return
 	}
 

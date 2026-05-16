@@ -120,7 +120,7 @@ export default function CrmEntityTablePage() {
 
   return (
     <div>
-      <PageMeta title={`${config.title} | 客户信息管理`} description={config.description} />
+      <PageMeta title={`${config.title} | 客户信息管理`}  />
       <ProTable<API.CrmEntityVo, API.getEntityListParams>
         actionRef={actionRef}
         columns={columns}
@@ -204,9 +204,7 @@ export default function CrmEntityTablePage() {
               Notify.ok("更新成功!");
               actionRef.current?.reload();
             },
-            onError: () => {
-              Notify.fail("更新失败:" + resp.msg);
-            },
+           
             onFinish: () => {
               handleUpdateModalOpen(false);
             },

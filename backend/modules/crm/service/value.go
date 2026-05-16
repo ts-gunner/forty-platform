@@ -232,7 +232,7 @@ func validateValue(field entity.CrmCustomerFields, values map[string]any) (any, 
 	case enums.CrmDataTypeNumber:
 		val := lo.ValueOr(values, field.FieldKey, -1).(int)
 		if field.IsRequired && val == -1 {
-			return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			return nil, fmt.Errorf("[%s]该字段是必填项，不能为空", field.FieldName)
 		}
 		return val, nil
 	case enums.CrmDataTypeBoolean:
@@ -241,19 +241,19 @@ func validateValue(field entity.CrmCustomerFields, values map[string]any) (any, 
 	case enums.CrmDataTypeDate:
 		val := lo.ValueOr(values, field.FieldKey, "").(string)
 		if field.IsRequired && val == "" {
-			return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			return nil, fmt.Errorf("[%s]该字段是必填项，不能为空", field.FieldName)
 		}
 		if val != "" {
 			_, err := time.Parse(time.DateOnly, val)
 			if err != nil {
-				return nil, errors.New(fmt.Sprintf("[%s]日期格式不正确，应为 YYYY-MM-DD", field.FieldName))
+				return nil, fmt.Errorf("[%s]日期格式不正确，应为 YYYY-MM-DD", field.FieldName)
 			}
 		}
 		return val, nil
 	case enums.CrmDataTypePicker:
 		val := lo.ValueOr(values, field.FieldKey, "").(string)
 		if field.IsRequired && val == "" {
-			return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			return nil, fmt.Errorf("[%s]该字段是必填项，不能为空", field.FieldName)
 		}
 		var options []string
 		if err := json.Unmarshal(*field.Options, &options); err != nil {
@@ -262,7 +262,7 @@ func validateValue(field entity.CrmCustomerFields, values map[string]any) (any, 
 			return nil, errors.New(errorMsg)
 		}
 		if val != "" && !lo.Contains(options, val) {
-			return nil, errors.New(fmt.Sprintf("【%s】 不在[%s]该字段的选择范围内", val, field.FieldName))
+			return nil, fmt.Errorf("【%s】 不在[%s]该字段的选择范围内", val, field.FieldName)
 		}
 		return val, nil
 	case enums.CrmDataTypeLocation:
@@ -275,7 +275,7 @@ func validateValue(field entity.CrmCustomerFields, values map[string]any) (any, 
 	default:
 		val := lo.ValueOr(values, field.FieldKey, "").(string)
 		if field.IsRequired && val == "" {
-			return nil, errors.New(fmt.Sprintf("[%s]该字段是必填项，不能为空", field.FieldName))
+			return nil, fmt.Errorf("[%s]该字段是必填项，不能为空", field.FieldName)
 		}
 		return val, nil
 	}
@@ -363,12 +363,22 @@ func (EntityValueService) InsertEntityValueData(ctx context.Context, req request
 }
 
 func (EntityValueService) UpdateEntityValueData(ctx context.Context, req request.UpdateCrmEntityValueRequest) error {
+	operatorId := utils.GetLoginUserId(ctx)
 	// 查找要更新的记录
 	var entityValue entity.CrmCustomerValues
 	if err := global.DB.First(&entityValue, req.Id).Error; err != nil {
-		return errors.New("该记录不存在")
+		if err == gorm.ErrRecordNotFound {
+			return errors.New("该记录不存在")
+		}
+		return err
 	}
-
+	exists, err := global.Enforcer.HasGroupingPolicy(strconv.FormatInt(operatorId, 10), constant.ROLE_WECHAT_CRM_ADMIN)
+	if err != nil {
+		return err
+	}
+	if !exists && entityValue.UserId != operatorId {
+		return fmt.Errorf("没有权限修改该数据")
+	}
 	// 找到实体的字段
 	fieldList, err := entityFieldMapper.GetEntityFieldsByEntityId(global.DB, entityValue.EntityId)
 	if err != nil {

@@ -72,9 +72,6 @@ function CustomerDetailPage() {
                     Notify.ok("更新成功")
                     setIsEdit(false)
                   },
-                  onError: () => {
-                    Notify.fail("更新失败：" + resp.msg)
-                  }
                 })
               }}
             >

@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/samber/lo"
 	"github.com/ts-gunner/forty-platform/common/enums"
 	"github.com/ts-gunner/forty-platform/common/utils"
 	"gorm.io/datatypes"
-	"strings"
-	"time"
 
 	"github.com/jinzhu/copier"
 	"github.com/ts-gunner/forty-platform/common/entity"
@@ -156,7 +157,7 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 			if curField.Id == nil {
 				// 处理情况5, 7
 				if lo.Contains(existsFieldKeys, curField.FieldKey) {
-					return errors.New(fmt.Sprintf("字段Key-[%s]已存在，不可重复添加或在回收站中找回", curField.FieldKey))
+					return fmt.Errorf("字段Key-[%s]已存在，不可重复添加或在回收站中找回", curField.FieldKey)
 				}
 
 				// 处理情况4
@@ -201,16 +202,16 @@ func (EntityFieldService) UpsertEntityField(ctx context.Context, req request.Ups
 					return item.Id == *curField.Id
 				})
 				if !ok {
-					return errors.New(fmt.Sprintf("找不到对应[%s]的字段信息", curField.Id))
+					return fmt.Errorf("找不到对应[%v]的字段信息", curField.Id)
 				}
 				// 处理情况1
 				if preField.FieldKey != curField.FieldKey {
-					return errors.New(fmt.Sprintf("字段key不允许改变， 发生了改变: [%s] -> [%s]", preField.FieldKey, curField.FieldKey))
+					return fmt.Errorf("字段key不允许改变， 发生了改变: [%s] -> [%s]", preField.FieldKey, curField.FieldKey)
 				}
 
 				// 处理情况6
 				if preField.DataType != curField.DataType {
-					return errors.New(fmt.Sprintf("字段 [%s] 的数据类型不允许修改。如需更改，请删除原字段并新增。", curField.FieldName))
+					return fmt.Errorf("字段 [%s] 的数据类型不允许修改。如需更改，请删除原字段并新增。", curField.FieldName)
 				}
 				var options datatypes.JSON
 				// 如果datatype是4时，需要特殊处理, A,B,C -> ['A', 'B', 'C']

@@ -58,6 +58,7 @@ export const CustomerCard: React.FC<{
           itemList: ["删除内容"],
           itemColor: "#ff4d4f", // 危险操作设为红色
           success: async (res) => {
+            Notify.loading("操作中")
             if (res.tapIndex === 0) {
               const resp = await deleteEntityValue({
                 id: data.id,
@@ -68,9 +69,7 @@ export const CustomerCard: React.FC<{
                   Notify.ok("删除成功!");
                   dispatch.crmModel.getEntityValues({ mode: "mine" });
                 },
-                onError: () => {
-                  Notify.fail("删除失败：" + resp.msg);
-                },
+               
               });
             }
           },
