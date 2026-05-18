@@ -9,6 +9,7 @@ import { Dispatch, RootState } from "@/store";
 import { useEffect, useState } from "react";
 import Taro from "@tarojs/taro";
 import { uploadCrmExcel } from "@/services/steins-admin/crmEntityValueController";
+import { AtIcon } from "taro-ui";
 const CURRENT_PAGE = ROUTERS.mine;
 function UserPage() {
   const dispatch = useDispatch<Dispatch>()
@@ -56,6 +57,7 @@ useEffect(() => {
         </View>
         <StatsSection  allCrmCount={statistic.allValueCount || 0} myCrmCount={statistic.mineValueCount || 0}/>
         <MyServiceComponent />
+        <MyDataComponent />
       </View>
     </View>
   );
@@ -174,6 +176,43 @@ const serviceData = [
   );
 };
 
+
+// 数据服务
+const MyDataComponent = () => {
+  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo)
+  const dispatch = useDispatch<Dispatch>()
+const serviceData = [
+  {
+    key: "1",
+    title: "客源增量",
+    icon: <AtIcon value="analytics" className="" />,
+    onClick: () => {
+     dispatch.routerModel.navigateTo({url: ROUTERS.customerAnalysis})
+    }
+  },
+  {
+    key: "2",
+    title: "业务员拓客",
+    icon: <AtIcon value="analytics" className="text-blue-500" />,
+    onClick: () => {
+       dispatch.routerModel.navigateTo({url: ROUTERS.customerAnalysisWithBiz})
+    },
+  },
+
+];
+  return (
+    <View className="flex justify-center mt-4">
+      <View className="rounded-xl p-3 bg-white w-[95%] shadow">
+        <Text className="font-[600]">数据分析</Text>
+        <View className="grid grid-cols-3 mt-6 gap-2 gap-y-6">
+          {serviceData.map((it) => (
+            <CardComponent key={it.key} icon={it.icon} title={it.title} onClick={it.onClick}/>
+          ))}
+        </View>
+      </View>
+    </View>
+  );
+};
 
 
 const CardComponent = ({
