@@ -7,11 +7,9 @@ import { withGlobalLayout } from "@/components/AppLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import ValueBoxGenerator from "@/components/crm/ValueBoxGenerator";
-import Taro from "@tarojs/taro";
 import { insertEntityValue } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
 import { ROUTERS } from "@/constant/menus";
-const CURRENT_PAGE = ROUTERS.createCustomer;
 
 function CreateCustomerPage() {
   const tableFields = useSelector(

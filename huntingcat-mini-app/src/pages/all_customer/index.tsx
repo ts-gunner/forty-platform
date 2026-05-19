@@ -6,6 +6,8 @@ import Taro, {
   useShareAppMessage,
   stopPullDownRefresh,
   usePullDownRefresh,
+  useDidShow,
+  useDidHide,
 } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { ROUTERS } from "@/constant/menus";
@@ -42,22 +44,13 @@ function AllCustomerPage() {
       stopPullDownRefresh(); // 无论成功失败都关闭动画
     }
   });
-  useEffect(() => {
-    if (!activeRoute) {
-      return;
-    }
-    if (CURRENT_PAGE === activeRoute) {
-      getAllCrmData();
-    } else {
-      // 跳转到其他页面时，注销数据
-      dispatch.crmModel.initAllCustomerData();
-    }
-  }, [activeRoute]);
-  // startPullDownRefresh({
-  //   success: () => {
-  //     getAllCrmData()
-  //   }
-  // })
+  useDidShow(() => {
+    getAllCrmData();
+  });
+  useDidHide(() => {
+    dispatch.crmModel.initAllCustomerData();
+  })
+
   // 4. 触底加载更多
   useReachBottom(() => {
     dispatch.crmModel.setAllCustomerData({

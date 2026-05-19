@@ -8,13 +8,12 @@ import { Dispatch, RootState } from "@/store";
 import { handleResponse, Notify } from "@/utils/common";
 import storage from "@/utils/storage";
 import { Input, Picker, Text, View, ScrollView } from "@tarojs/components";
-import Taro from "@tarojs/taro";
+import Taro, { useDidShow } from "@tarojs/taro";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AtIcon } from "taro-ui";
 
 const HISTORY_KEY = "searchMemory";
-const CURRENT_PAGE = ROUTERS.searchCustomer;
 const PAGE_SIZE = 20; // 抽取每页数量常量
 
 function SearchCustomerPage() {
@@ -36,21 +35,14 @@ function SearchCustomerPage() {
     (state: RootState) => state.crmModel.tableFields,
   );
   const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
-  const activeRoute = useSelector(
-    (state: RootState) => state.routerModel.activeRoute,
-  );
+
   const [activeField, setActiveField] = useState<API.CrmEntityFieldVo>(
     tableFields.length > 0 ? tableFields[0] : null,
   );
 
-  useEffect(() => {
-    if (!activeRoute) {
-      return;
-    }
-    if (CURRENT_PAGE === activeRoute) {
-      refreshHistory();
-    }
-  }, [activeRoute]);
+  useDidShow(() => {
+    refreshHistory();
+  })
 
   const refreshHistory = () => {
     storage.getItem(HISTORY_KEY).then((res) => {

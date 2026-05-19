@@ -5,7 +5,7 @@ import Taro from "@tarojs/taro";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 let isRun = false;
-const executeFunction = (func: () => void) => {
+const executeDebounceFunction = (func: () => void) => {
   if (!isRun) {
     isRun = true;
     func();
@@ -35,7 +35,7 @@ export function handleResponse<T = any>({
       return;
     }
     if (resp.code === 401) {
-      executeFunction(() => {
+      executeDebounceFunction(() => {
         Notify.fail("登录过期");
         store.dispatch.routerModel.navigateTo({ url: ROUTERS.login });
       });

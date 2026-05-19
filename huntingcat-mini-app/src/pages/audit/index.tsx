@@ -1,16 +1,13 @@
 import { withGlobalLayout } from "@/components/AppLayout";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
-import { ROUTERS } from "@/constant/menus";
 import {
   getAuditList,
   updateAudit,
 } from "@/services/steins-admin/auditController";
-import { RootState } from "@/store";
 import { handleResponse, Notify } from "@/utils/common";
 import { Button, Text, View } from "@tarojs/components";
+import { useDidShow } from "@tarojs/taro";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-const CURRENT_PAGE = ROUTERS.audit;
 const AUDIT_STATUS = {
   0: { text: "待审核", color: "bg-yellow-100 text-yellow-700" },
   1: { text: "已通过", color: "bg-green-100 text-green-700" },
@@ -20,19 +17,10 @@ const AUDIT_STATUS = {
 function AuditPage() {
   const [records, setRecords] = useState<API.AuditAccessRecordVo[]>([]);
   const [loading, setLoading] = useState(false);
-  const activeRoute = useSelector(
-    (state: RootState) => state.routerModel.activeRoute,
-  );
-  useEffect(() => {
-    if (!activeRoute) {
-      return;
-    }
-    if (CURRENT_PAGE === activeRoute) {
-      getAuditInfo();
-    } else {
-      // 跳转到其他页面时，注销数据
-    }
-  }, [activeRoute]);
+
+  useDidShow(() => {
+    getAuditInfo();
+  });
   const getAuditInfo = async () => {
     setLoading(true);
     const resp = await getAuditList({

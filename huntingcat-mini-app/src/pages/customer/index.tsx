@@ -7,6 +7,8 @@ import Taro, {
   usePullDownRefresh,
   startPullDownRefresh,
   stopPullDownRefresh,
+  useDidShow,
+  useDidHide,
 } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { ROUTERS } from "@/constant/menus";
@@ -48,6 +50,13 @@ function MyCustomerPage() {
       dispatch.crmModel.initMyCustomerData();
     }
   }, [activeRoute]);
+
+    useDidShow(() => {
+      getCrmDataBySelf();
+    });
+    useDidHide(() => {
+      dispatch.crmModel.initMyCustomerData();
+    });
   const getCrmDataBySelf = async () => {
     await dispatch.crmModel.getEntityValues({ mode: "mine" });
   };

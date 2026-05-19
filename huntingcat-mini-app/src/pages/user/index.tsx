@@ -7,32 +7,21 @@ import { withGlobalLayout } from "@/components/AppLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import { useEffect, useState } from "react";
-import Taro from "@tarojs/taro";
+import Taro, { useDidShow } from "@tarojs/taro";
 import { uploadCrmExcel } from "@/services/steins-admin/crmEntityValueController";
 import { AtIcon } from "taro-ui";
-const CURRENT_PAGE = ROUTERS.mine;
 function UserPage() {
-  const dispatch = useDispatch<Dispatch>()
-  const activeRoute = useSelector((state:RootState) => state.routerModel.activeRoute)
-  const [statistic, setStatistic] = useState<API.CrmValueCountVo>({})
+  const dispatch = useDispatch<Dispatch>();
+  const [statistic, setStatistic] = useState<API.CrmValueCountVo>({});
   const { navBarHeight } = useNavbar();
-useEffect(() => {
-    if (!activeRoute) {
-      return;
-    }
 
-    if (CURRENT_PAGE === activeRoute) {
-      getCountData()
-
-    } else {
-    }
-  }, [activeRoute]);
-
+  useDidShow(() => {
+    getCountData();
+  });
   const getCountData = async () => {
-    let data = await dispatch.crmModel.countValue(null)
-    setStatistic(data)
-
-  }
+    let data = await dispatch.crmModel.countValue(null);
+    setStatistic(data);
+  };
   return (
     <View className="mesh-gradient relative bg-gray-100/50 min-h-screen">
       <View
@@ -55,28 +44,37 @@ useEffect(() => {
             />
           </View>
         </View>
-        <StatsSection  allCrmCount={statistic.allValueCount || 0} myCrmCount={statistic.mineValueCount || 0}/>
+        <StatsSection
+          allCrmCount={statistic.allValueCount || 0}
+          myCrmCount={statistic.mineValueCount || 0}
+        />
         <MyServiceComponent />
         <MyDataComponent />
       </View>
     </View>
   );
 }
-const StatsSection = ({allCrmCount, myCrmCount}: {allCrmCount: number, myCrmCount: number}) => {
-  const dispatch = useDispatch<Dispatch>()
+const StatsSection = ({
+  allCrmCount,
+  myCrmCount,
+}: {
+  allCrmCount: number;
+  myCrmCount: number;
+}) => {
+  const dispatch = useDispatch<Dispatch>();
 
   return (
     <View className="px-2 py-2">
-      <View
-        className="flex justify-between items-center rounded-2xl p-4 shadow-lg bg-active"
-      >
+      <View className="flex justify-between items-center rounded-2xl p-4 shadow-lg bg-active">
         {[
-          { label: '客户总数', count: allCrmCount },
-          { label: '我的客户', count: myCrmCount },
+          { label: "客户总数", count: allCrmCount },
+          { label: "我的客户", count: myCrmCount },
         ].map((item, i, arr) => (
           <View key={i} className="flex flex-col items-center flex-1">
             {/* 数据值：大字突出 */}
-            <Text className="text-white text-xl font-bold mb-1">{item.count}</Text>
+            <Text className="text-white text-xl font-bold mb-1">
+              {item.count}
+            </Text>
             {/* 标签：小字半透明 */}
             <Text className="text-white/70 text-xs">{item.label}</Text>
 
@@ -89,21 +87,22 @@ const StatsSection = ({allCrmCount, myCrmCount}: {allCrmCount: number, myCrmCoun
       </View>
     </View>
   );
-}
+};
 
 // 左上角的用户信息
 const UserComponent = () => {
-  const userInfo = useSelector((state: RootState) => state.authModel.userInfo)
+  const userInfo = useSelector((state: RootState) => state.authModel.userInfo);
   return (
     <View
       className="flex items-center gap-3 active:opacity-70"
-    // onTap={onPress}
+      // onTap={onPress}
     >
-
-      <View className={cn(
-        `h-16 w-16 overflow-hidden rounded-full border border-gray-100 bg-gray-100 shadow-lg `,
-        !userInfo.avatar && "p-3"
-      )}>
+      <View
+        className={cn(
+          `h-16 w-16 overflow-hidden rounded-full border border-gray-100 bg-gray-100 shadow-lg `,
+          !userInfo.avatar && "p-3",
+        )}
+      >
         <Image
           src={userInfo.avatar || ICON_MAP.defaultAvatar}
           lazyLoad
@@ -119,56 +118,62 @@ const UserComponent = () => {
   );
 };
 
-
 // 我的服务
 const MyServiceComponent = () => {
-  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo)
-  const dispatch = useDispatch<Dispatch>()
-const serviceData = [
-  {
-    key: "1",
-    title: "导入数据",
-    icon: <Image src={ICON_MAP.uploadExcel} lazyLoad className="h-6 w-6" />,
-    onClick: () => {
-      Taro.chooseMessageFile({
-        count: 1,
-        type: "file",
-        success: async (res) => {
-          const tempFilePaths = res.tempFiles
-          const tempFile = tempFilePaths[0]
-          const resp = await uploadCrmExcel({
-            entityId: entityVo.entityId
-          }, { uri: tempFile.path } as any,)
-          handleResponse({
-            resp,
-            onSuccess: () => {
-              Notify.ok("导入成功")
-            },
-            onError: () => {
-              Notify.fail(resp.msg)
-            }
-          })
-        }
-      })
-    }
-  },
-  {
-    key: "2",
-    title: "审批",
-    icon: <Image src={ICON_MAP.auditIcon} lazyLoad className="h-6 w-6" />,
-    onClick: () => {
-      dispatch.routerModel.navigateTo({url: ROUTERS.audit})
+  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
+  const dispatch = useDispatch<Dispatch>();
+  const serviceData = [
+    {
+      key: "1",
+      title: "导入数据",
+      icon: <Image src={ICON_MAP.uploadExcel} lazyLoad className="h-6 w-6" />,
+      onClick: () => {
+        Taro.chooseMessageFile({
+          count: 1,
+          type: "file",
+          success: async (res) => {
+            const tempFilePaths = res.tempFiles;
+            const tempFile = tempFilePaths[0];
+            const resp = await uploadCrmExcel(
+              {
+                entityId: entityVo.entityId,
+              },
+              { uri: tempFile.path } as any,
+            );
+            handleResponse({
+              resp,
+              onSuccess: () => {
+                Notify.ok("导入成功");
+              },
+              onError: () => {
+                Notify.fail(resp.msg);
+              },
+            });
+          },
+        });
+      },
     },
-  },
-
-];
+    {
+      key: "2",
+      title: "审批",
+      icon: <Image src={ICON_MAP.auditIcon} lazyLoad className="h-6 w-6" />,
+      onClick: () => {
+        dispatch.routerModel.navigateTo({ url: ROUTERS.audit });
+      },
+    },
+  ];
   return (
     <View className="flex justify-center mt-4">
       <View className="rounded-xl p-3 bg-white w-[95%] shadow">
         <Text className="font-[600]">我的服务</Text>
         <View className="grid grid-cols-4 mt-6 gap-2 gap-y-6">
           {serviceData.map((it) => (
-            <CardComponent key={it.key} icon={it.icon} title={it.title} onClick={it.onClick}/>
+            <CardComponent
+              key={it.key}
+              icon={it.icon}
+              title={it.title}
+              onClick={it.onClick}
+            />
           ))}
         </View>
       </View>
@@ -176,44 +181,48 @@ const serviceData = [
   );
 };
 
-
 // 数据服务
 const MyDataComponent = () => {
-  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo)
-  const dispatch = useDispatch<Dispatch>()
-const serviceData = [
-  {
-    key: "1",
-    title: "客源增量",
-    icon: <AtIcon value="analytics" className="" />,
-    onClick: () => {
-     dispatch.routerModel.navigateTo({url: ROUTERS.customerAnalysis})
-    }
-  },
-  {
-    key: "2",
-    title: "业务员拓客",
-    icon: <AtIcon value="analytics" className="text-blue-500" />,
-    onClick: () => {
-       dispatch.routerModel.navigateTo({url: ROUTERS.customerAnalysisWithBiz})
+  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
+  const dispatch = useDispatch<Dispatch>();
+  const serviceData = [
+    {
+      key: "1",
+      title: "客源增量",
+      icon: <AtIcon value="analytics" className="" />,
+      onClick: () => {
+        dispatch.routerModel.navigateTo({ url: ROUTERS.customerAnalysis });
+      },
     },
-  },
-
-];
+    {
+      key: "2",
+      title: "业务员拓客",
+      icon: <AtIcon value="analytics" className="text-blue-500" />,
+      onClick: () => {
+        dispatch.routerModel.navigateTo({
+          url: ROUTERS.customerAnalysisWithBiz,
+        });
+      },
+    },
+  ];
   return (
     <View className="flex justify-center mt-4">
       <View className="rounded-xl p-3 bg-white w-[95%] shadow">
         <Text className="font-[600]">数据分析</Text>
         <View className="grid grid-cols-3 mt-6 gap-2 gap-y-6">
           {serviceData.map((it) => (
-            <CardComponent key={it.key} icon={it.icon} title={it.title} onClick={it.onClick}/>
+            <CardComponent
+              key={it.key}
+              icon={it.icon}
+              title={it.title}
+              onClick={it.onClick}
+            />
           ))}
         </View>
       </View>
     </View>
   );
 };
-
 
 const CardComponent = ({
   icon,

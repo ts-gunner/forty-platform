@@ -1,5 +1,5 @@
 import { View, Text, Picker } from "@tarojs/components";
-import Taro from "@tarojs/taro";
+import Taro, { useDidShow } from "@tarojs/taro";
 import React, { useEffect, useState } from "react";
 import { AtIcon } from "taro-ui";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
@@ -8,57 +8,58 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
 import { handleCrmValueByField } from "@/utils/crm";
 import ValueBoxGenerator from "@/components/crm/ValueBoxGenerator";
-import "./index.scss"
-import { assignEntityValue, updateEntityValue } from "@/services/steins-admin/crmEntityValueController";
-import { addCustomerFavorite, checkCustomerFavorite, removeCustomerFavorite } from "@/services/steins-admin/crmCustomerFavoriteController";
+import "./index.scss";
+import {
+  assignEntityValue,
+  updateEntityValue,
+} from "@/services/steins-admin/crmEntityValueController";
+import {
+  addCustomerFavorite,
+  checkCustomerFavorite,
+  removeCustomerFavorite,
+} from "@/services/steins-admin/crmCustomerFavoriteController";
 import { handleResponse, Notify } from "@/utils/common";
-import { ROUTERS } from "@/constant/menus";
 import { getUserListByRoleKey } from "@/services/steins-admin/systemUserController";
 import { CRM_ROLE_NAME } from "@/constant/global";
-const CURRENT_PAGE = ROUTERS.customerDetail;
 function CustomerDetailPage() {
-  const [isEdit, setIsEdit] = useState<boolean>(false)
-  const [isFavorite, setIsFavorite] = useState<boolean>(false)
-  const dispatch = useDispatch<Dispatch>()
-  const selectedEntityValue = useSelector((state: RootState) => state.crmModel.selectedEntityValue)
-  const tableFields = useSelector((state: RootState) => state.crmModel.tableFields)
-  const [valueObject, setValueObject] = useState<any>(JSON.parse(selectedEntityValue.values))
-  const [businessUserList, setBusinessUserList] = useState<API.UserVo[]>([])
-   const activeRoute = useSelector(
-    (state: RootState) => state.routerModel.activeRoute,
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const selectedEntityValue = useSelector(
+    (state: RootState) => state.crmModel.selectedEntityValue,
   );
+  const tableFields = useSelector(
+    (state: RootState) => state.crmModel.tableFields,
+  );
+  const [valueObject, setValueObject] = useState<any>(
+    JSON.parse(selectedEntityValue.values),
+  );
+  const [businessUserList, setBusinessUserList] = useState<API.UserVo[]>([]);
+
   // 检查收藏状态
   useEffect(() => {
-    setValueObject(JSON.parse(selectedEntityValue.values))
+    setValueObject(JSON.parse(selectedEntityValue.values));
     checkFavoriteStatus();
-  }, [selectedEntityValue])
+  }, [selectedEntityValue]);
 
-   useEffect(() => {
-      if (!activeRoute) {
-        return;
-      }
-      if (CURRENT_PAGE === activeRoute) {
-        getBusinessWorkerOptions();
-      } else {
-       
-      }
-    }, [activeRoute]);
+  useDidShow(() => {
+    getBusinessWorkerOptions();
+  });
   const getBusinessWorkerOptions = async () => {
-    console.log("获取业务员信息")
+    console.log("获取业务员信息");
     const resp = await getUserListByRoleKey({
       roleKey: CRM_ROLE_NAME,
-      pageSize: 9999
-    })
+      pageSize: 9999,
+    });
     handleResponse({
       resp,
       onSuccess: (data) => {
-        setBusinessUserList(data.list || [])
+        setBusinessUserList(data.list || []);
       },
       onError: () => {
-        Notify.fail("获取业务员信息失败：" + resp.msg)
-      }
-    })
-  }
+        Notify.fail("获取业务员信息失败：" + resp.msg);
+      },
+    });
+  };
   // 检查收藏状态
   const checkFavoriteStatus = async () => {
     if (selectedEntityValue.id && selectedEntityValue.entityId) {
@@ -84,26 +85,27 @@ function CustomerDetailPage() {
           <View className="w-full p-4 bg-white/80 backdrop-blur-md flex gap-4">
             <View
               onClick={() => setIsEdit(false)}
-              className="flex-1 py-3 bg-white border border-gray-200 rounded-full text-center text-sm font-bold text-gray-600 active:bg-gray-100">
+              className="flex-1 py-3 bg-white border border-gray-200 rounded-full text-center text-sm font-bold text-gray-600 active:bg-gray-100"
+            >
               取消
             </View>
             <View
               className="bg-active flex-1 py-3 rounded-full text-center text-sm font-bold text-white shadow-lg active:opacity-80"
               onClick={async () => {
-                Notify.loading("更新中...")
+                Notify.loading("更新中...");
                 const resp = await updateEntityValue({
                   id: selectedEntityValue.id,
                   customerName: valueObject?.["customer_name"],
                   remark: valueObject?.["remark"],
-                  values: JSON.stringify(valueObject)
-                })
+                  values: JSON.stringify(valueObject),
+                });
                 handleResponse({
                   resp,
                   onSuccess: () => {
-                    Notify.ok("更新成功")
-                    setIsEdit(false)
+                    Notify.ok("更新成功");
+                    setIsEdit(false);
                   },
-                })
+                });
               }}
             >
               保存
@@ -113,50 +115,46 @@ function CustomerDetailPage() {
           <View className="w-full p-4 bg-white/80 backdrop-blur-md grid grid-cols-3 gap-4">
             <View
               onClick={() => setIsEdit(true)}
-              className="py-3 bg-white border border-gray-200 rounded-full text-center text-sm font-bold text-gray-600 active:bg-gray-100">
+              className="py-3 bg-white border border-gray-200 rounded-full text-center text-sm font-bold text-gray-600 active:bg-gray-100"
+            >
               编辑信息
             </View>
             <View
               className="bg-active py-3 rounded-full text-center text-sm font-bold text-white shadow-lg active:opacity-80"
               onClick={() =>
-                Taro.makePhoneCall({ phoneNumber: valueObject["contract_phone"] })
+                Taro.makePhoneCall({
+                  phoneNumber: valueObject["contract_phone"],
+                })
               }
             >
               立即联系
             </View>
             <Picker
-              onChange={async(e:any) => {
-                Notify.loading("转让中...")
-                const idx = Number.parseInt(e.detail.value)
-                let user = businessUserList[idx]
+              onChange={async (e: any) => {
+                Notify.loading("转让中...");
+                const idx = Number.parseInt(e.detail.value);
+                let user = businessUserList[idx];
                 const resp = await assignEntityValue({
                   entityIds: [selectedEntityValue.id],
-                  targetId: user.userId
-                })
+                  targetId: user.userId,
+                });
                 handleResponse({
                   resp,
                   onSuccess: () => {
-                    Notify.ok("转让成功!!")
+                    Notify.ok("转让成功!!");
                   },
-                  onFinish: ()=> {
-
-                  }
-                })
-
+                  onFinish: () => {},
+                });
               }}
               rangeKey="nickName"
               range={businessUserList}
             >
-              <View
-                className="py-3 bg-white border border-gray-200 rounded-full text-center text-sm font-bold text-gray-600 active:bg-gray-100"
-              >
+              <View className="py-3 bg-white border border-gray-200 rounded-full text-center text-sm font-bold text-gray-600 active:bg-gray-100">
                 转让
               </View>
             </Picker>
-
           </View>
         )
-
       }
     >
       <>
@@ -164,61 +162,80 @@ function CustomerDetailPage() {
         <View className="p-6">
           <View className="flex justify-between items-center">
             <View>
-              {
-                isEdit ? <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "customer_name")} valueObject={valueObject} setValueObject={setValueObject} /> : (
-                  <Text className="text-2xl font-bold text-gray-800">
-                    {valueObject["customer_name"]}
-                  </Text>
-                )
-              }
+              {isEdit ? (
+                <InfoRow
+                  isEdit={isEdit}
+                  field={tableFields.find(
+                    (it) => it.fieldKey === "customer_name",
+                  )}
+                  valueObject={valueObject}
+                  setValueObject={setValueObject}
+                />
+              ) : (
+                <Text className="text-2xl font-bold text-gray-800">
+                  {valueObject["customer_name"]}
+                </Text>
+              )}
             </View>
-            <View className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center shadow-sm" onClick={async () => {
-              if (selectedEntityValue.id && selectedEntityValue.entityId) {
-                if (isFavorite) {
-                  // 取消收藏
-                  const resp = await removeCustomerFavorite({
-                    entityId: selectedEntityValue.entityId,
-                    valueId: selectedEntityValue.id,
-                  });
-                  handleResponse({
-                    resp,
-                    onSuccess: () => {
-                      setIsFavorite(false);
-                      Notify.ok("已取消收藏");
-                    },
-                    onError: () => {
-                      Notify.fail("取消收藏失败");
-                    },
-                  });
-                } else {
-                  // 添加收藏
-                  const resp = await addCustomerFavorite({
-                    entityId: selectedEntityValue.entityId,
-                    valueId: selectedEntityValue.id,
-                  });
-                  handleResponse({
-                    resp,
-                    onSuccess: () => {
-                      setIsFavorite(true);
-                    },
-                    onError: () => {
-                      Notify.fail("收藏失败");
-                    },
-                  });
+            <View
+              className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center shadow-sm"
+              onClick={async () => {
+                if (selectedEntityValue.id && selectedEntityValue.entityId) {
+                  if (isFavorite) {
+                    // 取消收藏
+                    const resp = await removeCustomerFavorite({
+                      entityId: selectedEntityValue.entityId,
+                      valueId: selectedEntityValue.id,
+                    });
+                    handleResponse({
+                      resp,
+                      onSuccess: () => {
+                        setIsFavorite(false);
+                        Notify.ok("已取消收藏");
+                      },
+                      onError: () => {
+                        Notify.fail("取消收藏失败");
+                      },
+                    });
+                  } else {
+                    // 添加收藏
+                    const resp = await addCustomerFavorite({
+                      entityId: selectedEntityValue.entityId,
+                      valueId: selectedEntityValue.id,
+                    });
+                    handleResponse({
+                      resp,
+                      onSuccess: () => {
+                        setIsFavorite(true);
+                      },
+                      onError: () => {
+                        Notify.fail("收藏失败");
+                      },
+                    });
+                  }
                 }
-              }
-            }}>
-              <AtIcon value={isFavorite ? "star-2" : "star"} size="24" className="text-yellow-500" />
+              }}
+            >
+              <AtIcon
+                value={isFavorite ? "star-2" : "star"}
+                size="24"
+                className="text-yellow-500"
+              />
             </View>
           </View>
         </View>
 
         <View className="px-4 space-y-4">
-          {
-            tableFields.filter(it => it.fieldKey !== "customer_name").map(field => (
-              <InfoRow isEdit={isEdit} field={field} valueObject={valueObject} setValueObject={setValueObject} />
-            ))
-          }
+          {tableFields
+            .filter((it) => it.fieldKey !== "customer_name")
+            .map((field) => (
+              <InfoRow
+                isEdit={isEdit}
+                field={field}
+                valueObject={valueObject}
+                setValueObject={setValueObject}
+              />
+            ))}
           {/* Section: 基本信息 */}
           {/* <DetailSection title="基本信息" iconColor="bg-amber-400">
             <InfoRow isEdit={isEdit} field={tableFields.find(it => it.fieldKey === "contract_name")} valueObject={valueObject} setValueObject={setValueObject} />
@@ -268,36 +285,38 @@ const DetailSection = ({ title, iconColor, children }) => (
   </View>
 );
 
-
 const InfoRow: React.FC<{
-  isEdit: boolean
-  field: API.CrmEntityFieldVo
-  valueObject: any
-  setValueObject: (obj: any) => void
-  onClick?: () => void
+  isEdit: boolean;
+  field: API.CrmEntityFieldVo;
+  valueObject: any;
+  setValueObject: (obj: any) => void;
+  onClick?: () => void;
 }> = ({ isEdit, field, valueObject, onClick, setValueObject }) => {
   return isEdit ? (
     <View>
-      <ValueBoxGenerator field={field} value={valueObject[field.fieldKey]} onChange={(val) => {
-        setValueObject((prev: any) => ({
-          ...prev,
-          [field.fieldKey]: val
-        }))
-      }} />
+      <ValueBoxGenerator
+        field={field}
+        value={valueObject[field.fieldKey]}
+        onChange={(val) => {
+          setValueObject((prev: any) => ({
+            ...prev,
+            [field.fieldKey]: val,
+          }));
+        }}
+      />
     </View>
   ) : (
-    <View
-      onClick={onClick}
-      className={`flex py-3 border-b border-gray-100/50`}
-    >
-      <Text className="w-24 text-sm text-gray-400 flex-shrink-0">{field.fieldName}</Text>
+    <View onClick={onClick} className={`flex py-3 border-b border-gray-100/50`}>
+      <Text className="w-24 text-sm text-gray-400 flex-shrink-0">
+        {field.fieldName}
+      </Text>
       <View className="flex-1 flex items-center justify-end">
         <Text className={`text-sm font-medium text-right`}>
           {handleCrmValueByField(field, valueObject) || "-"}
         </Text>
       </View>
     </View>
-  )
-}
+  );
+};
 
 export default withGlobalLayout(CustomerDetailPage);
