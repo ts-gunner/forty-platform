@@ -29,6 +29,7 @@ services:
     volumes:
       - ${REDIS_VOLUME_DIRECTORY:-.}:/data
     command: redis-server /etc/redis/redis.conf
+    restart: always
     networks:
       - middle-network
 
