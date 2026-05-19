@@ -211,9 +211,6 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
                       Notify.ok("删除成功");
                       actionRef?.current?.reload();
                     },
-                    onError: () => {
-                      Notify.fail("删除失败：" + resp.msg);
-                    },
                   });
                 }}
               >
@@ -348,9 +345,7 @@ const CrmValueTable: React.FC<{ entity: API.CrmEntityVo; activeKey: string | und
               handleUpdateModalOpen(false);
               actionRef?.current?.reload();
             },
-            onError: () => {
-              Notify.fail("更新失败：" + resp.msg);
-            },
+   
           });
         }}
       />

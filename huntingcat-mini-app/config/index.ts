@@ -38,6 +38,7 @@ export default defineConfig<"webpack5">(async (merge, { command, mode }) => {
       "@": path.resolve(__dirname, "..", "src"),
     },
     mini: {
+     
       postcss: {
         // 允许 Tailwind 的 [] 语法
         selectorBlacklist: [/^bg-\[var/, /^text-\[var/],

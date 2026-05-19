@@ -48,6 +48,8 @@ export default defineAppConfig({
     "pages/access_perm/index",
     "pages/audit/index",
     "pages/search/index",
+    "pages/analysis/index",
+    "pages/analysisWithBiz/index"
   ],
   window: {},
   lazyCodeLoading: "requiredComponents",

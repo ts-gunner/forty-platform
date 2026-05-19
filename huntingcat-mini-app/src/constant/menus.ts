@@ -13,6 +13,9 @@ export const ROUTERS = {
   accessPermission: "/pages/access_perm/index",
   audit: "/pages/audit/index",
   searchCustomer: "/pages/search/index",
+
+  customerAnalysis: "/pages/analysis/index",
+  customerAnalysisWithBiz: "/pages/analysisWithBiz/index",  // 查看业务员的客户增长量
 };
 
 export const DEFAULT_ROUTER = ROUTERS.customer;

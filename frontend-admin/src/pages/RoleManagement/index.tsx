@@ -176,9 +176,6 @@ export default function RoleTablePage() {
               Notify.ok("更新成功!");
               actionRef.current?.reload();
             },
-            onError: () => {
-              Notify.fail("更新失败:" + resp.msg);
-            },
             onFinish: () => {
               handleUpdateModalOpen(false);
             },

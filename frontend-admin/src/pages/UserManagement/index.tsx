@@ -204,9 +204,7 @@ export default function UserTablePage() {
               Notify.ok("更新成功!");
               actionRef.current?.reload();
             },
-            onError: () => {
-              Notify.fail("更新失败:" + resp.msg);
-            },
+       
             onFinish: () => {
               handleUpdateModalOpen(false);
             },
@@ -227,9 +225,6 @@ export default function UserTablePage() {
             onSuccess: () => {
               Notify.ok("更新成功!");
               actionRef.current?.reload();
-            },
-            onError: () => {
-              Notify.fail("更新失败:" + resp.msg);
             },
             onFinish: () => {
               handleResetPwdModalOpen(false);

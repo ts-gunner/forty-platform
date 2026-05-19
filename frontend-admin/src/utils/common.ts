@@ -32,7 +32,12 @@ export function handleResponse<T>({
     } else if (resp.code === 200) {
       onSuccess?.(resp.data as T);
     } else {
-      onError?.(resp.data as T);
+      if (!onError) {
+        Notify.fail(resp.msg || "失败")
+      } else {
+        onError(resp.data as T);
+
+      }
     }
   } finally {
     onFinish?.();

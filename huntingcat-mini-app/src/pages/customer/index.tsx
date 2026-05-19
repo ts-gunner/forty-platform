@@ -28,7 +28,6 @@ function MyCustomerPage() {
   const tableFields = useSelector(
     (state: RootState) => state.crmModel.tableFields,
   );
-  const entityVo = useSelector((state: RootState) => state.crmModel.entityVo);
   const myCustomerData = useSelector(
     (state: RootState) => state.crmModel.myCustomerData,
   );
