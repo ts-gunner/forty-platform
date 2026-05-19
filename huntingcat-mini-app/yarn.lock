@@ -10603,6 +10603,11 @@ tar@^7.4.3:
     mkdirp "^3.0.1"
     yallist "^5.0.0"
 
+taro-react-echarts@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.npmmirror.com/taro-react-echarts/-/taro-react-echarts-1.2.2.tgz#6cd8d9c73c83948388f9b3c5013dd281487425a6"
+  integrity sha512-NHzngwaA8/EPHirJPiUU2xxs1YggEVD8JYD6lauZjGLI0bd7OiaIDb35VPuYADwZSmkQg5zYj7DEBcbNRMFmUg==
+
 taro-ui@^3.3.0:
   version "3.3.0"
   resolved "https://mirrors.huaweicloud.com/repository/npm/taro-ui/-/taro-ui-3.3.0.tgz#2d10e6f53baeacacf1990a07107fab3d65da13f8"

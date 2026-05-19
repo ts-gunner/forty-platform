@@ -1,4 +1,5 @@
 import { withGlobalLayout } from "@/components/AppLayout"
+import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { ROUTERS } from "@/constant/menus";
 import { RootState } from "@/store";
 import { View } from "@tarojs/components"
@@ -23,7 +24,11 @@ function AnalysisWithBizPage() {
     
   }
   return (
-    <View>AnalysisPage</View>
+   <HeaderBodyFooterLayout title="业务员拓客">
+    <View>
+      暂未实现
+    </View>
+   </HeaderBodyFooterLayout>
   )
 }
 
