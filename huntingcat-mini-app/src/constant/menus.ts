@@ -3,19 +3,21 @@ export const ROUTERS = {
   allCustomer: "/pages/all_customer/index",
   collection: "/pages/collection/index",
   mine: "/pages/user/index",
-  userProfile: "/pages/user_profile/index",
-  settings: "/pages/settings/index",
-  customerDetail: "/pages/customer_detail/index",
-  createCustomer: "/pages/create_customer/index",
   login: "/pages/login/index",
-  privacy: "/pages/privacy/index",
-  policy: "/pages/policy/index",
-  accessPermission: "/pages/access_perm/index",
-  audit: "/pages/audit/index",
-  searchCustomer: "/pages/search/index",
 
-  customerAnalysis: "/pages/analysis/index",
-  customerAnalysisWithBiz: "/pages/analysisWithBiz/index",  // 查看业务员的客户增长量
+  privacy: "/pagesUser/privacy/index",
+  policy: "/pagesUser/policy/index",
+  accessPermission: "/pagesUser/access_perm/index",
+  audit: "/pagesUser/audit/index",
+  userProfile: "/pagesUser/user_profile/index",
+  settings: "/pagesUser/settings/index",
+
+  customerDetail: "/pagesCustomer/customer_detail/index",
+  createCustomer: "/pagesCustomer/create_customer/index",
+  searchCustomer: "/pagesCustomer/search/index",
+
+  customerAnalysis: "/pagesAnalysis/analysis/index",
+  customerAnalysisWithBiz: "/pagesAnalysis/analysisWithBiz/index",  // 查看业务员的客户增长量
 };
 
 export const DEFAULT_ROUTER = ROUTERS.customer;

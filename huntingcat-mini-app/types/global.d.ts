@@ -27,3 +27,10 @@ declare namespace NodeJS {
 }
 
 
+
+declare namespace JSX {
+  interface IntrinsicElements {
+    // 允许在 JSX 中直接使用 ec-canvas 标签，并允许传入任意属性
+    'ec-canvas': any;
+  }
+}

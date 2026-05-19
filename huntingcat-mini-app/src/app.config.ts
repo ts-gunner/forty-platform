@@ -34,23 +34,47 @@ export default defineAppConfig({
   },
   entryPagePath: "pages/customer/index",
   pages: [
-    "pages/all_customer/index",
     "pages/customer/index",
+    "pages/all_customer/index",
     "pages/collection/index",
     "pages/user/index",
-    "pages/settings/index",
-    "pages/customer_detail/index",
-    "pages/create_customer/index",
     "pages/login/index",
-    "pages/user_profile/index",
-    "pages/policy/index",
-    "pages/privacy/index",
-    "pages/access_perm/index",
-    "pages/audit/index",
-    "pages/search/index",
-    "pages/analysis/index",
-    "pages/analysisWithBiz/index"
   ],
+  subPackages: [
+    {
+      root: "pagesCustomer",
+      pages: [
+        "customer_detail/index",
+        "create_customer/index",
+        "search/index",
+      ],
+    },
+    {
+      root: "pagesUser",
+      pages: [
+        "settings/index",
+        "user_profile/index",
+        "policy/index",
+        "privacy/index",
+        "access_perm/index",
+        "audit/index",
+      ],
+    },
+    {
+      root: "pagesAnalysis",
+      pages: [
+        "analysis/index",
+        "analysisWithBiz/index",
+      ],
+    },
+  ],
+
+  preloadRule: {
+    "pages/customer/index": {
+      network: "all",
+      packages: ["pagesCustomer"], // 提前静默下载客户详情、新建、分析等页面
+    },
+  },
   window: {},
   lazyCodeLoading: "requiredComponents",
   permission: {
