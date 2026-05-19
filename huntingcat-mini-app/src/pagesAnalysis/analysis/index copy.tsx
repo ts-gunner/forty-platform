@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { View, Canvas } from "@tarojs/components";
+import {  useMemo, useRef, useState } from "react";
+import { View } from "@tarojs/components";
 import Taro, { useDidShow } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { getCustomerTrendChart } from "@/services/steins-admin/analysisController";
@@ -13,70 +13,28 @@ import { formatDateTime } from "@/utils/time";
 
 function AnalysisPage() {
   const [chartData, setChartData] = useState<API.CustomerTrendChart[]>([]);
-  const [chartLoading,setChartLoading] = useState<boolean>(false)
-  const [options, setOptions] = useState<EChartsOption>({
-    legend: {
-      top: 50,
-      left: "center",
-      z: 100,
-    },
-    tooltip: {
-      trigger: "axis",
-      show: true,
-      confine: true,
-    },
-    xAxis: {
-      type: "category",
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    },
-    yAxis: {
-      type: "value",
-    },
-    series: [
-      {
-        data:[150, 230, 224, 218, 135, 147, 260],
-        type: "line",
-      },
-    ],
-  });
+  const [chartLoading, setChartLoading] = useState<boolean>(false)
   const echartsRef = useRef<EchartsHandle>(null);
-  const retryCount = useRef(0);
   useDidShow(() => {
     getChartData();
   });
-  useEffect(() => {
-    if (chartData.length === 0) return;
-
-    // 重置重试计数器（防止多次触发时叠加）
-    retryCount.current = 0;
-
-    Taro.nextTick(() => {
-      setOptions({
-        legend: {
-          top: 50,
-          left: "center",
-          z: 100,
+  const options = useMemo<EChartsOption>(() => {
+    return {
+      legend: { top: 50, left: "center", z: 100 },
+      tooltip: { trigger: "axis", show: true, confine: true },
+      xAxis: {
+        type: "category",
+        // 如果没数据，传空数组；有数据，传格式化后的数组
+        data: chartData.length ? chartData.map(it => formatDateTime(it.statDate, "MMM dd")) : [],
+      },
+      yAxis: { type: "value" },
+      series: [
+        {
+          data: chartData.length ? chartData.map(it => it.totalCount) : [],
+          type: "line",
         },
-        tooltip: {
-          trigger: "axis",
-          show: true,
-          confine: true,
-        },
-        xAxis: {
-          type: "category",
-          data: chartData.map(it => formatDateTime(it.statDate, "MMM dd") ),
-        },
-        yAxis: {
-          type: "value",
-        },
-        series: [
-          {
-            data: chartData.map(it => it.totalCount),
-            type: "line",
-          },
-        ],
-      });
-    });
+      ],
+    };
   }, [chartData]);
   const getChartData = async () => {
     setChartLoading(true)
@@ -86,7 +44,7 @@ function AnalysisPage() {
       onSuccess: (data) => {
         setChartData(data || []);
       },
-      onFinish: ()=> {
+      onFinish: () => {
         setChartLoading(false)
       }
     });
@@ -98,8 +56,6 @@ function AnalysisPage() {
           echarts={echarts}
           option={options}
           ref={echartsRef}
-          showLoading={chartLoading}
-          lazyUpdate
           // isPage={false}
           // style自定义设置echarts宽高
           style={{ width: "100%", height: "100%" }}

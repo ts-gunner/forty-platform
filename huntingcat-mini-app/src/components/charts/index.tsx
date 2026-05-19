@@ -15,7 +15,31 @@ import { isString, isFunction, isEqual, pick, uniqueId, compareVersion, tripleDe
 import WxCanvas from './weapp/wx-canvas'
 import { touchEnd, touchMove, touchStart } from './weapp/wx-touch'
 import { usePrevious, useUnMount, useUpdateEffect } from './hooks'
-import { EChartsProps, InitEchart, EChartsInstance, EchartsHandle } from './types'
+import { EChartsOption, ECharts } from 'echarts'
+import { InitEchart, EChartsInstance, EchartsHandle } from './types'
+export type { EChartsOption, ECharts as EChartsInstance } from 'echarts'
+import { CanvasProps } from '@tarojs/components/types/Canvas'
+export type Opts = {
+  devicePixelRatio?: number | undefined
+  renderer?: string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
+}
+export type EChartsProps = CanvasProps & {
+  echarts: any
+  className?: string
+  style?: CSSProperties
+  option: EChartsOption
+  theme?: string | Record<string, any>
+  notMerge?: boolean
+  lazyUpdate?: boolean
+  showLoading?: boolean
+  /**
+   *  https://echarts.apache.org/zh/api.html#echarts.init
+   */
+  opts?: Opts
+  isPage?: boolean
+}
 
 const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
   { echarts, isPage = true, canvasId: pCanvasId, ...props },
@@ -43,11 +67,11 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
   )
   const canvasStyle = useMemo(
     () =>
-      ({
-        width: '100%',
-        height: '300px',
-        ...(props.style as CSSProperties),
-      } as CSSProperties),
+    ({
+      width: '100%',
+      height: '300px',
+      ...(props.style as CSSProperties),
+    } as CSSProperties),
     [props.style],
   )
   /**
@@ -81,8 +105,7 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
   useUpdateEffect(() => {
     if (
       !isEqual(prevProps?.theme, props.theme) ||
-      !isEqual(prevProps?.opts, props.opts) ||
-      !isEqual(prevProps?.onEvents, props.onEvents)
+      !isEqual(prevProps?.opts, props.opts)
     ) {
       dispose()
       initChart() // re-render
@@ -92,7 +115,9 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
     // update
     const pickKeys = ['option', 'notMerge', 'lazyUpdate', 'showLoading', 'loadingOption']
     if (!isEqual(pick(props, pickKeys), pick(prevProps, pickKeys))) {
-      updateEChartsOption()
+      nextTick(() => {
+        updateEChartsOption()
+      })
     }
 
     /**
@@ -133,27 +158,7 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
           devicePixelRatio,
           ...opts,
         })
-        if (Taro.getEnv() === Taro.ENV_TYPE.WEB) {
-          /**
-           * echart同一个dom下多次动态渲染值，防止值、事件重复互相影响
-           * 每次init之后，先dispose释放下资源，再重新init
-           */
-          const echartsInstance = echarts.getInstanceByDom(canvasRef.current)
-          echartsInstance.on('finished', () => {
-            echarts.dispose(canvasRef.current)
-            // 获取渲染后的width、height
-            const newOpts = {
-              width,
-              height,
-              devicePixelRatio,
-              ...opts,
-            }
-            chartRef.current = echarts.init(canvasRef.current, theme, newOpts)
-            resolve(chartRef.current)
-          })
-        } else {
-          resolve(chartRef.current)
-        }
+        resolve(chartRef.current)
       } else {
         reject(null)
       }
@@ -171,38 +176,24 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
       showLoading,
     } = props
     // 1. 获取echarts实例
-    const echartInstance = echarts.getInstanceByDom(canvasRef.current)
+    const echartInstance = chartRef.current
     if (echartInstance) {
+      echartInstance.resize()
       // 2. 设置option
       echartInstance.setOption(option, notMerge, lazyUpdate)
       // 3. 显示加载动画效果
-      if (showLoading) echartInstance.showLoading()
-      else echartInstance.hideLoading()
+      if (showLoading) {
+        echartInstance.showLoading()
+      } else {
+        echartInstance.hideLoading()
+      }
     }
 
     return echartInstance
   }
 
-  // 绑定事件
-  const bindEvents = (instance, events) => {
-    function _bindEvent(eventName, func) {
-      if (isString(eventName) && isFunction(func)) {
-        instance.on(eventName, (param) => {
-          func(param, instance)
-        })
-      }
-    }
-
-    for (const eventName in events) {
-      if (Object.prototype.hasOwnProperty.call(events, eventName)) {
-        _bindEvent(eventName, events[eventName])
-      }
-    }
-  }
-
   // 渲染图表
   const renderEcharts = async ({ width, height, devicePixelRatio }: InitEchart) => {
-    const { onEvents, onChartReady } = props
     // 1. 初始化图表
     await initEchartsInstance({
       width,
@@ -210,11 +201,7 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
       devicePixelRatio,
     })
     // 2. 更新echarts实例
-    const echartsInstance = updateEChartsOption()
-    // 3. 绑定事件
-    bindEvents(echartsInstance, onEvents || {})
-    // 4. 图表渲染完成
-    if (isFunction(onChartReady)) onChartReady?.(echartsInstance)
+    updateEChartsOption()
 
     // 5. resize
     if (canvasRef.current) {
@@ -270,41 +257,25 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
         devicePixelRatio: window.devicePixelRatio,
       })
     } else {
-      const version = Taro.getSystemInfoSync().SDKVersion
-      const canUseNewCanvas = compareVersion(version, '2.9.0') >= 0
-      if (canUseNewCanvas) {
-        // console.log('微信基础库版本大于2.9.0，开始使用<canvas type="2d"/>');
-        // 2.9.0 可以使用 <canvas type="2d"></canvas>
-        initWexinChart()
-      } else {
-        console.error(`当前基础库为${version}, 微信基础库版本过低，需大于等于 2.9.0`)
-      }
+      initWexinChart()
     }
   }
 
   useImperativeHandle(ref, () => ({ chartRef, canvasRef }))
 
-  // container component
-  const renderContainerComponent = useMemo(() => {
-    if (Taro.getEnv() === Taro.ENV_TYPE.WEAPP) {
-      return (
-        <Canvas
-          type='2d'
-          id={canvasId}
-          canvasId={canvasId}
-          style={canvasStyle}
-          ref={canvasRef}
-          onTouchStart={(event) => touchStart({ chart: chartRef.current, event })}
-          onTouchMove={(event) => touchMove({ chart: chartRef.current, event })}
-          onTouchEnd={(event) => touchEnd({ chart: chartRef.current, event })}
-          {...pick(props, canvasProps)}
-        />
-      )
-    }
-    return <View ref={canvasRef} id={canvasId} style={canvasStyle} />
-  }, [props, canvasProps, canvasId])
-
-  return renderContainerComponent
+  return (
+    <Canvas
+      type='2d'
+      id={canvasId}
+      canvasId={canvasId}
+      style={canvasStyle}
+      ref={canvasRef}
+      onTouchStart={(event) => touchStart({ chart: chartRef.current, event })}
+      onTouchMove={(event) => touchMove({ chart: chartRef.current, event })}
+      onTouchEnd={(event) => touchEnd({ chart: chartRef.current, event })}
+      {...pick(props, canvasProps)}
+    />
+  )
 }
 
 export default memo(forwardRef(Echarts))
