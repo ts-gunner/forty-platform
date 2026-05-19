@@ -4,14 +4,16 @@ import Taro, { useDidShow } from "@tarojs/taro";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { getCustomerTrendChart } from "@/services/steins-admin/analysisController";
 import { handleResponse } from "@/utils/common";
-import Echarts, { EChartOption, EchartsHandle } from "taro-react-echarts";
+import Echarts from "@/components/charts";
 import echarts from "@/assets/echarts.js";
 import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
+import { EChartsOption } from "echarts";
+import { EchartsHandle } from "@/components/charts/types";
 
 function AnalysisPage() {
   const [chartData, setChartData] = useState<API.CustomerTrendChart[]>([]);
   const [chartLoading,setChartLoading] = useState<boolean>(false)
-  const [options, setOptions] = useState<EChartOption>({
+  const [options, setOptions] = useState<EChartsOption>({
     legend: {
       top: 50,
       left: "center",
@@ -24,14 +26,14 @@ function AnalysisPage() {
     },
     xAxis: {
       type: "category",
-      data: [],
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     },
     yAxis: {
       type: "value",
     },
     series: [
       {
-        data: [],
+        data:[150, 230, 224, 218, 135, 147, 260],
         type: "line",
       },
     ],

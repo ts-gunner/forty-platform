@@ -54,6 +54,7 @@
     "@tarojs/runtime": "4.0.9",
     "@tarojs/shared": "4.0.9",
     "@tarojs/taro": "4.0.9",
+    "@types/echarts": "^5.0.0",
     "@types/pubsub-js": "^1.8.6",
     "china-division": "^2.7.0",
     "clsx": "^2.1.1",
@@ -63,7 +64,6 @@
     "react-redux": "^9.2.0",
     "redux": "^5.0.1",
     "tailwind-merge": "^3.5.0",
-    "taro-react-echarts": "^1.2.2",
     "taro-ui": "^3.3.0"
   },
   "devDependencies": {
@@ -75,7 +75,7 @@
     "@tarojs/taro-loader": "4.0.9",
     "@tarojs/webpack5-runner": "4.0.9",
     "@types/node": "^18",
-    "@types/react": "^18.0.0",
+    "@types/react": "^19.2.14",
     "@types/webpack-env": "^1.13.6",
     "autoprefixer": "^10.4.21",
     "babel-preset-taro": "4.0.9",
