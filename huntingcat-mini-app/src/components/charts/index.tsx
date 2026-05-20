@@ -1,4 +1,4 @@
-import Taro, { nextTick, useReady } from '@tarojs/taro'
+import Taro, { nextTick, useDidShow, useReady } from '@tarojs/taro'
 import { Canvas, View } from '@tarojs/components'
 import {
   useRef,
@@ -32,17 +32,15 @@ export type EChartsProps = CanvasProps & {
   option: EChartsOption
   theme?: string | Record<string, any>
   notMerge?: boolean
-  lazyUpdate?: boolean
   showLoading?: boolean
   /**
    *  https://echarts.apache.org/zh/api.html#echarts.init
    */
   opts?: Opts
-  isPage?: boolean
 }
 
 const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
-  { echarts, isPage = true, canvasId: pCanvasId, ...props },
+  { echarts, canvasId: pCanvasId, ...props },
   ref,
 ) => {
   const canvasRef = useRef<HTMLDivElement | HTMLCanvasElement | null>(null)
@@ -80,23 +78,10 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
    * 访问小程序渲染层的 DOM 节点。
    */
   useReady(() => {
-    // 顶层页面级别才触发useReady 【注意Popup 、Dialog 等弹出层 都不是页面级别】
-    if (Taro.getEnv() === Taro.ENV_TYPE.WEAPP && isPage) {
-      nextTick(() => {
-        initChart()
-      })
-    }
+    nextTick(() => {
+      initWexinChart()
+    })
   })
-
-  useEffect(() => {
-    if (Taro.getEnv() === Taro.ENV_TYPE.WEB || !isPage) {
-      tripleDefer(() => {
-        nextTick(() => {
-          initChart()
-        })
-      })
-    }
-  }, [])
 
   useUnMount(() => {
     dispose()
@@ -108,7 +93,7 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
       !isEqual(prevProps?.opts, props.opts)
     ) {
       dispose()
-      initChart() // re-render
+      initWexinChart() // re-render
       return
     }
 
@@ -172,15 +157,16 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
     const {
       option,
       notMerge = true, // 不跟之前设置的option合并，保证每次渲染都是最新的option
-      lazyUpdate = false, // 设置完 option 后是否不立即更新图表，默认为 false，即同步立即更新。如果为 true，则会在下一个 animation frame 中，才更新图表
       showLoading,
     } = props
+    console.log("updateEChartsOption",option)
+
     // 1. 获取echarts实例
     const echartInstance = chartRef.current
     if (echartInstance) {
       echartInstance.resize()
       // 2. 设置option
-      echartInstance.setOption(option, notMerge, lazyUpdate)
+      echartInstance.setOption(option, notMerge)
       // 3. 显示加载动画效果
       if (showLoading) {
         echartInstance.showLoading()
@@ -218,48 +204,39 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
 
   // 初始化微信小程序图表
   const initWexinChart = () => {
-    const query = Taro.createSelectorQuery()
-    query
-      .select(`#${canvasId}`)
-      .fields({
-        node: true,
-        size: true,
-      })
-      .exec((res) => {
-        const [result] = res
-        if (result) {
-          const { node, width, height } = result || {}
-          const canvasNode = node
-          const canvasDpr = Taro.getSystemInfoSync().pixelRatio
-          const ctx = canvasNode.getContext('2d')
-          const canvas = new WxCanvas(ctx, true, canvasNode)
-          echarts?.setCanvasCreator(() => {
-            return canvas
-          })
-          canvasRef.current = canvas as any
-          renderEcharts({
-            width,
-            height,
-            devicePixelRatio: canvasDpr,
-          })
-        }
-      })
+    setTimeout(() => {
+      const query = Taro.createSelectorQuery()
+      query
+        .select(`#${canvasId}`)
+        .fields({
+          node: true,
+          size: true,
+        })
+        .exec((res) => {
+          console.log("initWexinChart", res)
+
+          const [result] = res
+          if (result) {
+            const { node, width, height } = result || {}
+            const canvasNode = node
+            const canvasDpr = Taro.getSystemInfoSync().pixelRatio
+            const ctx = canvasNode.getContext('2d')
+            const canvas = new WxCanvas(ctx, true, canvasNode)
+            echarts?.setCanvasCreator(() => {
+              return canvas
+            })
+            canvasRef.current = canvas as any
+            renderEcharts({
+              width,
+              height,
+              devicePixelRatio: canvasDpr,
+            })
+          }
+        })
+    }, 100)
+
   }
 
-  // 初始化图表
-  const initChart = () => {
-    if (Taro.getEnv() === Taro.ENV_TYPE.WEB && canvasRef.current) {
-      const width = props.style?.width || canvasRef.current?.clientWidth || window.innerWidth
-      const height = props.style?.height || canvasRef.current?.clientHeight || 300
-      renderEcharts({
-        width,
-        height,
-        devicePixelRatio: window.devicePixelRatio,
-      })
-    } else {
-      initWexinChart()
-    }
-  }
 
   useImperativeHandle(ref, () => ({ chartRef, canvasRef }))
 

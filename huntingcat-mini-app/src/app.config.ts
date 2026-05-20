@@ -72,7 +72,7 @@ export default defineAppConfig({
   preloadRule: {
     "pages/customer/index": {
       network: "all",
-      packages: ["pagesCustomer"], // 提前静默下载客户详情、新建、分析等页面
+      packages: ["pagesCustomer", "pagesAnalysis"], // 提前静默下载客户详情、新建、分析等页面
     },
   },
   window: {},
