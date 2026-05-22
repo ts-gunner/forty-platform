@@ -48,6 +48,11 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
   const [isInitialResize, setIsInitialResize] = useState<boolean>(true)
   const prevProps = usePrevious<EChartsProps>(props)
   const canvasId = useMemo(() => pCanvasId || uniqueId('canvas_'), [pCanvasId])
+  const propsRef = useRef<any>(props)
+  useEffect(() => {
+    propsRef.current = props
+  }, [props])
+  const retryCountRef = useRef<number>(0)
   const canvasProps = useMemo(
     () => [
       'disableScroll',
@@ -134,7 +139,7 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
   }
 
   const initEchartsInstance = async ({ width, height, devicePixelRatio }: InitEchart) => {
-    const { theme, opts } = props
+    const { theme, opts } = propsRef.current
     return new Promise((resolve, reject) => {
       if (canvasRef.current) {
         chartRef.current = echarts.init(canvasRef.current, theme, {
@@ -154,19 +159,18 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
     /**
      *  官方文档：https://echarts.apache.org/zh/api.html#echartsInstance.setOption
      */
-    const {
+  const {
       option,
-      notMerge = true, // 不跟之前设置的option合并，保证每次渲染都是最新的option
+      notMerge = true,
       showLoading,
-    } = props
-    console.log("updateEChartsOption",option)
+    } = propsRef.current
 
     // 1. 获取echarts实例
     const echartInstance = chartRef.current
     if (echartInstance) {
       echartInstance.resize()
       // 2. 设置option
-      echartInstance.setOption(option, notMerge)
+      echartInstance.setOption(option|| {}, notMerge)
       // 3. 显示加载动画效果
       if (showLoading) {
         echartInstance.showLoading()
@@ -203,40 +207,46 @@ const Echarts: ForwardRefRenderFunction<EchartsHandle, EChartsProps> = (
   }
 
   // 初始化微信小程序图表
-  const initWexinChart = () => {
-    setTimeout(() => {
-      const query = Taro.createSelectorQuery()
-      query
-        .select(`#${canvasId}`)
-        .fields({
-          node: true,
-          size: true,
-        })
-        .exec((res) => {
-          console.log("initWexinChart", res)
+ const initWexinChart = () => {
+    const query = Taro.createSelectorQuery()
+    query
+      .select(`#${canvasId}`)
+      .fields({ node: true, size: true })
+      .exec((res) => {
 
-          const [result] = res
-          if (result) {
-            const { node, width, height } = result || {}
-            const canvasNode = node
-            const canvasDpr = Taro.getSystemInfoSync().pixelRatio
-            const ctx = canvasNode.getContext('2d')
-            const canvas = new WxCanvas(ctx, true, canvasNode)
-            echarts?.setCanvasCreator(() => {
-              return canvas
-            })
-            canvasRef.current = canvas as any
-            renderEcharts({
-              width,
-              height,
-              devicePixelRatio: canvasDpr,
-            })
+        const [result] = res
+        // 确保不仅 result 存在，result.node 小程序原生节点也必须存在
+        if (result && result.node) {
+          retryCountRef.current = 0 // 成功后重置计数器
+          const { node, width, height } = result
+          const canvasNode = node
+          const canvasDpr = Taro.getSystemInfoSync().pixelRatio
+          const ctx = canvasNode.getContext('2d')
+          const canvas = new WxCanvas(ctx, true, canvasNode)
+          
+          echarts?.setCanvasCreator(() => canvas)
+          canvasRef.current = canvas as any
+          
+          renderEcharts({
+            width,
+            height,
+            devicePixelRatio: canvasDpr,
+          })
+        } else {
+          // 没拿到节点，进行安全重试
+          if (retryCountRef.current < 5) {
+            retryCountRef.current++
+            console.warn(`[Echarts] 找不到节点或 node 为空，正在进行第 ${retryCountRef.current} 次重试...`)
+            setTimeout(() => {
+              initWexinChart()
+            }, 100)
+          } else {
+            console.error(`[Echarts] 连续重试失败，请检查 Dom 节点或 canvasId: ${canvasId}`)
+            retryCountRef.current = 0
           }
-        })
-    }, 100)
-
+        }
+      })
   }
-
 
   useImperativeHandle(ref, () => ({ chartRef, canvasRef }))
 
