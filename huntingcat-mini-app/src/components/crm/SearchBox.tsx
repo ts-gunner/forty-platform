@@ -44,9 +44,7 @@ export const SearchComponent: React.FC<{
         className="flex-1 text-sm text-gray-800"
         placeholder="输入搜索关键词"
         placeholderStyle="color: rgba(0,0,0,0.3)"
-        // value={value}
-        // onInput={(e) => onInput(e.detail.value)}
-        // onConfirm={onSearch}
+    
       />
 
 

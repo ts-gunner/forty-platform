@@ -26,10 +26,10 @@ export default function HeaderBodyFooterLayout({
   const dispatch = useDispatch<Dispatch>();
   const { navBarHeight, headerHeight } = useNavbar();
   return (
-    <View className={cn("flex flex-col h-screen", className)}>
+    <View className={cn("min-h-screen relative", className)}>
       {/* 头部 */}
       <View
-        className="flex items-end z-[50] w-full shrink-0"
+        className="fixed top-0 left-0 right-0 bg-white flex items-end z-[50] w-full shrink-0"
         style={{
           height: `${navBarHeight}px`,
         }}
@@ -56,11 +56,21 @@ export default function HeaderBodyFooterLayout({
         </View>
       </View>
       {/* 主体内容 */}
-      <ScrollView scrollY className="flex-1 overflow-y-auto">
+      <View 
+        className="w-full box-border"
+        style={{ 
+          paddingTop: `${navBarHeight}px`,
+          paddingBottom: FooterRender ? '120rpx' : '40rpx' // 确保不被底部按钮遮挡
+        }}
+      >
         {children}
-      </ScrollView>
+      </View>
       {/* 底部 */}
-      <View className="w-full shrink-0">{FooterRender}</View>
+      {FooterRender && (
+        <View className="fixed bottom-0 left-0 right-0 z-[50] w-full shrink-0 safe-bottom">
+          {FooterRender}
+        </View>
+      )}
     </View>
   );
 }

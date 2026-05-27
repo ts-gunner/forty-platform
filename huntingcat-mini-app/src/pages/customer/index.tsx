@@ -85,7 +85,6 @@ function MyCustomerPage() {
   }, [myCustomerData.current]);
   return (
     <HeaderBodyLayout
-      headerHeight={230}
       rootClassName="bg-active"
       bodyClassName="pb-16 mesh-gradient rounded-t-2xl pt-2"
       headerComponent={<SearchHeader mode="mine" />}

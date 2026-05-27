@@ -8,7 +8,7 @@ import { Dispatch, RootState } from "@/store";
 import { handleResponse, Notify } from "@/utils/common";
 import storage from "@/utils/storage";
 import { Input, Picker, Text, View, ScrollView } from "@tarojs/components";
-import Taro, { useDidShow } from "@tarojs/taro";
+import Taro, { useDidShow, useReachBottom } from "@tarojs/taro";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AtIcon } from "taro-ui";
@@ -52,7 +52,7 @@ function SearchCustomerPage() {
       try {
         let history = JSON.parse(res);
         setSearchHistory(history);
-      } catch {}
+      } catch { }
     });
   };
 
@@ -87,7 +87,7 @@ function SearchCustomerPage() {
         const total = data.entityValue?.total || 0;
 
         setSearchTotal(total);
-        
+
         // 判断是否是第一页刷新，如果是则覆盖，否则追加
         const newList = isRefresh ? list : [...searchResult, ...list];
         setSearchResult(newList);
@@ -110,6 +110,10 @@ function SearchCustomerPage() {
     });
   };
 
+  useReachBottom(() => {
+    handleLoadMore()
+  });
+
   // 触发首次全新搜索
   const handleInitialSearch = (keyword: string) => {
     if (!keyword) return;
@@ -128,12 +132,7 @@ function SearchCustomerPage() {
         可以使用 Taro 的原生页面触底事件（需要在配置中开启，或在此处直接包裹标准 ScrollView）
         这里为了保持原有 HBF 布局的兼容，推荐使用 ScrollView 绑定由下往上滑动的触底
       */}
-      <ScrollView 
-        scrollY 
-        style={{ height: '100%' }} 
-        onScrollToLower={handleLoadMore} // 滑动到底部自动加载下一页
-        lowerThreshold={150} // 距离底部150px时提前触发加载
-      >
+      <View >
         <View className="pb-6">
           <SearchComponent
             value={searchText}
@@ -170,7 +169,7 @@ function SearchCustomerPage() {
               handleInitialSearch(searchText); // 执行全新搜索
             }}
           />
-          
+
           {!searchText && (
             <View className="mt-3 px-3">
               <View className="flex justify-between">
@@ -280,7 +279,7 @@ function SearchCustomerPage() {
 
           {isEmpty && <EmptyComponent />}
         </View>
-      </ScrollView>
+      </View>
     </HeaderBodyFooterLayout>
   );
 }
@@ -301,41 +300,41 @@ const SearchComponent: React.FC<{
   activeField,
   setActiveField,
 }) => {
-  const activeFieldIndex = tableFields.findIndex(
-    (it) => it.id === activeField?.id,
-  );
-  return (
-    <View className="flex items-center w-full bg-white px-2 py-1">
-      <Picker
-        mode="selector"
-        range={tableFields.map((item) => item.fieldName)}
-        value={activeFieldIndex}
-        onChange={(e) => {
-          setActiveField(tableFields[e.detail.value]);
-        }}
-      >
-        <View className="flex items-center justify-center px-2 text-sm text-gray-700 flex-shrink-0">
-          {activeField?.fieldName || '字段'} ▾
-        </View>
-      </Picker>
+    const activeFieldIndex = tableFields.findIndex(
+      (it) => it.id === activeField?.id,
+    );
+    return (
+      <View className="flex items-center w-full bg-white px-2 py-1">
+        <Picker
+          mode="selector"
+          range={tableFields.map((item) => item.fieldName)}
+          value={activeFieldIndex}
+          onChange={(e) => {
+            setActiveField(tableFields[e.detail.value]);
+          }}
+        >
+          <View className="flex items-center justify-center px-2 text-sm text-gray-700 flex-shrink-0">
+            {activeField?.fieldName || '字段'} ▾
+          </View>
+        </Picker>
 
-      <View className="flex-1 flex items-center bg-gray-100 border border-white/40 p-2 rounded-lg shadow-sm gap-2">
-        <AtIcon value="search" className="text-gray-500" />
-        <Input
-          confirmType="search"
-          className="flex-1 text-sm text-gray-800"
-          placeholder="搜索关键词"
-          placeholderStyle="color: rgba(0,0,0,0.3)"
-          value={value}
-          onInput={(e) => onInput(e.detail.value)}
-          onConfirm={onSearch}
-        />
+        <View className="flex-1 flex items-center bg-gray-100 border border-white/40 p-2 rounded-lg shadow-sm gap-2">
+          <AtIcon value="search" className="text-gray-500" />
+          <Input
+            confirmType="search"
+            className="flex-1 text-sm text-gray-800"
+            placeholder="搜索关键词"
+            placeholderStyle="color: rgba(0,0,0,0.3)"
+            value={value}
+            onInput={(e) => onInput(e.detail.value)}
+            onConfirm={onSearch}
+          />
+        </View>
+        <View className="text-md p-4 flex-shrink-0 text-blue-500 font-medium" onClick={onSearch}>
+          搜索
+        </View>
       </View>
-      <View className="text-md p-4 flex-shrink-0 text-blue-500 font-medium" onClick={onSearch}>
-        搜索
-      </View>
-    </View>
-  );
-};
+    );
+  };
 
 export default withGlobalLayout(SearchCustomerPage);

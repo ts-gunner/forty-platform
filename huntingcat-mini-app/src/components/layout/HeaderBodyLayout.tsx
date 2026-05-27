@@ -9,18 +9,16 @@ import React from 'react'
 type LayoutProps = {
     rootClassName?: string
     bodyClassName?: string
-    headerHeight?: number
     headerComponent?: React.ReactNode
     children: React.ReactNode
 }
-export default function HeaderBodyLayout({ headerComponent, headerHeight, rootClassName, children, bodyClassName }: LayoutProps) {
+export default function HeaderBodyLayout({ headerComponent, rootClassName, children, bodyClassName }: LayoutProps) {
     const { navBarHeight } = useNavbar();
     return (
         <View className={cn("min-h-screen flex flex-col", rootClassName)}>
 
             {/* 头部组件 */}
             <View style={{
-                height: `${headerHeight || navBarHeight}px`
             }}>
                 {headerComponent}
             </View>
