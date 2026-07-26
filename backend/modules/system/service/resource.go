@@ -30,11 +30,11 @@ func (SystemResourceService) UploadAvatar(ctx context.Context, file *multipart.F
 	}
 	fileReader, err := file.Open()
 	if err != nil {
-		return nil, fmt.Errorf("头像内容读取失败:" + err.Error())
+		return nil, fmt.Errorf("头像内容读取失败: %w", err)
 	}
 	result, err := policy.PutObject(fileReader, file.Filename)
 	if err != nil {
-		return nil, fmt.Errorf("上传文件失败:" + err.Error())
+		return nil, fmt.Errorf("上传文件失败: %w", err)
 	}
 	ext := filepath.Ext(file.Filename)
 	userId := utils.GetLoginUserId(ctx)
@@ -55,7 +55,7 @@ func (SystemResourceService) UploadAvatar(ctx context.Context, file *multipart.F
 		},
 	}
 	if err := global.DB.Create(&resource).Error; err != nil {
-		return nil, fmt.Errorf("资源存储失败:" + err.Error())
+		return nil, fmt.Errorf("资源存储失败: %w", err)
 	}
 	var vo systemResponse.SysResourceVo
 	if err := copier.Copy(&vo, &resource); err != nil {

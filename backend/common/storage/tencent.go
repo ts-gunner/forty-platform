@@ -8,6 +8,11 @@ import (
 
 type TencentStorage struct{}
 
+func (a TencentStorage) InitClient() {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (a TencentStorage) PutObject(file multipart.File, relativePath string) (StorageVo, error) {
 	return StorageVo{}, errors.New("暂未实现")
 }

@@ -12,6 +12,8 @@ type StorageVo struct {
 
 }
 type StoragePolicy interface {
+	InitClient()
+
 	PutObject(file multipart.File, relativePath string) (StorageVo, error) // 上传文件
 
 	GetObject(vo StorageVo) (os.File, error) // 下载文件，返回文件流对象

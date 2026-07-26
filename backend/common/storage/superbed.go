@@ -17,6 +17,11 @@ type SuperBedStorage struct {
 	Token string
 }
 
+func (a SuperBedStorage) InitClient() {
+	//TODO implement me
+	panic("implement me")
+}
+
 type UploadResult struct {
 	Err int    `json:"err"`
 	Msg string `json:"msg"`
@@ -64,7 +69,7 @@ func (a SuperBedStorage) PutObject(file multipart.File, relativePath string) (St
 	}
 
 	if uploadResp.Err != 0 {
-		return vo, fmt.Errorf("聚合图床上传接口调用失败：" + uploadResp.Msg)
+		return vo, fmt.Errorf("聚合图床上传接口调用失败：%s", uploadResp.Msg)
 	}
 	if uploadResp.Url == "" {
 		return vo, fmt.Errorf("聚合图床上传接口调用失败, url为空")

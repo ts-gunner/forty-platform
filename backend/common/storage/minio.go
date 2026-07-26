@@ -8,6 +8,11 @@ import (
 
 type MinioStorage struct{}
 
+func (a MinioStorage) InitClient() {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (a MinioStorage) PutObject(file multipart.File, relativePath string) (StorageVo, error) {
 	return StorageVo{}, errors.New("暂未实现")
 }

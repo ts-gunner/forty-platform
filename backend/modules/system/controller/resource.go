@@ -2,12 +2,13 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ts-gunner/forty-platform/common/global"
 	request "github.com/ts-gunner/forty-platform/common/request/system"
 	"github.com/ts-gunner/forty-platform/common/response"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 type SystemResourceRouter struct{}
@@ -39,3 +40,5 @@ func uploadResource(c *gin.Context) {
 	}
 	response.Ok(c)
 }
+
+//

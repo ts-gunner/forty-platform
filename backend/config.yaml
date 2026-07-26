@@ -32,16 +32,17 @@ wechat:
     app-secret: ${WECHAT_APP_SECRET}
 
 store:
-    store-type: local
+    store-type: aliyun
     super-bed:
         enable: true
         token: ${SUPER_BED_TOKEN}
     aliyun:
-        enable: false
-        access-key-id: ss
-        access-key-secret: dd
-        access-prefix-url: 223
-        base-rel-path: C://
+        enable: true
+        access-key-id: ${ALIYUN_ACCESS_KEY_ID}
+        access-key-secret: ${ALIYUN_ACCESS_KEY_SECRET}
+        region: ${ALIYUN_OSS_REGION}
+        bucket-name: ${ALIYUN_OSS_BUCKET_NAME}
+        base-rel-path: /test
     tencent:
         enable: false
         access-key-id: ss

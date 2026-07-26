@@ -8,6 +8,8 @@ type BaseStoreField struct {
 type BaseCloudField struct {
 	AccessKeyId     string `mapstructure:"access-key-id" json:"access-key-id" yaml:"access-key-id"`
 	AccessKeySecret string `mapstructure:"access-key-secret" json:"access-key-secret" yaml:"access-key-secret"`
+	Region          string `mapstructure:"region" json:"region" yaml:"region"` // 地区
+	BucketName      string `mapstructure:"bucket-name" json:"bucket-name" yaml:"bucket-name"`
 }
 
 type StoreConfig struct {
@@ -25,9 +27,9 @@ type SuperBedConfig struct {
 }
 
 type AliyunConfig struct {
-	Enable         bool `mapstructure:"enable" json:"enable" yaml:"enable"`
+	Enable         bool   `mapstructure:"enable" json:"enable" yaml:"enable"`
+	BaseRelPath    string `mapstructure:"base-rel-path" json:"base-rel-path" yaml:"base-rel-path"` // 存储的相对路径
 	BaseCloudField `mapstructure:",squash" yaml:",inline"`
-	BaseStoreField `mapstructure:",squash" yaml:",inline"`
 }
 
 type TencentConfig struct {

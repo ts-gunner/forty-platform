@@ -8,6 +8,11 @@ import (
 
 type LocalStorage struct{}
 
+func (a LocalStorage) InitClient() {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (a LocalStorage) PutObject(file multipart.File, relativePath string) (StorageVo, error) {
 	return StorageVo{}, errors.New("暂未实现")
 }
