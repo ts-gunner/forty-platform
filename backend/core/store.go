@@ -25,17 +25,3 @@ func InitializeStore() map[storage.StorageMode]storage.StoragePolicy {
 	}
 	return drivers
 }
-
-func GetDefaultStorage() (storage.StoragePolicy, error) {
-	switch storage.StorageMode(global.Config.Store.StoreType) {
-	case storage.SUPERBED:
-		return storage.GetPolicyByMode(global.Store, storage.SUPERBED)
-	case storage.ALIYUN:
-		return storage.GetPolicyByMode(global.Store, storage.ALIYUN)
-	case storage.TENCENT:
-		return storage.GetPolicyByMode(global.Store, storage.TENCENT)
-	default:
-		return storage.GetPolicyByMode(global.Store, storage.LOCAL)
-	}
-
-}

@@ -36,4 +36,5 @@ var (
 	permissionService        = service.SystemService.PermissionService
 	userRoleRelService       = service.SystemService.UserRoleRelService
 	rolePermissionRelService = service.SystemService.RolePermissionRelService
+	resourceService          = service.SystemService.SystemResourceService
 )

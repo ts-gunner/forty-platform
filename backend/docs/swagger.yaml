@@ -642,6 +642,17 @@ definitions:
         example: 成功
         type: string
     type: object
+  response.ApiResult-system_SysResourceVo:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        $ref: '#/definitions/system.SysResourceVo'
+      msg:
+        example: 成功
+        type: string
+    type: object
   response.ApiResult-system_UserVo:
     properties:
       code:
@@ -762,6 +773,14 @@ definitions:
     - auditCode
     - auditName
     - loginCode
+    type: object
+  system.DeleteResourceRequest:
+    properties:
+      resourceId:
+        example: "0"
+        type: string
+    required:
+    - resourceId
     type: object
   system.GetUserListByRoleKeyRequest:
     properties:
@@ -933,6 +952,33 @@ definitions:
       roleKey:
         type: string
       roleName:
+        type: string
+    type: object
+  system.SysResourceVo:
+    properties:
+      mimeType:
+        type: string
+      previewUrl:
+        type: string
+      relPath:
+        type: string
+      resourceId:
+        description: 资源ID
+        example: "0"
+        type: string
+      resourceName:
+        type: string
+      resourceType:
+        description: 资源类型
+        type: integer
+      size:
+        type: integer
+      storageType:
+        type: string
+      suffix:
+        type: string
+      userId:
+        example: "0"
         type: string
     type: object
   system.UserCreateRequest:
@@ -1954,18 +2000,57 @@ paths:
       summary: 更新权限
       tags:
       - SystemPermissionController
+  /system/resource/access/{resourceId}:
+    get:
+      operationId: accessResource
+      parameters:
+      - description: resource ID
+        in: path
+        name: resourceId
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "302":
+          description: Found
+      summary: 重定向访问对象存储资源url
+      tags:
+      - SystemResourceController
+  /system/resource/delete:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteResource
+      parameters:
+      - description: delete resource params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/system.DeleteResourceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ApiResult-any'
+      summary: 删除资源
+      tags:
+      - SystemResourceController
   /system/resource/upload:
     post:
       consumes:
       - multipart/form-data
       operationId: uploadResource
       parameters:
-      - description: 待上传的文件
+      - description: file
         in: formData
         name: file
         required: true
         type: file
-      - description: 资源类型
+      - description: resource type
         in: formData
         name: resourceType
         required: true
@@ -1976,8 +2061,8 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.ApiResult-any'
-      summary: 上传资源文件
+            $ref: '#/definitions/response.ApiResult-system_SysResourceVo'
+      summary: 上传资源
       tags:
       - SystemResourceController
   /system/role/create:

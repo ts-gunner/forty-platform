@@ -27,6 +27,7 @@ func initRouter() *gin.Engine {
 			"/auth/adminPwdLogin",
 			"/auth/wechatCrmLogin",
 			"/auth/approvalWechatAccess",
+			"/resource/access/",
 		},
 	}))
 	contextGroup.Use(handler.RoleCheckHandlerFunc())

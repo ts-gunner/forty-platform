@@ -60,8 +60,6 @@ func (a *AliyunStorage) PutObject(file multipart.File, relativePath string) (Sto
 	}
 
 	vo.RelativePath = objectKey
-	previewUrl, _ := a.presignedAccessUrl(objectKey)
-	vo.DirectUrl = previewUrl
 	return vo, nil
 }
 
@@ -97,9 +95,7 @@ func (a *AliyunStorage) GetObject(vo StorageVo) (os.File, error) {
 }
 
 func (a *AliyunStorage) GetAccessUrl(vo StorageVo) (string, error) {
-	if vo.DirectUrl != "" {
-		return vo.DirectUrl, nil
-	}
+
 	if err := a.ensureClient(); err != nil {
 		return "", err
 	}

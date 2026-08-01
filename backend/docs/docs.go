@@ -1369,6 +1369,66 @@ const docTemplate = `{
                 }
             }
         },
+        "/system/resource/access/{resourceId}": {
+            "get": {
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "SystemResourceController"
+                ],
+                "summary": "重定向访问对象存储资源url",
+                "operationId": "accessResource",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "resource ID",
+                        "name": "resourceId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Found"
+                    }
+                }
+            }
+        },
+        "/system/resource/delete": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SystemResourceController"
+                ],
+                "summary": "删除资源",
+                "operationId": "deleteResource",
+                "parameters": [
+                    {
+                        "description": "delete resource params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.DeleteResourceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ApiResult-any"
+                        }
+                    }
+                }
+            }
+        },
         "/system/resource/upload": {
             "post": {
                 "consumes": [
@@ -1380,19 +1440,19 @@ const docTemplate = `{
                 "tags": [
                     "SystemResourceController"
                 ],
-                "summary": "上传资源文件",
+                "summary": "上传资源",
                 "operationId": "uploadResource",
                 "parameters": [
                     {
                         "type": "file",
-                        "description": "待上传的文件",
+                        "description": "file",
                         "name": "file",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "资源类型",
+                        "description": "resource type",
                         "name": "resourceType",
                         "in": "formData",
                         "required": true
@@ -1402,7 +1462,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.ApiResult-any"
+                            "$ref": "#/definitions/response.ApiResult-system_SysResourceVo"
                         }
                     }
                 }
@@ -3072,6 +3132,22 @@ const docTemplate = `{
                 }
             }
         },
+        "response.ApiResult-system_SysResourceVo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "$ref": "#/definitions/system.SysResourceVo"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
         "response.ApiResult-system_UserVo": {
             "type": "object",
             "properties": {
@@ -3251,6 +3327,18 @@ const docTemplate = `{
                 "loginCode": {
                     "description": "微信登录的code",
                     "type": "string"
+                }
+            }
+        },
+        "system.DeleteResourceRequest": {
+            "type": "object",
+            "required": [
+                "resourceId"
+            ],
+            "properties": {
+                "resourceId": {
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -3509,6 +3597,45 @@ const docTemplate = `{
                 },
                 "roleName": {
                     "type": "string"
+                }
+            }
+        },
+        "system.SysResourceVo": {
+            "type": "object",
+            "properties": {
+                "mimeType": {
+                    "type": "string"
+                },
+                "previewUrl": {
+                    "type": "string"
+                },
+                "relPath": {
+                    "type": "string"
+                },
+                "resourceId": {
+                    "description": "资源ID",
+                    "type": "string",
+                    "example": "0"
+                },
+                "resourceName": {
+                    "type": "string"
+                },
+                "resourceType": {
+                    "description": "资源类型",
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "storageType": {
+                    "type": "string"
+                },
+                "suffix": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
