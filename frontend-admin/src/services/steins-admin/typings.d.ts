@@ -1,4 +1,9 @@
 declare namespace API {
+  type accessResourceParams = {
+    /** resource ID */
+    resourceId: string;
+  };
+
   type AddCustomerFavoriteRequest = {
     entityId: string;
     valueId: string;
@@ -157,6 +162,12 @@ declare namespace API {
     msg?: string;
   };
 
+  type ApiResultSystemSysResourceVo = {
+    code?: number;
+    data?: SysResourceVo;
+    msg?: string;
+  };
+
   type ApiResultSystemUserVo = {
     code?: number;
     data?: UserVo;
@@ -296,6 +307,10 @@ declare namespace API {
 
   type DeleteCrmEntityValueRequest = {
     id: string;
+  };
+
+  type DeleteResourceRequest = {
+    resourceId: string;
   };
 
   type EntityCreateRequest = {
@@ -620,6 +635,21 @@ declare namespace API {
     roleId?: string;
     roleKey?: string;
     roleName?: string;
+  };
+
+  type SysResourceVo = {
+    mimeType?: string;
+    previewUrl?: string;
+    relPath?: string;
+    /** 资源ID */
+    resourceId?: string;
+    resourceName?: string;
+    /** 资源类型 */
+    resourceType?: number;
+    size?: number;
+    storageType?: string;
+    suffix?: string;
+    userId?: string;
   };
 
   type UpdateAuditRequest = {

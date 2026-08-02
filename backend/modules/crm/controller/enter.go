@@ -24,8 +24,8 @@ func (rg *RouterGroup) InitCrmRouter(r *gin.RouterGroup) {
 }
 
 var (
-	entityService            = service.CrmService.EntityService
-	entityFieldService       = service.CrmService.EntityFieldService
-	entityValueService       = service.CrmService.EntityValueService
-	customerFavoriteService  = service.CrmService.CustomerFavoriteService
+	entityService           = service.CrmService.EntityService
+	entityFieldService      = service.CrmService.EntityFieldService
+	entityValueService      = service.CrmService.EntityValueService
+	customerFavoriteService = service.CrmService.CustomerFavoriteService
 )

@@ -12,4 +12,5 @@ const (
 	CrmDataTypeDate          CrmFieldDataType = "date"            // 日期
 	CrmDataTypeRegion        CrmFieldDataType = "region"          // 行政区划, 示例：["44", "4401", "440101"]
 	CrmDataTypeLocation      CrmFieldDataType = "location"        // 定位 + 普通文本， 示例:
+	CrmDataTypeResource      CrmFieldDataType = "resource"        // 资源文件
 )

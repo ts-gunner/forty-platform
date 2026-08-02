@@ -4,7 +4,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Popconfirm, Select, Table, Tag } from "antd";
 import { RefreshCw, Trash2, RotateCw } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CrmDataTypeEnum } from "@/constants/enums";
+import { CrmDataTypeEnum, DATA_TYPE_OPIONS } from "@/constants/enums";
 
 type ModalProps = {
   modalOpen: boolean;
@@ -31,44 +31,6 @@ const INIT_FIELD = [
   },
 ];
 
-const DATA_TYPE_OPIONS = [
-  {
-    label: "文本",
-    value: "text",
-  },
-   {
-    label: "多行文本",
-    value: "textarea",
-  },
-  {
-    label: "数字",
-    value: "number",
-  },
-  {
-    label: "布尔",
-    value: "bool",
-  },
-  {
-    label: "选择器",
-    value: "picker",
-  },
-  {
-    label: "日期",
-    value: "date",
-  },
-  {
-    label: "行政区划",
-    value: "region",
-  },
-    {
-    label: "定位",
-    value: "location",
-  },
-      {
-    label: "选择或自定义",
-    value: "picker_or_other",
-  },
-];
 export default function ConfigureFieldModal({ modalOpen, handleModalOpen, onSubmit, value }: ModalProps) {
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [fieldDataLoading, setFieldDataLoading] = useState<boolean>(false);

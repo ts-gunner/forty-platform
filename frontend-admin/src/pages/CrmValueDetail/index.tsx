@@ -1,8 +1,8 @@
+import { handleCrmValueByField } from "@/components/crm/ValueBoxGenerator";
 import { getEntityList } from "@/services/steins-admin/crmEntityController";
 import { getFieldsByEntityId } from "@/services/steins-admin/crmEntityFieldController";
 import { getEntityValueDetail } from "@/services/steins-admin/crmEntityValueController";
 import { handleResponse, Notify } from "@/utils/common";
-import { handleCrmValueByField } from "@/utils/crm";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button, Card, Descriptions, Divider, Spin } from "antd";
 import React, { useEffect, useState } from "react";

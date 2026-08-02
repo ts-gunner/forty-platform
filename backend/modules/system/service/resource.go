@@ -81,12 +81,9 @@ func (s SystemResourceService) UploadResource(ctx context.Context, req request.U
 	return &vo, nil
 }
 
-func (SystemResourceService) GetResourceAccessUrl(resourceId int64) (string, error) {
-	resource, err := resourceMapper.GetResourceById(global.DB, resourceId)
+func (s SystemResourceService) GetResourceAccessUrl(resourceId int64) (string, error) {
+	resource, err := s.GetResourceById(resourceId)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return "", errors.New("resource not found")
-		}
 		return "", err
 	}
 
@@ -94,7 +91,7 @@ func (SystemResourceService) GetResourceAccessUrl(resourceId int64) (string, err
 	if err != nil {
 		return "", err
 	}
-	
+
 	accessUrl, err := policy.GetAccessUrl(storage.StorageVo{
 		RelativePath: resource.RelPath,
 		DirectUrl:    "",
@@ -108,12 +105,9 @@ func (SystemResourceService) GetResourceAccessUrl(resourceId int64) (string, err
 	return accessUrl, nil
 }
 
-func (SystemResourceService) DeleteResource(ctx context.Context, resourceId int64) error {
-	resource, err := resourceMapper.GetResourceById(global.DB, resourceId)
+func (s SystemResourceService) DeleteResource(ctx context.Context, resourceId int64) error {
+	resource, err := s.GetResourceById(resourceId)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return errors.New("resource not found")
-		}
 		return err
 	}
 
@@ -139,6 +133,17 @@ func (SystemResourceService) DeleteResource(ctx context.Context, resourceId int6
 		"deleter_id":  operatorId,
 		"delete_time": now,
 	}).Error
+}
+
+func (SystemResourceService) GetResourceById(resourceId int64) (*entity.SysResource, error) {
+	resource, err := resourceMapper.GetResourceById(global.DB, resourceId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("resource not found")
+		}
+		return nil, err
+	}
+	return resource, nil
 }
 
 /*
