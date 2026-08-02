@@ -19,9 +19,8 @@ export default function ValueBoxGenerator({
   const { dataType, fieldName, fieldKey, options, isRequired } = field;
   const selectOptions = options ? options.split(",") : [];
   const handleChooseAndUpload = (onChange: (val: any) => void) => {
-    Taro.chooseMessageFile({
+    Taro.chooseImage({
       count: 1,
-      type: "file",
       success: async (res) => {
         const tempFilePaths = res.tempFiles;
         const tempFile = tempFilePaths[0];
