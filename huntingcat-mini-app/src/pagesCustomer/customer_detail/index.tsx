@@ -6,8 +6,7 @@ import HeaderBodyFooterLayout from "@/components/layout/HeaderFooterLayout";
 import { withGlobalLayout } from "@/components/AppLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "@/store";
-import { handleCrmValueByField } from "@/utils/crm";
-import ValueBoxGenerator from "@/components/crm/ValueBoxGenerator";
+import ValueBoxGenerator, { handleCrmValueByField } from "@/components/crm/ValueBoxGenerator";
 import "./index.scss";
 import {
   assignEntityValue,
@@ -311,9 +310,8 @@ const InfoRow: React.FC<{
         {field.fieldName}
       </Text>
       <View className="flex-1 flex items-center justify-end">
-        <Text className={`text-sm font-medium text-right`}>
           {handleCrmValueByField(field, valueObject) || "-"}
-        </Text>
+     
       </View>
     </View>
   );

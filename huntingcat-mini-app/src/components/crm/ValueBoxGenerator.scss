@@ -1,0 +1,227 @@
+.crm-resource-field {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 24rpx;
+  background: #fff;
+  border: 1rpx solid #edf1f7;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.04);
+}
+
+.crm-resource-field__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.crm-resource-field__title {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  color: #1f2937;
+  font-size: 30rpx;
+  line-height: 1.35;
+}
+
+.crm-resource-field__title text:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crm-resource-field__required {
+  margin-right: 6rpx;
+  color: #dc2626;
+}
+
+.crm-resource-field__status {
+  flex-shrink: 0;
+  padding: 4rpx 14rpx;
+  color: #64748b;
+  background: #f1f5f9;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+}
+
+.crm-resource-field__status--ready {
+  color: #047857;
+  background: #dff7ec;
+}
+
+.crm-resource-field__body {
+  display: flex;
+  align-items: stretch;
+  gap: 20rpx;
+}
+
+.crm-resource-field__preview,
+.crm-resource-field__empty {
+  flex-shrink: 0;
+  width: 148rpx;
+  height: 148rpx;
+  overflow: hidden;
+  border-radius: 12rpx;
+}
+
+.crm-resource-field__preview {
+  display: block;
+  background: #f8fafc;
+  border: 1rpx solid #e5e7eb;
+}
+
+.crm-resource-field__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border: 1rpx dashed #cbd5e1;
+}
+
+.crm-resource-field__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.crm-resource-field__name {
+  overflow: hidden;
+  color: #111827;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crm-resource-field__hint {
+  margin-top: 6rpx;
+  color: #6b7280;
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+
+.crm-resource-field__button {
+  box-sizing: border-box;
+  width: 168rpx;
+  height: 56rpx;
+  margin: 18rpx 0 0;
+  padding: 0;
+  color: #fff;
+  background: #1677ff;
+  border: none;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  line-height: 56rpx;
+}
+
+.crm-resource-field__button::after {
+  border: none;
+}
+
+.crm-resource-field__button--hover {
+  opacity: 0.82;
+}
+
+.crm-resource-field__button-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 56rpx;
+}
+
+.crm-resource-preview {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 360rpx;
+  max-width: 100%;
+  padding: 10rpx;
+  background: #fff;
+  border: 1rpx solid #e8edf5;
+  border-radius: 14rpx;
+  box-shadow: 0 6rpx 18rpx rgba(15, 23, 42, 0.04);
+}
+
+
+
+.crm-resource-preview__image {
+  display: block;
+  flex-shrink: 0;
+  width: 72rpx;
+  height: 72rpx;
+  overflow: hidden;
+  background: #f1f5f9;
+  border: 1rpx solid #e5e7eb;
+  border-radius: 10rpx;
+}
+
+.crm-resource-preview__meta {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  margin-left: 14rpx;
+}
+
+.crm-resource-preview__name {
+  overflow: hidden;
+  color: #111827;
+  font-size: 26rpx;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crm-resource-preview__hint {
+  margin-top: 4rpx;
+  color: #64748b;
+  font-size: 22rpx;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.crm-resource-preview__action {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36rpx;
+  height: 36rpx;
+  margin-left: 8rpx;
+  background: #f8fafc;
+  border-radius: 999rpx;
+}
+
+@media (max-width: 360px) {
+  .crm-resource-field__body {
+    align-items: flex-start;
+    gap: 16rpx;
+  }
+
+  .crm-resource-field__preview,
+  .crm-resource-field__empty {
+    width: 128rpx;
+    height: 128rpx;
+  }
+
+  .crm-resource-field__button {
+    width: 148rpx;
+  }
+
+  .crm-resource-preview {
+    width: 320rpx;
+  }
+
+  .crm-resource-preview__image {
+    width: 64rpx;
+    height: 64rpx;
+  }
+}
