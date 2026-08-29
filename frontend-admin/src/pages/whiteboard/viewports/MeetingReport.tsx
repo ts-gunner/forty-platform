@@ -25,7 +25,7 @@ export default function MeetingReport() {
                         position: "absolute",
                         left: constants.meetingReport.x,
                         top: constants.meetingReport.y,
-                        pointerEvents: "auto",
+                       pointerEvents: "none",  // 全局设置none，都可以穿透鼠标， 需要点击的时候单独加pointerEvents: "auto"
                     }}
                 >
                     {/* Header */}
@@ -65,7 +65,9 @@ export default function MeetingReport() {
                                         仍有明显分歧。</span>
                                 </div>
                             </div>
-                            <Button className='flex' type='primary' onClick={gotoStepTwo}>
+                            <Button className='flex' type='primary' onClick={gotoStepTwo} style={{
+                                pointerEvents: "auto",  // 独立控制是否穿透鼠标
+                            }}>
                                 <span>开始准备</span>
                                 <ArrowRight className='h-4 w-4' />
                             </Button>
