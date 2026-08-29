@@ -1,4 +1,4 @@
-import { Database, Key, Lock, Shield, UserCheck, UserCog, CheckCircle2, ChartArea } from "lucide-react";
+import { Database, Key, Lock, Shield, UserCheck, UserCog, CheckCircle2, ChartArea, ChartBarBig } from "lucide-react";
 const SIDER_MENUS: Record<string, Sider.NavItem[]> = {
   Menu: [
      {
@@ -50,7 +50,11 @@ const SIDER_MENUS: Record<string, Sider.NavItem[]> = {
         },
       ]
     },
- 
+  {
+      icon: <ChartBarBig />,
+      name: "whiteboard",
+      path: "/whiteboard",
+    },
   ],
 };
 

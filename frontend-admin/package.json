@@ -26,6 +26,7 @@
     "@rematch/core": "^2.2.0",
     "@rematch/persist": "^2.1.2",
     "@tailwindcss/postcss": "^4.1.7",
+    "@xyflow/react": "^12.11.5",
     "antd": "^6.1.0",
     "apexcharts": "^5.3.6",
     "china-division": "^2.7.0",

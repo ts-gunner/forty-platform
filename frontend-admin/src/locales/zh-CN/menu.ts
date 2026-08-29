@@ -9,4 +9,5 @@ export default {
     "menu.crmEntityManagement": "客户实体管理",
     "menu.crmValueManagement": "客户信息数据",
     "menu.auditManagement": "审核管理",
+    "menu.whiteboard": "白板",
 }
