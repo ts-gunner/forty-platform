@@ -1,0 +1,213 @@
+/* ====== Product List — Dark Tech Style ====== */
+.product-list {
+  min-height: 100vh;
+  background: var(--bg-base);
+  position: relative;
+}
+
+/* Ambient glow */
+.product-list::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(47, 128, 237, 0.1), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ====== Header ====== */
+.product-list__header {
+  padding: 16px 16px 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.product-list__title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  position: relative;
+  padding-left: 14px;
+}
+
+.product-list__title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--accent-gradient);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+}
+
+.product-list__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  height: 38px;
+  border-radius: var(--radius-xl);
+}
+
+.product-list__search-placeholder {
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+/* ====== Category Tabs ====== */
+.product-list__tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg-base);
+}
+
+.product-list__tabs-scroll {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.product-list__tabs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.product-list__tab {
+  flex-shrink: 0;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.product-list__tab.active {
+  color: #fff;
+  background: var(--accent-gradient);
+  border-color: transparent;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+}
+
+.product-list__tab:hover:not(.active) {
+  border-color: var(--border-accent);
+  color: var(--accent-cyan);
+}
+
+/* Sort */
+.product-list__sort-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.product-list__sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.product-list__sort-btn:hover,
+.product-list__sort-btn.open {
+  border-color: var(--border-accent);
+  color: var(--accent-cyan);
+}
+
+.product-list__sort-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 98;
+}
+
+.product-list__sort-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  min-width: 180px;
+  padding: 6px;
+  border-radius: var(--radius);
+  z-index: 99;
+}
+
+.product-list__sort-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.product-list__sort-item:hover {
+  background: var(--bg-card-hover);
+}
+
+.product-list__sort-item.active {
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* ====== Count ====== */
+.product-list__count {
+  padding: 4px 16px 8px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  position: relative;
+  z-index: 1;
+}
+
+/* ====== Grid ====== */
+.product-list__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ====== Empty State ====== */
+.product-list__empty {
+  padding: 60px 16px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.product-list__empty svg {
+  margin: 0 auto 12px;
+}
+
+.product-list__empty p {
+  font-size: 14px;
+  color: var(--text-tertiary);
+}

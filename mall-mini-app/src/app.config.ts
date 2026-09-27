@@ -60,13 +60,7 @@ export default defineAppConfig({
         "audit/index",
       ],
     },
-    {
-      root: "pagesAnalysis",
-      pages: [
-        "analysis/index",
-        "analysisWithBiz/index",
-      ],
-    },
+
   ],
 
   preloadRule: {

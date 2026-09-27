@@ -1,0 +1,232 @@
+/* ====== Supplier List — Dark Tech Style ====== */
+.supplier-list {
+  min-height: 100vh;
+  background: var(--bg-base);
+  position: relative;
+}
+
+/* Ambient glow */
+.supplier-list::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(47, 128, 237, 0.1), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ====== Header ====== */
+.supplier-list__header {
+  padding: 16px 16px 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.supplier-list__title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  position: relative;
+  padding-left: 14px;
+}
+
+.supplier-list__title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--accent-gradient);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+}
+
+/* Search */
+.supplier-list__search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 0 14px;
+  height: 38px;
+  transition: border-color 0.2s;
+}
+
+.supplier-list__search-wrap:focus-within {
+  border-color: var(--border-accent);
+  box-shadow: var(--glow-cyan);
+}
+
+.supplier-list__search-input {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-primary);
+  background: transparent;
+}
+
+.supplier-list__search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* ====== Category Tabs ====== */
+.supplier-list__tabs {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg-base);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.supplier-list__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.supplier-list__tab {
+  flex-shrink: 0;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.supplier-list__tab.active {
+  color: #fff;
+  background: var(--accent-gradient);
+  border-color: transparent;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+}
+
+.supplier-list__tab:hover:not(.active) {
+  border-color: var(--border-accent);
+  color: var(--accent-cyan);
+}
+
+/* ====== Count ====== */
+.supplier-list__count {
+  padding: 4px 16px 8px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  position: relative;
+  z-index: 1;
+}
+
+/* ====== Supplier Cards ====== */
+.supplier-list__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.supplier-list__card {
+  padding: 14px 16px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.supplier-list__card:hover {
+  border-color: var(--border-accent);
+  box-shadow: var(--glow-cyan);
+}
+
+.supplier-list__card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.supplier-list__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--border-accent);
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.supplier-list__card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.supplier-list__name-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.supplier-list__name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.supplier-list__location {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.supplier-list__main-products {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.supplier-list__card-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.supplier-list__rating {
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* ====== Empty State ====== */
+.supplier-list__empty {
+  padding: 60px 16px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.supplier-list__empty svg {
+  margin: 0 auto 12px;
+}
+
+.supplier-list__empty p {
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
